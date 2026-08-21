@@ -530,7 +530,7 @@
   function verify() {
     const val = memberId.value.trim();
     if (!val) {
-      hint.textContent = '请输入会员序号';
+      hint.textContent = '请输入成员序号';
       hint.className = 'hint fail';
       return;
     }
@@ -545,7 +545,7 @@
         setTimeout(() => window.location.href = 'inside.html', 2000);
       }, 800);
     } else {
-      hint.textContent = '该会员已录入';
+      hint.textContent = '该成员已录入';
       hint.className = 'hint fail';
     }
   }
