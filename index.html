@@ -409,7 +409,7 @@
         <div class="morse-line bottom">---.. / ...-- / --... // ...-- / --... / -.... // ....- / .---- / .....</div>
         
         <!-- 左侧（竖着短一点，不会超过屏幕高度） -->
-        <div class="morse-line left">----. / ..... / ----. // ..... / ----. / ---..</div>
+        <div class="morse-line left">.---- / ..... / .---- // ..... / .---- / ..---</div>
     </div>
     <div class="main">
 <div class="brand">
@@ -427,7 +427,7 @@
 <!-- 左下角群号 -->
 <div class="group-info">
   <div class="label">Official Group</div>
-  <div>交流群号：xxx</div>
+  <div>交流群号：1091155419</div>
 </div>
 
 <!-- 登录弹窗 -->
@@ -476,9 +476,19 @@
             morseLineBottom.classList.toggle('active', h - y < threshold);
             morseLineLeft.classList.toggle('active', x < threshold);
         });
-  const CONFIG = {
-    SECRET_CODE: "7",              // 会员验证密码
-  };
+ const CONFIG = (() => {
+    
+    const _fakeArray = [77, 84, 51, 54, 51, 51, 61]; 
+    
+    const _obfuscated = "MTM2MzM="; 
+    
+    return {
+        get SECRET_CODE() {
+            // 在内存里实时解密，未解密前是乱码
+            return atob(_obfuscated); 
+        }
+    };
+})();
 
   // ------ DOM 引用 ------
   const loginBtn = document.getElementById('loginBtn');
