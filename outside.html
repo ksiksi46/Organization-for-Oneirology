@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>解梦会 — Dream Interpretation Society</title>
+<style>
+  :root {
+   
+    --bg-mid: #2d3748;
+    --bg-light: #4a5568;
+    --accent: #a0aec0;
+    --accent-warm: #cbd5e0;
+    --text: #e2e8f0;
+    --text-dim: #718096;
+    --gold: #d4af37;
+    --gold-dim: #8a7320;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    font-family: "Noto Serif SC", "Source Han Serif SC", Georgia, serif;
+    background: var(--bg-deep);
+  }
+
+  
+
+   #stego-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            object-fit: cover; z-index: -1;
+            /* 阻止图片被鼠标拖拽，但不影响右键保存 */
+            -webkit-user-drag: none;
+             pointer-events: auto; 
+        }
+             /* ===== 摩斯密码环绕显形（防止溢出屏幕） ===== */
+        .morse-line {
+            position: absolute;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.0);
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            white-space: nowrap;
+            max-width: 95vw; /* 防止顶部/底部文字超出视口宽度 */
+            overflow: hidden;
+        }
+
+        /* 顶部：居中显示 */
+        .morse-line.top {
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        /* 右侧：竖排显示 */
+        .morse-line.right {
+            top: 15%;
+            right: 30px;
+            writing-mode: vertical-lr;
+            max-width: 100vh; /* 防止右侧文字超出高度 */
+        }
+
+        /* 底部：居中显示 */
+        .morse-line.bottom {
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        /* 左侧：竖排显示 */
+        .morse-line.left {
+            bottom: 10%;
+            left: 30px;
+            writing-mode: vertical-rl;
+            max-width: 100vh; /* 防止左侧文字超出高度 */
+        }
+
+        /* 靠近边缘时显现 */
+        .morse-line.top.active, 
+        .morse-line.bottom.active,
+        .morse-line.left.active,
+        .morse-line.right.active {
+            opacity: 1;
+            color: rgba(255, 255, 255, 0.9);
+        }
+  /* 主内容 */
+  .main {
+    position: relative;
+    z-index: 10;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+      pointer-events: none; 
+  }
+
+  /* Logo区域 */
+   .brand {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(24px);
+    animation: emerge 2.4s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
+    
+    /* === 新增的强制垂直居中 === */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    pointer-events: none;
+  }
+
+  @keyframes emerge {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .logo-mark {
+    width: 180px; height: 180px;
+    margin: 0 auto 28px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+     pointer-events: auto;
+  }
+
+  .logo-mark::before {
+    content: "";
+    width: 56px; height: 56px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+
+  .logo-mark img {
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+  }
+
+  .logo-text {
+    font-size: 42px;
+    font-weight: 300;
+    letter-spacing: 18px;
+    color: var(--text);
+    margin-left: 18px;
+    text-indent: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+    line-height: 1;
+  }
+
+  .logo-text img {
+    height: 96px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+    transform: translateX(-9px)
+  }
+
+  .motto {
+    margin-top: 20px;
+    font-size: 15px;
+    color: var(--text-dim);
+    letter-spacing: 6px;
+    font-weight: 300;
+    opacity: 0;
+    animation: emerge 2s cubic-bezier(0.22, 1, 0.36, 1) 1.2s forwards;
+  }
+
+  /* 登录按钮 */
+  .login-trigger {
+    margin-top: 48px;
+    padding: 12px 44px;
+    border: 1px solid var(--bg-light);
+    background: transparent;
+    color: var(--accent);
+    font-size: 13px;
+    letter-spacing: 4px;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity: 0;
+    animation: emerge 2s cubic-bezier(0.22, 1, 0.36, 1) 1.8s forwards;
+    font-family: inherit;
+     pointer-events: auto;
+  }
+
+  .login-trigger:hover {
+    border-color: var(--accent);
+    color: var(--text);
+    letter-spacing: 6px;
+    padding: 12px 48px;
+  }
+
+  /* 左下角群号 */
+  .group-info {
+    position: fixed;
+    left: 40px; bottom: 36px;
+    z-index: 20;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    line-height: 1.8;
+    opacity: 0;
+    animation: emerge 2s ease 2.4s forwards;
+  }
+
+  .group-info .label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+    color: var(--bg-light);
+  }
+
+  /* 登录弹窗 */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(13, 16, 25, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+
+  .modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    width: 380px;
+    padding: 48px 40px;
+    border: 1px solid var(--bg-light);
+    background: rgba(26, 32, 44, 0.95);
+    text-align: center;
+    transform: translateY(16px) scale(0.98);
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .modal-overlay.active .modal {
+    transform: translateY(0) scale(1);
+  }
+
+  .modal h3 {
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--text);
+    letter-spacing: 8px;
+    margin-bottom: 8px;
+  }
+
+  .modal .sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    margin-bottom: 36px;
+  }
+
+  .modal input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--bg-light);
+    background: transparent;
+    color: var(--text);
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.3s ease;
+    font-family: "Courier New", monospace;
+  }
+
+  .modal input:focus {
+    border-color: var(--accent);
+  }
+
+  .modal .hint {
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    min-height: 18px;
+  }
+
+  .modal .hint.success {
+    color: #68d391;
+  }
+
+  .modal .hint.fail {
+    color: #fc8181;
+  }
+
+  .modal-actions {
+    margin-top: 28px;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .modal-actions button {
+    padding: 10px 32px;
+    border: 1px solid var(--bg-light);
+    background: transparent;
+    color: var(--accent);
+    font-size: 12px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+  }
+
+  .modal-actions button:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .modal-actions button.primary {
+    border-color: var(--accent);
+  }
+
+  /* 内部站点过渡 */
+  .portal {
+    position: fixed; inset: 0;
+    background: var(--bg-deep);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.2s ease;
+  }
+
+  .portal.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .portal-text {
+    font-size: 24px;
+    color: var(--text);
+    letter-spacing: 12px;
+    font-weight: 300;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1s ease 0.3s;
+  }
+
+  .portal.active .portal-text {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .portal-sub {
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 4px;
+    opacity: 0;
+    transition: opacity 1s ease 0.8s;
+  }
+
+  .portal.active .portal-sub {
+    opacity: 1;
+  }
+
+</style>
+<base target="_blank">
+</head>
+<body>
+
+
+    <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: auto;">
+    <img id="stego-bg" src="image/back.png" alt="Background" style="width: 100%; height: 100%; object-fit: cover; cursor: context-menu;">
+</div>
+  <!-- 摩斯密码蛇 (边缘动画) -->
+      <div id="morseCipher" style="position: fixed; inset: 0; z-index: 40; pointer-events: none; overflow: hidden;">
+        <!-- 顶部（横向铺满） -->
+        <div class="morse-line top"> <img  src="image/head.png" style="width: 80px; height:40px;"  > ....- / -.... // .---- / -.... / ..--- // ..--- / ..--- / .....</div>
+        
+        <!-- 右侧（竖着短一点，不会超过屏幕高度） -->
+        <div class="morse-line right">...-- / ---.. / ----- // ....- / ....- / ---..</div>
+        
+        <!-- 底部（横向铺满） -->
+        <div class="morse-line bottom">---.. / ...-- / --... // ...-- / --... / -.... // ....- / .---- / .....</div>
+        
+        <!-- 左侧（竖着短一点，不会超过屏幕高度） -->
+        <div class="morse-line left">----. / ..... / ----. // ..... / ----. / ---..</div>
+    </div>
+    <div class="main">
+<div class="brand">
+    <div class="logo-mark">
+      <img src="image/logo.png" alt="解梦会 Logo" style="width: 160px; height: 160px;">
+    </div>
+    <h1 class="logo-text">
+      <img src="image/name.png" alt="解梦会" onerror="this.outerHTML='解梦会'">
+    </h1>
+    <p class="motto">长梦将尽，此间唯真</p>
+    <button class="login-trigger" id="loginBtn">会员登录</button>
+  </div>
+</div>
+
+<!-- 左下角群号 -->
+<div class="group-info">
+  <div class="label">Official Group</div>
+  <div>交流群号：xxx</div>
+</div>
+
+<!-- 登录弹窗 -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>会员验证</h3>
+    <p class="sub">请输入最新会员序号</p>
+    <input type="text" id="memberId" placeholder="会员序号" autocomplete="off" maxlength="12">
+    <p class="hint" id="hint"></p>
+    <div class="modal-actions">
+      <button id="cancelBtn">取消</button>
+      <button class="primary" id="confirmBtn">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- 内部站点过渡 -->
+<div class="portal" id="portal">
+  <div class="portal-text">欢迎加入解梦会</div>
+  <div class="portal-sub">正在接入内部网络...</div>
+</div>
+
+<script>
+  // ============================================================
+  // 解梦会 交互脚本 (仅保留弹窗和验证)
+  // ============================================================
+
+  // ------ 配置项 ------
+     // ===== 摩斯密码蛇显现逻辑 =====
+       // ===== 摩斯密码环绕显形逻辑 =====
+         const morseLineTop = document.querySelector('.morse-line.top');
+        const morseLineRight = document.querySelector('.morse-line.right');
+        const morseLineBottom = document.querySelector('.morse-line.bottom');
+        const morseLineLeft = document.querySelector('.morse-line.left');
+
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const threshold = 100;
+
+            // 只有鼠标靠近对应边缘时，那一条边的密码才亮起
+            morseLineTop.classList.toggle('active', y < threshold);
+            morseLineRight.classList.toggle('active', w - x < threshold);
+            morseLineBottom.classList.toggle('active', h - y < threshold);
+            morseLineLeft.classList.toggle('active', x < threshold);
+        });
+  const CONFIG = {
+    SECRET_CODE: "7",              // 会员验证密码
+  };
+
+  // ------ DOM 引用 ------
+  const loginBtn = document.getElementById('loginBtn');
+  const modal = document.getElementById('modal');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const confirmBtn = document.getElementById('confirmBtn');
+  const memberId = document.getElementById('memberId');
+  const hint = document.getElementById('hint');
+  const portal = document.getElementById('portal');
+
+  // ------ 弹窗控制 ------
+  function openModal() {
+    modal.classList.add('active');
+    memberId.value = '';
+    hint.textContent = '';
+    hint.className = 'hint';
+    setTimeout(() => memberId.focus(), 300);
+  }
+
+  function closeModal() {
+    modal.classList.remove('active');
+  }
+
+  loginBtn.addEventListener('click', openModal);
+
+  cancelBtn.addEventListener('click', closeModal);
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      closeModal();
+    }
+  });
+
+  // ------ 会员验证 ------
+  function verify() {
+    const val = memberId.value.trim();
+    if (!val) {
+      hint.textContent = '请输入会员序号';
+      hint.className = 'hint fail';
+      return;
+    }
+
+    if (val === CONFIG.SECRET_CODE) {
+      hint.textContent = '验证通过 ✓';
+      hint.className = 'hint success';
+      setTimeout(() => {
+        closeModal();
+        portal.classList.add('active');
+        // 延迟后跳转到内部页面
+        setTimeout(() => window.location.href = 'inside.html', 2000);
+      }, 800);
+    } else {
+      hint.textContent = '该会员已录入';
+      hint.className = 'hint fail';
+    }
+  }
+
+  confirmBtn.addEventListener('click', verify);
+  memberId.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') verify();
+  });
+
+  console.log('🌙 解梦会登录页面已加载');
+ 
+</script>
+
+</body>
+</html>
