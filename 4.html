@@ -1,0 +1,402 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事件 · 太行柳氏沉眠异事 · 解梦会 OFO</title>
+    <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <style>
+        :root {
+            --primary: #0F171E;
+            --secondary: #316B83;
+            --bg-light: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --text-dark: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --font-heading: 'EB Garamond', 'Times New Roman', serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-ui);
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator { color: var(--border); }
+
+        .content-wrapper {
+            padding: 0 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 60px;
+            margin-top: 40px;
+        }
+
+        .page-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 42px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0;
+        }
+        .header-action {
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .header-action:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .file-wrapper {
+            font-family: var(--font-ui);
+            color: var(--text-dark);
+        }
+
+        .file-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 50px;
+            background: var(--bg-light);
+            padding: 16px 24px;
+            border-left: 4px solid var(--secondary);
+            margin-bottom: 32px;
+            font-size: 15px;
+        }
+        .file-meta span {
+            display: inline-block;
+        }
+        .file-meta .label {
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.3px;
+        }
+        .file-meta .value {
+            color: var(--text-dark);
+            margin-left: 6px;
+        }
+
+        .section-block {
+            margin: 36px 0 30px 0;
+        }
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            letter-spacing: 0.3px;
+        }
+
+        .section-sub {
+            font-family: var(--font-heading);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 28px 0 12px 0;
+        }
+
+        .file-text {
+            font-size: 16px;
+            line-height: 1.75;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .dialogue-block {
+            margin: 12px 0 18px 0;
+            padding-left: 6px;
+        }
+        .dialogue-line {
+            display: flex;
+            gap: 12px;
+            padding: 4px 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        .dialogue-speaker {
+            font-weight: 500;
+            color: var(--secondary);
+            min-width: 28px;
+            letter-spacing: 0.2px;
+        }
+        .dialogue-text {
+            color: var(--text-dark);
+        }
+
+        .archive-footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .blockquote-style {
+            padding-left: 24px;
+            color: var(--text-muted);
+            border-left: 2px solid var(--border);
+            margin: 12px 0 16px 0;
+        }
+
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 0 20px 80px 20px; }
+            .main-card { padding: 30px 20px; }
+            .page-header-row { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .file-meta { flex-direction: column; gap: 10px; }
+            .dialogue-line { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="page-header">
+    <a href="inside.html" class="logo-wrapper">
+        <img src="image/logo.png" alt="OFO Logo">
+        <div>
+            <span class="b-title">OFO</span>
+            <span class="b-sub">Organization for Oneirology</span>
+        </div>
+    </a>
+
+    <div class="breadcrumb">
+        <a href="inside.html">Home</a>
+        <span class="separator">/</span>
+        <a href="odd.html">怪奇事件</a>
+        <span class="separator">/</span>
+        <a href="odd1.html">已解决事件</a>
+        <span class="separator">/</span>
+        <span>太行柳氏沉眠异事</span>
+    </div>
+</header>
+
+<div class="content-wrapper">
+    <div class="main-card">
+
+        <div class="page-header-row">
+            <h1 class="page-title">事件 · 太行柳氏沉眠异事</h1>
+            <a href="odd1.html" class="header-action">← 返回已解决</a>
+        </div>
+
+        <div class="file-wrapper">
+
+            <div class="file-meta">
+                <span><span class="label">事件代号：</span><span class="value">太行柳氏沉眠异事</span></span>
+                <span><span class="label">记录人员：</span><span class="value">释梦司·冀州分司</span></span>
+                <span><span class="label">初始记录：</span><span class="value">庚子年十月廿日</span></span>
+                <span><span class="label">最后修订：</span><span class="value">2026.02.19</span></span>
+                <span><span class="label">状态：</span><span class="value">已解决</span></span>
+            </div>
+
+            <!-- 卷首 -->
+            <div class="section-block">
+                <p class="file-text"><span style="font-weight:600;">卷号：</span>略</p>
+                <p class="file-text"><span style="font-weight:600;">密级：</span>略</p>
+                <p class="file-text"><span style="font-weight:600;">封题：</span>太行柳氏沉眠异事</p>
+                <p class="file-text"><span style="font-weight:600;">纪年：</span>庚子年 霜降日记</p>
+                <p class="file-text"><span style="font-weight:600;">录事司：</span>解梦会·冀州分司</p>
+                <p class="file-text"><span style="font-weight:600;">主事：</span>录事郎张根（执笔）；神医安有方（随诊）</p>
+                <p class="file-text"><span style="font-weight:600;">涉事人：</span>柳文远，冀州邯郸县人</p>
+                <p class="file-text"><span style="font-weight:600;">现况：</span>存活，四肢痿痹，神识昏乱，言语无状</p>
+                <p class="file-text"><span style="font-weight:600;">证物：</span>青瓷枕残片五枚，现封存于冀州司证物阁，编号冀-庚-柒-物</p>
+            </div>
+
+            <!-- 【闻报】 -->
+            <div class="section-block">
+                <div class="section-title">【闻报】</div>
+                <p class="file-text">
+                    庚子年秋，冀州分司遣外勤游探于邯郸县境巡行，于茶肆间闻野老窃议一事：
+                </p>
+                <p class="file-text">
+                    邯郸柳氏子，名文远，少时负笈出游，逾年不归。后家人寻之于太行深处古观，见其僵卧偏室，面如金纸，气息奄奄，枕一青瓷，周身僵冷。舁归后，即长卧不起，目不能视，口不能言，饮饲皆需以管灌之，便溺不自知，形同槁木。母氏忧劳成疾，已于三年前弃世。其子承嗣辍书负贩，以奉汤药。
+                </p>
+                <p class="file-text">
+                    如此十载，邻里皆以为必死。然今岁寒露前后，柳文远忽双目圆睁，喉中咯咯作响，竟能言语。然所言皆骇人之语，或曰"刀山"，或曰"油锅"，或曰"拔舌"，或曰"求死不能"。且四肢痿痹，不能举，惟头颅可转，状若疯癫。邻里惊怖，以为中邪，不敢近。
+                </p>
+                <p class="file-text">
+                    游探闻之，以飞鸽传书报于分司。司主批曰："沉眠十载，醒而言地狱，此非寻常癔症，恐涉梦界异事，亟往查之。"
+                </p>
+            </div>
+
+            <!-- 【初勘】 -->
+            <div class="section-block">
+                <div class="section-title">【初勘】</div>
+                <p class="file-text" style="color: var(--text-muted);">时日：庚子年十月初三</p>
+                <p class="file-text" style="color: var(--text-muted);">地点：邯郸县柳氏旧宅</p>
+                <p class="file-text">
+                    录事郎张根率神医安有方及吏役二人，以"行方游医"之名入宅。
+                </p>
+                <p class="file-text">
+                    见柳文远卧于东厢榻上，榻上尘积厚寸，蛛网垂于梁间。其人面色萎黄，须发蓬乱，形销骨立，四肢蜷曲如枯枝，肌肉尽萎，关节僵结，褥疮瘢痕遍布腰背，诚为十年卧床之状。然其双目炯炯，转顾之间，竟有凶光，不似久病之人。
+                </p>
+                <p class="file-text">
+                    安神医以银针试其经脉，针入三里、合谷诸穴，毫无知觉。及刺百会、神庭，柳文远忽厉声惨叫，声若夜枭，挣扎欲起，然四肢不举，惟以头撞枕，口中大呼："复至矣！毋烙吾身！毋烙吾身！"
+                </p>
+                <p class="file-text">
+                    医急退针，以安神香熏之，良久方定。
+                </p>
+            </div>
+
+            <!-- 【涉事人供词】 -->
+            <div class="section-block">
+                <div class="section-title">【涉事人供词】</div>
+                <p class="file-text" style="color: var(--text-muted);">庚子年十月十五，经三次问讯，录事郎张根笔录。</p>
+                <p class="file-text">
+                    柳文远神识稍定，能断续言语。录事如下：
+                </p>
+       
+                    <p class="file-text">"吾少时读《枕中记》，慕卢生之事，以为一枕可得荣华，虽梦亦快。闻太行古观有老道，藏吕翁遗枕，遂往求之。跪泣三日，道乃授吾。急就枕而卧......"</p>
+                    <p class="file-text">"初觉身轻，未喜，忽陷囹圄。有狱卒面如鬼魅，持水火之具，谓我前世孽重，当受果报。缚我于架，鞭笞烙灼，刀锯鼎镬，次第加身。吾欲死，咬舌，舌断而不死；撞壁，脑裂而不死；绝食，强灌而不死；投汤，肌烂复生。万死万生，无一时之暇，无一日之安。"</p>
+                    <p class="file-text">"不知历几何年，刑官言吾阳寿尽矣，方得咽气。及睁眼，乃在此榻。吾儿承嗣告我，已历十载。十载......哈哈哈，十载！"</p>
+     
+                <p class="file-text">
+                    言至此，柳文远以头触榻，额破血流，犹狂笑不止。医以镇惊汤灌之，方昏睡。
+                </p>
+            </div>
+
+            <!-- 【复勘古观】 -->
+            <div class="section-block">
+                <div class="section-title">【复勘古观】</div>
+                <p class="file-text" style="color: var(--text-muted);">时日：庚子年十月廿日</p>
+                <p class="file-text" style="color: var(--text-muted);">地点：太行深处无名古观</p>
+                <p class="file-text">
+                    录事郎张根率神医安有方及吏役二人，依柳文远所述路径入山。行三日，于绝壑之侧见一破观，门额漆落，不可辨名。观中唯老道一人，已羽化于蒲团之上，面色安详，尸身不腐，异香满室。
+                </p>
+                <p class="file-text">
+                    遍搜观中，于偏室见柳文远当年所卧之榻，榻上尚有凹陷人形之痕。细查其枕，于败絮之下得青瓷碎片五枚，色已灰白，不复莹碧，触之阴寒彻骨。
+                </p>
+            </div>
+
+            <!-- 【证物勘验】 -->
+            <div class="section-block">
+                <div class="section-title">【证物勘验】</div>
+                <p class="file-text">
+                    青瓷枕残片五枚，已碎裂不可复。神医安有方以银针试之，针尖近即结霜。录事郎张根以素帕裹之，置于暗室，夜中见微光如磷火，隐隐有细碎之声，似人语，不可辨。
+                </p>
+                <p class="file-text">
+                    司中老吏阅之，面色大变，私语曰："此物与唐时《枕中记》所载吕翁之枕，形制相似，然卢生一梦五十年荣华，醒时黄粱未熟，此枕则令人历十载地狱，醒时身已半废。一枕两面，一荣一辱，或曰'逆枕'。"
+                </p>
+                <p class="file-text">
+                    录事郎张根以为然，遂以檀盒封存，悬于证物阁阴处，着令后人：不得以肤触，不得复用。
+                </p>
+            </div>
+
+            <!-- 【结断】 -->
+            <div class="section-block">
+                <div class="section-title">【结断】</div>
+                <p class="file-text">
+                    <span style="font-weight:600;">一、</span>柳文远之事，非寻常病疾，乃因执念太深，求枕入梦，梦为心狱，身历酷刑，十载长眠，遂致四肢痿痹，神识昏乱。其梦中数十年之刑，反馈于肉身，致神经如刀割斧斫，此所以十年卧床而形骸尽毁也。
+                </p>
+                <p class="file-text">
+                    <span style="font-weight:600;">二、</span>太行古观老道，知枕之祸，故以"枕不可求"戒之。然柳文远执念难化，终遭此劫。老道羽化，或知此劫不可避，遂先走一步。
+                </p>
+                <p class="file-text">
+                    <span style="font-weight:600;">三、</span>此枕与唐时青瓷枕渊源未明，然其性已逆。本会当以此为戒：凡涉梦之异器，不可妄求。梦者，心之所造也。心有所执，则梦有所成。卢生心向功名，故梦功名；柳生心慕奇险，故梦奇险。然梦终虚幻，而逆枕之刑，竟能移于肉身，此最可怖者。
+                </p>
+                <p class="file-text">
+                    <span style="font-weight:600;">四、</span>着冀州分司将此卷抄录三份，一存本司，一呈总会，一藏于邯郸县衙密档。柳文远着其子承嗣照料，神医安有方每月往诊，以观后效。
+                </p>
+            </div>
+
+            <!-- 【批注】 -->
+            <div class="section-block">
+                <div class="section-title">【批注】</div>
+                <p class="file-text" style="font-weight:600;">司主批：</p>
+         
+                    <p class="file-text">卢生之枕，一炊之梦五十年；柳生之枕，十载之狱一世劫。后之览此卷者，其慎之哉。凡我解梦会中人，遇涉梦异事，当速报、当远观、当慎触，不可如柳生之痴也。</p>
+            
+                <p class="file-text" style="font-weight:600;">录事郎张根附记：</p>
+    
+                    <p class="file-text">柳文远今虽存活，然每夜惊起，以头撞壁，呼"狱卒复来"。其子承嗣以铁索缚其手足，以防自戕。余临行时，柳文远忽以目直视余，曰："大人，汝怎知此刻不在梦中？"余悚然，不敢答，遂退。司遂放名帖后去。</p>
+         
+            </div>
+
+            <div class="archive-footer">
+                <span>留档编号：冀-庚-柒-卷</span>
+                <span>加密等级：内部 · 已解决</span>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

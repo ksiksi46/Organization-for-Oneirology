@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+      <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事件 · 教授 · 解梦会 OFO</title>
+    <style>
+      
+
+        :root {
+            --primary: #0F171E;
+            --secondary: #316B83;
+            --bg-light: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --text-dark: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --font-heading: 'EB Garamond', 'Times New Roman', serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-ui);
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* ========== 头部标识与面包屑 ========== */
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator { color: var(--border); }
+
+        /* ========== 内容区 ========== */
+        .content-wrapper {
+            padding: 0 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 60px;
+            margin-top: 40px;
+        }
+
+        /* 页面标题与返回 */
+        .page-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 42px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0;
+        }
+        .header-action {
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .header-action:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* ===== 档案风格 (无框，仿SCP) ===== */
+        .file-wrapper {
+            font-family: var(--font-ui);
+            color: var(--text-dark);
+        }
+
+        .file-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 50px;
+            background: var(--bg-light);
+            padding: 16px 24px;
+            border-left: 4px solid var(--secondary);
+            margin-bottom: 32px;
+            font-size: 15px;
+        }
+        .file-meta span {
+            display: inline-block;
+        }
+        .file-meta .label {
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.3px;
+        }
+        .file-meta .value {
+            color: var(--text-dark);
+            margin-left: 6px;
+        }
+
+        .section-block {
+            margin: 36px 0 30px 0;
+        }
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            letter-spacing: 0.3px;
+        }
+
+        .section-sub {
+            font-family: var(--font-heading);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 28px 0 12px 0;
+        }
+
+        .file-text {
+            font-size: 16px;
+            line-height: 1.75;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+        .file-text strong {
+            font-weight: 600;
+            color: #0b1a26;
+        }
+        .file-text u {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            text-decoration-thickness: 1.2px;
+            text-decoration-color: var(--secondary);
+        }
+
+        .bullet-list {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0 20px 0;
+        }
+        .bullet-list li {
+            padding: 8px 0 8px 28px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23316B83" stroke-width="2"><circle cx="12" cy="12" r="6"/></svg>') left center no-repeat;
+            background-size: 14px;
+            background-position: 0 12px;
+            line-height: 1.6;
+        }
+        .bullet-list li strong {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .hr-divider {
+            border: 0;
+            border-top: 1px dashed var(--border);
+            margin: 40px 0 30px 0;
+        }
+
+        /* 实验卡片 (无框, 仅底色) */
+        .experiment-card {
+            background: var(--bg-light);
+            padding: 20px 24px;
+            margin: 20px 0 24px 0;
+            border-radius: 2px;
+        }
+        .experiment-card .exp-label {
+            font-family: var(--font-mono);
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--secondary);
+            display: block;
+            margin-bottom: 6px;
+        }
+        .experiment-card p {
+            margin: 8px 0 0 0;
+            line-height: 1.7;
+        }
+
+        /* 留档底部 */
+        .archive-footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 0 20px 80px 20px; }
+            .main-card { padding: 30px 20px; }
+            .page-header-row { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .file-meta { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 顶部 Logo与面包屑 -->
+ <header class="page-header">
+        <a href="inside.html" class="logo-wrapper">
+            <img src="image/logo.png" alt="OFO Logo">
+            <div>
+                <span class="b-title">OFO</span>
+                <span class="b-sub">Organization for Oneirology</span>
+            </div>
+        </a>
+
+    <div class="breadcrumb">
+        <a href="inside.html">Home</a>
+        <span class="separator">/</span>
+        <a href="odd.html">怪奇事件</a>
+        <span class="separator">/</span>
+        <a href="odd1.html">已解决事件</a>
+        <span class="separator">/</span>
+        <span>教授</span>
+    </div>
+</header>
+
+<!-- 主体 -->
+<div class="content-wrapper">
+    <div class="main-card">
+
+        <!-- 标题与返回 -->
+        <div class="page-header-row">
+            <h1 class="page-title">事件 · 教授</h1>
+            <a href="odd1.html" class="header-action">← 返回已解决</a>
+        </div>
+
+        <!-- 档案内容 (无框风格) -->
+        <div class="file-wrapper">
+
+            <!-- 元数据行 -->
+            <div class="file-meta">
+                <span><span class="label">事件代号：</span><span class="value">教授</span></span>
+                <span><span class="label">记录人员：</span><span class="value">观愿</span></span>
+                <span><span class="label">初始记录：</span><span class="value">2026.04.27</span></span>
+                <span><span class="label">最后修订：</span><span class="value">2026.06.21</span></span>
+                <span><span class="label">状态：</span><span class="value">监测中</span></span>
+            </div>
+
+            <!-- 1、项目概述 -->
+            <div class="section-block">
+                <div class="section-title">1、项目概述</div>
+                <p class="file-text">
+                    <strog>目标个体</stron>（下称目标或J），男性，35周岁，职业为大学历史系副教授。该目标于2026-04-27主动联络有关部门，报告其最近正在经历持续性异常体验。解梦会介入后，截至初次建档时已延续33日。具体内容依据目标本人陈述整理如下：
+                </p>
+                <p class="file-text">
+                    该目标自称自己多次经历致死事件，各次死亡方式具有非重复性和随机性。然而每次经历死亡后，他均会于次日清晨，在自家卧室床铺苏醒，身体状态经自检及后续医学核查均未见异常。在某次苏醒后，目标发现床头柜多出了一张名片。经引导式询问，J补充称，每次致死事件发生前，他均会短暂出现幻觉，看见一尊古老神像。与此同时，J表示自己的耳畔会出现一阵类似布谷钟报时的响声，两者在出现时间上呈稳定关联。
+                </p>
+            </div>
+
+            <!-- 2、实验记录 -->
+            <div class="section-block">
+                <div class="section-title">2、实验记录</div>
+
+                <!-- 实验01 -->
+            
+                    <span class="exp-label">2.1、实验01</span>
+                    <p>
+                        对J的身体情况和心理情况执行标准化状态评估，结果显示，J清醒期的各项身体指标和心理认知测验结果均在正常范围内。但在睡眠期时，J的应激性相关生理指标比起基线水平略微升高，显示出对特定元素的明显抵触倾向。根据推测，这种死亡现象可能和梦境具有相关性，而其产生的具体原因推测与高度警觉的心理状态或某种创伤回忆相关。
+                    </p>
+        
+
+                <!-- 实验02 -->
+               
+                    <span class="exp-label">2.2、实验02</span>
+                    <p>
+                        目标口述内容清晰、连贯，并未出现语言障碍或思维混乱等现象。J在对死亡过程的描述极度详尽且包含感官细节（例如<stron>"我闻到血锈味"</stron>，<stron>"感觉到刀刃切开脖颈肌肉的割裂感"</strong>）。他强调，每次"重生"后，他仍会完整保留上一段死亡的相关记忆，导致其<stron>"清醒地知道痛苦会重来"</strong>。对J的口述反复核对，发现他的言语没有出现前后矛盾。
+                    </p>
+             
+
+                <!-- 实验03 -->
+                    <span class="exp-label">2.3、实验03</span>
+                    <p>
+                        布谷钟声和神像出现两个事件发生具有高度同步性，该关联模式提示二者在J的记忆系统中可能存在共同的联结节点。因此对目标个体所处环境进行调查，在目标家中发现了一张考古遗址的明信片，其上照片包含一尊残破的、手持权杖的雕像，经与目标描述的梦境雕像进行轮廓比对，相似度估算为72%。
+                    </p>
+                    <p style="margin-top: 10px;">
+                        同时在征得知情同意的前提下，对目标J实施标准化催眠引导，以探究其潜意识活动。在催眠状态下，J回忆起童年时期祖父书房里确实有一台巨大的布谷钟。J的祖父是一位历史热爱者，对J最后选择走上历史学的研究道路具有重要启蒙作用。J的祖父在他儿时便因为生病去世，因恶性疾病，最终死状模样恐怖。经过引导，J自述对其祖父<stron>"既深深怀念，亦隐含矛盾的恐惧感"</strong>，该情感在数十年间未曾和他人表达倾诉。
+                    </p>
+              
+        
+
+            <!-- 3、最后评估 -->
+            <div class="section-block">
+                <div class="section-title">3、最后评估</div>
+                <p class="file-text">
+                    经过各项分析，J的身体指标一切正常，但心理状态并不稳定。解梦会介入后进行分析，由于梦境的构成元素并非凭空产生，而是目标个体无意识中对可追溯的现实来源的重新组合和反应。因此推测所受遭遇其实是一场梦境或者多场梦境的反复循环。然而，这种"拼凑"的重复发生性以及其在生理层面引发的强烈的<stron>"类濒死"</strong>反应，已超出了正常梦境的范畴。因目标目前功能正常且配合良好，现决定对于目标每两周进行一次标准化心理访谈，以监测其心理状况的潜在演变。
+                </p>
+            </div>
+
+            <!-- 附注：留档脚注 -->
+            <div class="archive-footer">
+                <span>留档编号：OFO-2026-04-27-教授</span>
+                <span>加密等级：内部 · 已解决</span>
+            </div>
+
+        </div> <!-- /file-wrapper -->
+
+    </div> <!-- /main-card -->
+</div> <!-- /content-wrapper -->
+
+</body>
+</html>

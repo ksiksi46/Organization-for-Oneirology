@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事件 · 备用机1958 · 解梦会 OFO</title>
+    <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <style>
+        :root {
+            --primary: #0F171E;
+            --secondary: #316B83;
+            --bg-light: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --text-dark: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --font-heading: 'EB Garamond', 'Times New Roman', serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-ui);
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator { color: var(--border); }
+
+        .content-wrapper {
+            padding: 0 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 60px;
+            margin-top: 40px;
+        }
+
+        .page-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 42px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0;
+        }
+        .header-action {
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .header-action:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .file-wrapper {
+            font-family: var(--font-ui);
+            color: var(--text-dark);
+        }
+
+        .file-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 50px;
+            background: var(--bg-light);
+            padding: 16px 24px;
+            border-left: 4px solid var(--secondary);
+            margin-bottom: 32px;
+            font-size: 15px;
+        }
+        .file-meta span {
+            display: inline-block;
+        }
+        .file-meta .label {
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.3px;
+        }
+        .file-meta .value {
+            color: var(--text-dark);
+            margin-left: 6px;
+        }
+
+        .section-block {
+            margin: 36px 0 30px 0;
+        }
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            letter-spacing: 0.3px;
+        }
+
+        .file-text {
+            font-size: 16px;
+            line-height: 1.75;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .dialogue-block {
+            margin: 12px 0 18px 0;
+            padding-left: 6px;
+        }
+        .dialogue-line {
+            display: flex;
+            gap: 12px;
+            padding: 4px 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        .dialogue-speaker {
+            font-weight: 500;
+            color: var(--secondary);
+            min-width: 28px;
+            letter-spacing: 0.2px;
+        }
+        .dialogue-text {
+            color: var(--text-dark);
+        }
+
+        .strikethrough {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .archive-footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 0 20px 80px 20px; }
+            .main-card { padding: 30px 20px; }
+            .page-header-row { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .file-meta { flex-direction: column; gap: 10px; }
+            .dialogue-line { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="page-header">
+    <a href="inside.html" class="logo-wrapper">
+        <img src="image/logo.png" alt="OFO Logo">
+        <div>
+            <span class="b-title">OFO</span>
+            <span class="b-sub">Organization for Oneirology</span>
+        </div>
+    </a>
+
+    <div class="breadcrumb">
+        <a href="inside.html">Home</a>
+        <span class="separator">/</span>
+        <a href="odd.html">怪奇事件</a>
+        <span class="separator">/</span>
+        <a href="odd1.html">已解决事件</a>
+        <span class="separator">/</span>
+        <span>备用机1958</span>
+    </div>
+</header>
+
+<div class="content-wrapper">
+    <div class="main-card">
+
+        <div class="page-header-row">
+            <h1 class="page-title">事件 · 备用机1958</h1>
+            <a href="odd1.html" class="header-action">← 返回已解决</a>
+        </div>
+
+        <div class="file-wrapper">
+
+            <div class="file-meta">
+                <span><span class="label">事件代号：</span><span class="value">备用机1958</span></span>
+                <span><span class="label">记录人员：</span><span class="value">陈赐</span></span>
+                <span><span class="label">初始记录：</span><span class="value">2025.09.01</span></span>
+                <span><span class="label">最后修订：</span><span class="value">2025.09.25</span></span>
+                <span><span class="label">状态：</span><span class="value">已解决</span></span>
+            </div>
+
+            <!-- 1、已解决的怪奇事件 -->
+            <div class="section-block">
+                <div class="section-title">1、已解决的怪奇事件【备用机1958】</div>
+                <p class="file-text">
+                    最近我的妈妈变得有些奇怪，事实上我也说不清她是从哪天开始改变的。她从前总是对我很不耐烦，说她曾经是多么多么潇洒，过着多么锦衣玉食的生活。一边向我哭穷说家里揭不开锅养我实在费钱，一边给自己买新衣服和大耳环，我省吃俭用的行为被她数落为小气抠搜、婆婆妈妈。她似乎把所有都押注在我身上，要我努力，要我刻苦。哪怕我只不过是一个工具，一个累赘，一个绊脚石。十多年来，她对我的关心总是不痛不痒，只要还能喘气就行。她肯定爱我的，但我知道她更爱她自己。
+                </p>
+                <p class="file-text">
+                    她肯定恨我的，因为我知道我长得像我爸。
+                </p>
+                <p class="file-text">
+                    我们就这样彼此依靠。我真正意识到她的变化是因为另一件怪事，那天我的备用机突然响了，要知道它已经在出租屋抽屉躺了好几百天，居然还没关机？真是诡异。我看到它收到了一条讯息，之后的每天都会收到。更奇怪的是，它的密码好像被改了，至少不是我记得的任何一个四位数，但除了我，谁会碰它，或者知道它？我想带它去附近的维修店看看，刚出门就收到了我妈给我买的快递，快递盒上还插了一张莫名其妙的名片，简直让人怀疑她是不是被邪教蛊惑了......
+                </p>
+                <p class="file-text">
+                    现在我妈每天问我钱够不够用，身体有没有不舒服，过得开不开心自不自在——我能感受到这不是演出来的，是发自内心的真诚。会在我生病的时候像那些小学作文里编的一样，幼稚地冒雨跑来照顾我，虽然我并不需要。我觉得对我坏才是应该的，所有人都没有义务善待我，善待任何其他人，不是吗？这么多年我每天站在学校旁的分岔路口，哪边都不想走，转角是一家洋快餐店，今天客人很多，我好想给他打个电话，但明天才是周五，还是等明天吧。
+                </p>
+                <div class="dialogue-block">
+                    <div class="dialogue-line">"所以最后密码是多少？"<span class="dialogue-text">CC端来一桶炸鸡。</span></div>
+                    <div class="dialogue-line">"一九五八。"<span class="dialogue-text">我如实答到。</span></div>
+                    <div class="dialogue-line">"你爹的生年？"</div>
+                    <div class="dialogue-line">"没那么老！"<span class="dialogue-text">我强烈反驳，"是他的死亡时间，19点58分。"</span></div>
+                </div>
+                <p class="file-text">
+                    那一刻他和我妈都迎来了新生，于我也是。
+                </p>
+                <p class="file-text">
+                    <span >手机讯息是垃圾邮件。（待查验）</span>
+                </p>
+                <p >
+                    会员梓赫现已加入解梦会。
+                </p>
+            </div>
+
+            <div class="archive-footer">
+                <span>留档编号：OFO-2025-09-01-备用机1958</span>
+                <span>加密等级：内部 · 已解决</span>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

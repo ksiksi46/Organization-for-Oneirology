@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+     <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事件 · 借阅证 · 解梦会 OFO</title>
+    <style>
+        :root {
+            --primary: #0F171E;
+            --secondary: #316B83;
+            --bg-light: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --text-dark: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --font-heading: 'EB Garamond', 'Times New Roman', serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-ui);
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator { color: var(--border); }
+
+        .content-wrapper {
+            padding: 0 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 60px;
+            margin-top: 40px;
+        }
+
+        .page-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 42px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0;
+        }
+        .header-action {
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .header-action:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .file-wrapper {
+            font-family: var(--font-ui);
+            color: var(--text-dark);
+        }
+
+        .file-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 50px;
+            background: var(--bg-light);
+            padding: 16px 24px;
+            border-left: 4px solid var(--secondary);
+            margin-bottom: 32px;
+            font-size: 15px;
+        }
+        .file-meta span {
+            display: inline-block;
+        }
+        .file-meta .label {
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.3px;
+        }
+        .file-meta .value {
+            color: var(--text-dark);
+            margin-left: 6px;
+        }
+
+        .section-block {
+            margin: 36px 0 30px 0;
+        }
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            letter-spacing: 0.3px;
+        }
+
+        .section-sub {
+            font-family: var(--font-heading);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 28px 0 12px 0;
+        }
+
+        .file-text {
+            font-size: 16px;
+            line-height: 1.75;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .dialogue-block {
+            margin: 12px 0 18px 0;
+            padding-left: 6px;
+        }
+        .dialogue-line {
+            display: flex;
+            gap: 12px;
+            padding: 4px 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        .dialogue-speaker {
+            font-weight: 500;
+            color: var(--secondary);
+            min-width: 28px;
+            letter-spacing: 0.2px;
+        }
+        .dialogue-text {
+            color: var(--text-dark);
+        }
+
+        .analysis-card {
+            background: var(--bg-light);
+            padding: 20px 24px;
+            margin: 20px 0 24px 0;
+            border-radius: 2px;
+        }
+        .analysis-card .analysis-label {
+            font-family: var(--font-mono);
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--secondary);
+            display: block;
+            margin-bottom: 6px;
+        }
+        .analysis-card p {
+            margin: 8px 0 0 0;
+            line-height: 1.7;
+        }
+
+        .archive-footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 0 20px 80px 20px; }
+            .main-card { padding: 30px 20px; }
+            .page-header-row { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .file-meta { flex-direction: column; gap: 10px; }
+            .dialogue-line { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="page-header">
+    <a href="inside.html" class="logo-wrapper">
+        <img src="image/logo.png" alt="OFO Logo">
+        <div>
+            <span class="b-title">OFO</span>
+            <span class="b-sub">Organization for Oneirology</span>
+        </div>
+    </a>
+
+    <div class="breadcrumb">
+        <a href="inside.html">Home</a>
+        <span class="separator">/</span>
+        <a href="odd.html">怪奇事件</a>
+        <span class="separator">/</span>
+        <a href="odd1.html">已解决事件</a>
+        <span class="separator">/</span>
+        <span>借阅证</span>
+    </div>
+</header>
+
+<div class="content-wrapper">
+    <div class="main-card">
+
+        <div class="page-header-row">
+            <h1 class="page-title">事件 · 借阅证</h1>
+            <a href="odd1.html" class="header-action">← 返回已解决</a>
+        </div>
+
+        <div class="file-wrapper">
+
+            <div class="file-meta">
+                <span><span class="label">事件代号：</span><span class="value">借阅证</span></span>
+                <span><span class="label">记录人员：</span><span class="value">岑██</span></span>
+                <span><span class="label">初始记录：</span><span class="value">2024.03.25</span></span>
+                <span><span class="label">最后修订：</span><span class="value">2025.04.02</span></span>
+                <span><span class="label">状态：</span><span class="value">已解决</span></span>
+            </div>
+
+            <!-- 1、特殊保管措施 -->
+            <div class="section-block">
+                <div class="section-title">1、特殊保管措施</div>
+                <p class="file-text">
+                    关联物品DR-024-1现存放于本会第三档案库内。物品须装入透明无酸封套，并与具有固定睡眠习惯的人员保持至少10米距离。
+                </p>
+                <p class="file-text">
+                    档案库值班人员若在值班期间出现困倦、方向感异常、非自主书写或自我认知错误等情况时，应立即离开库区并接受筛查。
+                </p>
+                <p class="file-text">
+                    未经调查科主任书面批准，不得将DR-024-1交予任何人员进行激活实验。
+                </p>
+                <p class="file-text">
+                    关联人员DR-024-A现居本会第七病区。其睡眠周期由医务组负责调节。工作人员与其交流时，应避免询问"你是谁"、"你的梦里出现了什么动物"等涉及身份判断的问题。
+                </p>
+                <p class="file-text">
+                    截至本档案归档时，DR-024-A已连续217日未出现新的异常梦境。
+                </p>
+            </div>
+
+            <!-- 1.1、物品描述 -->
+            <div class="section-block">
+                <div class="section-sub">1.1、物品描述</div>
+                <p class="file-text">
+                    DR-024-1是一张长8.9厘米、宽5.6厘米的旧式纸质图书借阅证。纸张严重泛黄，边缘存在多处磨损，印刷格式与滨海市公共图书馆于19██年至19██年间使用的借阅卡近似。
+                </p>
+                <p class="file-text">
+                    DR-024-1正面设有以下栏目：借阅人、馆藏类别、馆藏名称、借阅日期、应还日期。
+                </p>
+                <p class="file-text">
+                    在无人接触的状态下，上述栏目均为空白。
+                </p>
+                <p class="file-text">
+                    当DR-024-1在一名睡眠者周围2.78米范围内停留超过20分钟后，"借阅人"栏会逐渐浮现该睡眠者的姓名。姓名通常采用睡眠者本人最熟悉的书写方式，可能表现为本名、笔名、乳名或网络账号。
+                </p>
+                <p class="file-text">
+                    其余栏目将在睡眠期间出现内容：
+                </p>
+                <p class="file-text" style="padding-left: 24px;">
+                    "馆藏类别"通常为自然界的生物类别，涵盖人类、动物、植物、微生物等。
+                </p>
+                <p class="file-text" style="padding-left: 24px;">
+                    "馆藏名称"通常用于识别生物个体，可能会出现未完成发育的生命。
+                </p>
+                <p class="file-text" style="padding-left: 24px;">
+                    "借阅日期"通常与入睡时间一致。
+                </p>
+                <p class="file-text" style="padding-left: 24px;">
+                    "应还日期"始终显示为"醒来以前"。
+                </p>
+                <p class="file-text">
+                    受影响者在睡眠期间会以第一视角经历某一生命个体的部分或全部存续过程。梦境持续时间与现实睡眠时长之间未发现稳定比例。
+                </p>
+                <p class="file-text">
+                    梦境不会向受影响者提供解释性信息。受影响者只能根据对应生命个体的身体感官输入捕捉周遭信息。
+                </p>
+                <p class="file-text">
+                    受影响者醒来后能够保留梦境记忆。该记忆会在24小时内自然衰减，并逐渐产生明显的非亲历感。受影响者可以记得自己曾做过这个梦，也可以复述其中部分内容，但无法重新唤起梦中的身体感受。
+                </p>
+                <p class="file-text">
+                    持续接触DR-024-1会造成感知模式残留。受影响者可能在清醒状态下暂时沿用梦中生命的环境认知方式。随着激活次数增加，残留时间会不断延长，并对人类身份认知、语言能力、记忆组织和日常行为造成不可逆损伤。
+                </p>
+            </div>
+
+            <!-- 1.2、事件经过 -->
+            <div class="section-block">
+                <div class="section-sub">1.2、事件经过</div>
+                <p class="file-text">
+                    关联人员DR-024-A，男性，事件发生时三十四岁，职业为小说作家，曾使用笔名"████"。
+                </p>
+                <p class="file-text">
+                    DR-024-A于事件发生4年前出版短篇志怪小说集《██████》，曾获得一定关注。其后创作效率持续下降，并于20██年11月停止公开更新。
+                </p>
+                <p class="file-text">
+                    根据其编辑提供的通信记录，DR-024-A在断更期间至少12次承诺提交新作，但均未能完成。其社交账号最后一条公开动态为：
+                </p>
+                <p class="file-text" style="padding-left: 24px; color: var(--text-muted);">
+                    "最近在查资料。新故事已经有些眉目了，再等我一阵。"
+                </p>
+                <p class="file-text">
+                    20██年2月17日，DR-024-A前往滨海市公共图书馆查阅地方自然志及早期民俗资料。
+                </p>
+                <p class="file-text">
+                    根据馆内监控，16时42分，DR-024-A从书架取出《滨海异闻考略·残卷》。该书在系统中无近5年出借记录。
+                </p>
+                <p class="file-text">
+                    监控显示，DR-024-A翻阅该书时发现DR-024-1。DR-024-A在观察卡片约三十秒后将其夹入随身笔记本。馆方未发现其行为异常。
+                </p>
+                <p class="file-text">
+                    当天夜间，DR-024-A将DR-024-1带回住所。
+                </p>
+                <p class="file-text">
+                    次日上午，他在网络上发表了停止更新后第一篇短篇小说《渡口》。
+                </p>
+                <p class="file-text">
+                    该作品以一名中年女性为第一视角，内容涉及其在暴雨期间等待失踪儿子返回渡口的经历。作品发布后反响有限，但DR-024-A在私人记录中写道：
+                </p>
+                <p class="file-text" style="padding-left: 24px; color: var(--text-muted);">
+                    "三千七百字，一次都没有停。
+                </p>
+                <p class="file-text" style="padding-left: 24px; color: var(--text-muted);">
+                    "我知道她站在那里时在想什么，因为昨晚站在那里的人就是我。
+                </p>
+                <p class="file-text" style="padding-left: 24px; color: var(--text-muted);">
+                    "到中午，她的脸已经开始模糊。
+                </p>
+                <p class="file-text" style="padding-left: 24px; color: var(--text-muted);">
+                    "这样很好。留下情绪，忘掉多余的部分，故事就能自己长出来。"
+                </p>
+                <p class="file-text">
+                    此后17日内，DR-024-A共发表9篇作品。
+                </p>
+                <p class="file-text">
+                    第10篇作品《玻璃后的天空》以一只误入车站候车厅的小型鸟类为主视角。描述其反复撞击一片"能够看见，却无法通过的天空"。
+                </p>
+                <p class="file-text">
+                    该作品在发布后二十四小时内获得超过30万次阅读。
+                </p>
+                <p class="file-text">
+                    多名动物行为学相关从业者在评论区指出，文中对于鸟类的动作、视野及受伤后逃避行为的描述与鸟类实际反应高度一致。然而DR-024-A从未接受鸟类学专业训练。
+                </p>
+                <p class="file-text">
+                    DR-024-A随后将该系列作品命名为《我曾活过很多次》，文章主视角包括香樟树、地下昆虫，以及未发育完成的鸟类胚胎等。
+                </p>
+                <p class="file-text">
+                    解梦会于该系列第14篇发布后正式建立DR-024事件档案，并通过DR-024-1的编辑观测其行为。
+                </p>
+            </div>
+
+            <!-- 2、附录A：第一次访谈记录 -->
+            <div class="section-block">
+                <div class="section-title">2、附录A：第一次访谈记录</div>
+                <p class="file-text" style="color: var(--text-muted);">日期：20██年3月22日</p>
+                <p class="file-text" style="color: var(--text-muted);">访谈对象：DR-024-A</p>
+                <p class="file-text" style="color: var(--text-muted);">访谈人员：岑██</p>
+                <p class="file-text" style="color: var(--text-muted);">地点：DR-024-A住所</p>
+
+                <div class="dialogue-block">
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">这些作品都来自你的梦？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">大部分。醒来以后会调整结构，有时会把结尾换掉。梦没有结尾，活着的东西也不会在合适的位置停下来。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">你知道梦境与这张借阅证有关？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">第三次以后就知道了。我把它锁在书房，当晚什么都没梦见。第二天放回枕头下面，我就又去了别人的生活里。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">为什么继续使用？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">你看过我断更前写的东西吗？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">看过一部分。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">我每天坐在桌子前，知道应该写什么，却不知道如何去写。人物在走路、吃饭、说话，可他们没有活着。两年多，我连一个真正喘气的人都写不出来。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">现在可以了？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">现在每天都有东西活过。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">你认为这些梦属于真实存在的生命吗？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">刚醒的时候，我会觉得它们就是我的。到下午，那些记忆开始退散。再过几天，我只记得自己曾经拥有过它们的记忆。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">这会让你害怕吗？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">每个人都会忘记梦。我只是赶在它们消失以前写下来。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">你最近睡了多久？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">昨天加起来大概十五个小时。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">你在主动增加睡眠时长。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">我欠了读者很多年。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">你不欠他们这些。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">你没有断更过。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">我也没有一觉醒来，忘记自己有几条腿。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">那只是刚醒的时候会弄错。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">你刚才进门时，用肩膀撞了三次门框。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">昨晚的身体比较宽。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">是什么？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">我还在想该怎么写。</span></div>
+                </div>
+                <p class="file-text" style="color: var(--text-muted);">访谈结束。</p>
+                <p class="file-text">
+                    访谈后，DR-024-A拒绝交出DR-024-1，并表示将在完成当前短篇后接受进一步检查。
+                </p>
+                <p class="file-text">
+                    当晚，其编辑收到一份标题为《狭窄房间里的角》的初稿。根据内容推断，梦境对象可能为大型有角哺乳动物。
+                </p>
+            </div>
+
+            <!-- 3、附录B：DR-024-A状态监测记录 -->
+            <div class="section-block">
+                <div class="section-title">3、附录B：DR-024-A状态监测记录</div>
+                <p class="file-text" style="color: var(--text-muted);">20██年3月25日</p>
+                <p class="file-text" style="padding-left: 24px;">DR-024-A在住所内跌倒两次，解释称走廊宽度不足以允许其身体转向。</p>
+                <p class="file-text" style="padding-left: 24px;">未发现运动系统损伤。</p>
+
+                <p class="file-text" style="color: var(--text-muted); margin-top: 16px;">20██年3月28日</p>
+                <p class="file-text" style="padding-left: 24px;">DR-024-A无法通过照片辨认其编辑，但可以通过编辑所用洗衣液的气味确认身份。</p>
+                <p class="file-text" style="padding-left: 24px;">其在记录中写道："脸是人类才使用的识别方式。气味可靠得多。"</p>
+
+                <p class="file-text" style="color: var(--text-muted); margin-top: 16px;">20██年4月2日</p>
+                <p class="file-text" style="padding-left: 24px;">DR-024-A在窗边保持站立姿势12小时，期间仅随太阳方向缓慢调整身体。</p>
+                <p class="file-text" style="padding-left: 24px;">工作人员试图将其移开时，DR-024-A表现出强烈抵抗，并声称自己正在进食。</p>
+
+                <p class="file-text" style="color: var(--text-muted); margin-top: 16px;">20██年4月5日</p>
+                <p class="file-text" style="padding-left: 24px;">DR-024-A在未接触气象信息的情况下，提前约四小时准确判断雷雨到达时间。</p>
+                <p class="file-text" style="padding-left: 24px;">询问判断依据时，其回答："很多叶子已经知道了。"</p>
+
+                <p class="file-text" style="color: var(--text-muted); margin-top: 16px;">20██年4月9日</p>
+                <p class="file-text" style="padding-left: 24px;">DR-024-A开始无法稳定使用第一人称。其与编辑的聊天记录如下：</p>
+                <div class="dialogue-block" style="padding-left: 24px;">
+                    <div class="dialogue-line"><span class="dialogue-speaker">编辑：</span><span class="dialogue-text">你今天感觉怎么样？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">这里还活着。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">编辑：</span><span class="dialogue-text">这里是谁？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">说话的这一部分。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">编辑：</span><span class="dialogue-text">你是██吗？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">██是写在封面上的。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">编辑：</span><span class="dialogue-text">那你叫什么？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">我今天没有名字。</span></div>
+                </div>
+
+                <p class="file-text" style="color: var(--text-muted); margin-top: 16px;">20██年4月10日</p>
+                <p class="file-text" style="padding-left: 24px;">调查人员进入住所时，DR-024-A正趴伏在浴缸内。浴缸未注水。</p>
+                <p class="file-text" style="padding-left: 24px;">DR-024-A呼吸急促，反复张合口部，并用手指抓挠颈部两侧。</p>
+                <p class="file-text" style="padding-left: 24px;">DR-024-1位于浴室地面。卡片内容如下：</p>
+                <p class="file-text" style="padding-left: 48px; color: var(--text-muted);">借阅人：██</p>
+                <p class="file-text" style="padding-left: 48px; color: var(--text-muted);">馆藏名称：████</p>
+                <p class="file-text" style="padding-left: 48px; color: var(--text-muted);">馆藏类别：淡水鱼</p>
+                <p class="file-text" style="padding-left: 48px; color: var(--text-muted);">借阅日期：2026年4月10日02时17分</p>
+                <p class="file-text" style="padding-left: 48px; color: var(--text-muted);">应还日期：醒来以前</p>
+                <p class="file-text" style="padding-left: 48px; color: var(--text-muted);">借阅状态：逾期</p>
+                <p class="file-text" style="padding-left: 24px;">这是"借阅状态"栏目首次出现。</p>
+                <p class="file-text" style="padding-left: 24px;">DR-024-A随即被转移至本会医疗观察区。</p>
+            </div>
+
+            <!-- 4、附录C：第二次访谈记录 -->
+            <div class="section-block">
+                <div class="section-title">4、附录C：第二次访谈记录</div>
+                <p class="file-text" style="color: var(--text-muted);">日期：20██年4月18日</p>
+                <p class="file-text" style="color: var(--text-muted);">访谈对象：DR-024-A</p>
+                <p class="file-text" style="color: var(--text-muted);">访谈人员：岑██</p>
+                <p class="file-text" style="color: var(--text-muted);">备注：DR-024-1已与访谈对象分离8日。</p>
+
+                <div class="dialogue-block">
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">这几天还有做梦吗？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">有普通的梦。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">还会变成其他生命吗？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">不知道。醒来以后都很远。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">你还记得《玻璃后的天空》吗？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">是我写的。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">你曾经是那只鸟吗？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">写的时候是。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">还记得飞行的感觉吗？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">我记得自己记得过。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">现在呢？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">现在只是读过。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">你后悔用那张借阅证吗？</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">我写出了好东西。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">岑██：</span><span class="dialogue-text">代价很大。</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">DR-024-A：</span><span class="dialogue-text">写不出来的时候，我每天醒着，也没有觉得自己真正活着。</span></div>
+                </div>
+                <p class="file-text" style="color: var(--text-muted);">访谈中止。</p>
+            </div>
+
+            <!-- 5、附录D：未发表作品 -->
+            <div class="section-block">
+                <div class="section-title">5、附录D：未发表作品</div>
+                <p class="file-text">
+                    调查人员在DR-024-A的电脑中发现一篇未发表文档。文件创建于其被转移前一日，最后修改时间为20██年4月10日05时42分。文档标题为《借阅者》。
+                </p>
+                <p class="file-text">
+                    全文共5147字，叙述者为一名失去创作能力的小说作者。该人物从图书馆获得一张旧借阅证，此后不断梦见其他生命，并将梦境写成文章。
+                </p>
+                <p class="file-text">
+                    作品后半部分与DR-024事件实际经过高度一致，其中包括部分在文档创建时尚未发生的内容，包括DR-024-A被转移至医疗观察区，以及第二次访谈。
+                </p>
+                <p class="file-text">
+                    作品结尾如下：
+                </p>
+                <p class="file-text" style="padding-left: 24px; color: var(--text-muted);">
+                    "后来，他再也没有做过那些梦。
+                </p>
+                <p class="file-text" style="padding-left: 24px; color: var(--text-muted);">
+                    "医生说这是好事。他们把那张卡装进透明袋子，放到一个不会有人睡觉的地方。
+                </p>
+                <p class="file-text" style="padding-left: 24px; color: var(--text-muted);">
+                    "他仍然记得自己曾经飞过、游过、开花过。
+                </p>
+                <p class="file-text" style="padding-left: 24px; color: var(--text-muted);">
+                    "但是，那些经历已经逐渐离自己远去，再读文章时，也只像是在听别人的故事。
+                </p>
+                <p class="file-text" style="padding-left: 24px; color: var(--text-muted);">
+                    "有时他会想，自己原本的人生是否也会变成这样。
+                </p>
+                <p class="file-text" style="padding-left: 24px; color: var(--text-muted);">
+                    "某一天醒来，他可能还记得自己的名字，记得自己写过书，记得某个人曾经爱过他。
+                </p>
+                <p class="file-text" style="padding-left: 24px; color: var(--text-muted);">
+                    "可这一切都会隔着一层薄薄的雾，像昨夜做过的梦。
+                </p>
+                <p class="file-text" style="padding-left: 24px; color: var(--text-muted);">
+                    "那个人，已不再是他自己。"
+                </p>
+            </div>
+
+            <!-- 6、附录E：归档记录 -->
+            <div class="section-block">
+                <div class="section-title">6、附录E：归档记录</div>
+                <p class="file-text">
+                    DR-024-1与DR-024-A分离后，异常梦境立即停止。
+                </p>
+                <p class="file-text">
+                    DR-024-A的睡眠时长、呼吸频率及基础感官反应在三周内恢复稳定。其语言能力未完全恢复，长期记忆出现大面积断裂，并伴有严重身份认知障碍。
+                </p>
+                <p class="file-text">
+                    医务组认为，DR-024-A的大脑在短期内接收了过量且互不兼容的感知经验。不同生命的空间认知、身体结构、时间尺度及主体概念长期重叠，导致其原有人类认知框架发生持续性损伤。
+                </p>
+                <p class="file-text">
+                    20██年6月3日，DR-024-A被认定为不具备独立生活能力，并被安置于第七病区。
+                </p>
+                <p class="file-text">
+                    20██年6月17日，DR-024事件状态调整为"已解决"。
+                </p>
+                <p class="file-text">
+                    20██年1月1日，保管人员对DR-024-1进行例行检查时，发现卡片背面出现一行此前不存在的淡色字迹：
+                </p>
+                <p class="file-text" style="padding-left: 48px; color: var(--text-muted);">馆藏类型：人类</p>
+                <p class="file-text" style="padding-left: 48px; color: var(--text-muted);">馆藏名称：长期断更的作者</p>
+                <p class="file-text" style="padding-left: 48px; color: var(--text-muted);">借阅日期：暂无</p>
+                <p class="file-text" style="padding-left: 48px; color: var(--text-muted);">应还日期：暂无</p>
+                <p class="file-text" style="padding-left: 48px; color: var(--text-muted);">借阅状态：可外借</p>
+                <p class="file-text">
+                    15分钟后，字迹自行消失。
+                </p>
+                <p class="file-text">
+                    本次变化未伴随新的梦境事件。
+                </p>
+                <p class="file-text">
+                    档案状态维持不变。
+                </p>
+            </div>
+
+            <!-- 7、附录F：档案复核记录 -->
+            <div class="section-block">
+                <div class="section-title">7、附录F：档案复核记录</div>
+                <p class="file-text" style="color: var(--text-muted);">复核日期：20██年██月██日</p>
+                <p class="file-text" style="color: var(--text-muted);">复核人员：███</p>
+                <p class="file-text" style="color: var(--text-muted);">备注：以下内容不属于岑██提交的原始档案。</p>
+                <p class="file-text">
+                    20██年██月██日，档案科在例行档案复核中发现，DR-024缺少对应的事件立项及调查审批记录。
+                </p>
+                <p class="file-text">
+                    经进一步核查，第三档案库内未收存编号为DR-024-1的物品，本会物品登记系统中亦不存在符合"无名借阅证"描述的异常物品。第七病区未收治编号为DR-024-A的人员，本会系统内也不存在针对该人员开展的访谈、监测及医疗转移记录。
+                </p>
+                <p class="file-text">
+                    滨海市公共图书馆确认，该馆馆藏中不存在《滨海异闻考略·残卷》。经检索公开出版信息及地方文献目录，暂未发现该书曾经出版或流传的记录。
+                </p>
+                <p class="file-text">
+                    DR-024编号在本文件出现以前始终处于未使用状态。
+                </p>
+                <p class="file-text">
+                    技术人员随后调取了该档案的创建记录。
+                </p>
+                <p class="file-text">
+                    文件全文由岑██于20██年██月██日06时13分至11时47分之间独立录入。在此期间，无其他人员对文件进行编辑。
+                </p>
+                <p class="file-text">
+                    岑██现为本会高级成员，编号DM-███。因其在收编后曾协助工作人员整理低权限梦境档案，因此熟悉本会内部档案的基本格式。
+                </p>
+                <p class="file-text">
+                    根据当日值班记录，岑██于凌晨00时16分入睡，于05时51分自行苏醒。苏醒后，岑██提出使用档案室终端，并以正式档案的形式完成了上述内容的录入。
+                </p>
+                <p class="file-text">
+                    随后，调查人员对岑██进行了访谈。岑██声称，DR-024-A、DR-024-1及与其相关的全部事件均来自该次睡眠中的一个梦。
+                </p>
+                <p class="file-text">
+                    经医务组确认，岑██的表现与本档案中有关DR-024-A梦境和记忆的描述基本一致。
+                </p>
+                <p class="file-text">
+                    目前尚无法确定这一相似性产生的原因。已加大岑██会员的每日服药量。
+                </p>
+                <p class="file-text">
+                    观察员将持续关注岑██的身体与精神状态。
+                </p>
+            </div>
+
+            <div class="archive-footer">
+                <span>留档编号：OFO-2024-03-25-借阅证</span>
+                <span>加密等级：内部 · 已解决</span>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

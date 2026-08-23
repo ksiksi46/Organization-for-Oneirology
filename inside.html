@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <title>解梦会 OFO | 潜意识干预与信息管理中枢</title>
+    <style>
+          @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        /* 基础变量与重置 */
+        :root { 
+            --primary: #0F171E; 
+            --secondary: #316B83; 
+            --accent: #8B1E1E; 
+            --bg-light: #F8FAFC; 
+            --bg-white: #FFFFFF; 
+            --text-dark: #1E293B; 
+            --text-muted: #64748B; 
+            --border: #E2E8F0; 
+            --section-height: 100vh; /* 让每个板块默认占满一屏（也可以根据内容自适应） */
+              --font-heading: 'EB Garamond', 'Times New Roman', serif; /* 标题/正文用高级衬线体 */
+        --font-mono: 'JetBrains Mono', 'Courier New', monospace;  /* 代码/元数据用等宽体 */
+        --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif; /* 界面辅助用现代无衬线 */
+    
+        }
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+           font-family: var(--font-ui);  
+            background-color: var(--bg-light); 
+            color: var(--text-dark); 
+            overflow-x: hidden; 
+            scroll-behavior: smooth; /* 核心：让页面滑动有丝滑的质感 */
+        }
+        
+        /* 导航栏 */
+        header { 
+         
+            backdrop-filter: blur(8px); /* 增强毛玻璃质感 */
+          
+            width: 100%;
+            padding: 0 60px; 
+            height: 128px;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            position: fixed; 
+            top: 0; 
+            z-index: 1000; 
+           
+            box-sizing: border-box; 
+        }
+
+        .brand-fixed {
+            position: absolute; 
+            left: 40px;
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            top: 50%;
+            transform: translateY(-50%); 
+            z-index: 1001; 
+            text-decoration: none;
+            color: inherit;
+        }
+        .brand-fixed svg { width: 48px; height: 48px; }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: -2px;}
+
+        /* 导航链接 */
+        .nav-links { 
+            display: flex; 
+            gap: 45px; 
+            font-size: 20px; 
+            font-weight: 500; 
+            box-sizing: border-box; 
+            margin-left: 80px; 
+        }
+        .nav-links a { 
+            color: var(--text-muted); 
+            text-decoration: none; 
+            transition: 0.3s; 
+            position: relative;
+            padding: 5px 0;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: 0.3s;
+        }
+        .nav-links a:hover { color: var(--text-dark); }
+        .nav-links a:hover::after { width: 100%; } /* 悬停小线条动画 */
+
+        .btn-med-check,
+        .btn-term { 
+            border: 1px solid var(--primary); 
+            padding: 6px 18px; 
+            background: transparent; 
+            color: var(--primary); 
+            font-family: monospace; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            font-size: 20px;
+            line-height: 1.4;
+            white-space: nowrap;
+           
+        }
+        .btn-med-check {
+            background: rgba(49, 107, 131, 0.08);
+            border-color: rgba(49, 107, 131, 0.3);
+        }
+        .btn-term {
+         position: absolute; /* 绝对定位，脱离上方菜单列表 */
+    right: 40px;        /* 距离屏幕右边缘 40px 固定 */
+    top: 50%;
+    transform: translateY(-50%); /* 让按钮垂直居中 */
+    z-index: 1002;      
+        }
+        .btn-med-check:hover,
+        .btn-term:hover { background: var(--primary); color: #fff; }
+
+        .calendar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 30, 0.28);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(2px);
+        }
+
+        .calendar-overlay.active {
+            display: flex;
+        }
+
+        .calendar-modal {
+            width: min(460px, 92vw);
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 28px 65px rgba(15, 23, 30, 0.18);
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            background: linear-gradient(135deg, rgba(15, 23, 30, 0.98), rgba(49, 107, 131, 0.9));
+            color: #fff;
+        }
+
+        .calendar-header h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .calendar-close {
+            border: 1px solid rgba(255,255,255,0.4);
+            background: transparent;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .calendar-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px 12px;
+            background: #fff;
+        }
+
+        .calendar-nav {
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--primary);
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .calendar-month {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: 0.5px;
+        }
+
+        .calendar-weekdays,
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 8px;
+            padding: 0 22px 12px;
+        }
+
+        .calendar-weekdays {
+            padding-top: 8px;
+            padding-bottom: 10px;
+        }
+
+        .calendar-weekdays span {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            border: 1px solid transparent;
+            background: #f8fafc;
+            color: var(--text-dark);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            position: relative;
+            cursor: default;
+        }
+
+        .calendar-day.muted {
+            color: #a0aec0;
+            background: transparent;
+        }
+
+        .calendar-day.today {
+            box-shadow: inset 0 0 0 1.5px var(--secondary);
+        }
+
+          .calendar-day.recorded {
+            background: rgba(28, 176, 108, 0.15); /* 绿色的浅背景 */
+            border-color: rgba(28, 176, 108, 0.4);
+        }
+
+        .calendar-day.recorded::after {
+            content: '✓'; /* 显示对勾 */
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #1cb06c; /* 纯绿色 */
+            background: transparent;
+        }
+
+        .calendar-summary {
+            padding: 10px 22px 22px;
+            border-top: 1px solid var(--border);
+            background: #fff;
+        }
+
+        .calendar-summary p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .calendar-summary strong {
+            color: var(--primary);
+        }
+
+        /* ========================================================
+           7个板块的高级框架设计
+           ======================================================== */
+        .section-wrapper {
+            padding-top: 70px; /* 给固定的头部留出空间 */
+        }
+
+       .sec-block {
+            /* 去掉 min-height: 100vh; 改为自动适应内容高度 */
+            min-height: auto; 
+            
+            /* 把固定死的内边距改成“百分比”，并且减小数值 */
+            padding: 60px 4%; 
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            border-bottom: 1px solid var(--border);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        /* 交错背景色 (保持不变) */
+        .sec-block:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        .sec-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* 顶部标题区设计 */
+        .sec-header {
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            position: relative;
+        }
+
+        .sec-header h2 {
+            font-size: 42px;
+            font-weight: 300;
+            color: var(--primary);
+            margin: 0;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .sec-header h2 span {
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .sec-tag {
+            display: inline-block;
+            font-size: 40px;
+            font-weight: 700;
+           
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
+         -webkit-text-stroke: 0.5px currentColor;
+            padding: 0px 12px;
+          
+        }
+         .sec-action-bar {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-family: var(--font-mono);
+            font-size: 26px;
+            color: var(--text-muted);
+            z-index: 10;
+        }
+
+        .sec-id {
+            font-size: 11px;
+            border: 1px solid var(--border);
+            padding: 4px 8px;
+            background: rgba(255,255,255,0.5);
+        }
+         .sec-more-link {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: 0.3s;
+            font-weight: bold;
+            border-bottom: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .sec-more-link:hover {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* 内容占位网格 */
+        .placeholder-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .placeholder-card {
+            background: rgba(255,255,255,0.5);
+            border: 1px dashed var(--border);
+            border-radius: 4px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-family: monospace;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .placeholder-card:hover {
+            border-style: solid;
+            border-color: var(--secondary);
+            color: var(--text-dark);
+            background: rgba(255,255,255,1);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+        }
+
+        /* 大面积的留白空白区 */
+        .void-area {
+            margin-top: 60px;
+            width: 100%;
+            height: 180px;
+            background: repeating-linear-gradient(45deg, var(--bg-light), var(--bg-light) 10px, transparent 10px, transparent 20px);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94A3B8;
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+
+        /* 页脚 */
+        footer { 
+            background: var(--primary); 
+            color: #94A3B8; 
+            padding: 60px 40px; 
+            font-size: 12px; 
+        }
+         .footer-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); /* 改为3列，因为删掉了一列 */
+            gap: 30px; 
+            border-bottom: 1px solid #334155; 
+            padding-bottom: 40px; 
+            margin-bottom: 20px;
+            justify-items: center; /* 关键：让每一列里面的内容居中 */
+
+            max-width: 1200px;     /* 加上最大宽度限制，避免过于分散 */
+            margin-left: auto;     /* 配合最大宽度，让整个网格在页面中居中 */
+            margin-right: auto;
+        }
+        .f-col h4 { color: #fff; font-size: 12px; text-transform: uppercase; margin: 0 0 15px 0; letter-spacing: 1px;}
+        .f-col ul { list-style: none; padding: 0; margin: 0; }
+        .f-col ul li { margin-bottom: 8px; }
+        .f-col ul li a { color: #94A3B8; text-decoration: none; transition: 0.2s;}
+        .f-col ul li a:hover { color: #fff; }
+            .member-card {
+            position: relative;
+            overflow: hidden; /* 隐藏图片放大时溢出的部分 */
+            background: var(--primary);
+            height: 480px; /* 设置卡片高度 */
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .member-img {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center top;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.6s ease;
+            will-change: transform;
+        }
+
+        /* 底部渐变遮罩，保证白色文字在图片上能看清 */
+        .member-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 30px 35px 30px;
+            box-sizing: border-box;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);
+            pointer-events: none; /* 防止遮罩挡住鼠标操作 */
+        }
+
+        .member-name {
+            font-family: var(--font-heading);
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+            letter-spacing: 0.5px;
+            transition: transform 0.4s ease;
+        }
+
+        .member-desc {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease, margin-top 0.5s ease;
+            margin-top: 0;
+        }
+
+        .member-desc p {
+            font-family: var(--font-ui);
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.9);
+            margin: 15px 0 10px 0;
+        }
+
+        .member-link {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: bold;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            transition: 0.3s;
+            pointer-events: auto; /* 恢复链接点击功能 */
+        }
+        .member-link:hover {
+            background: var(--secondary);
+        }
+
+        /* ========================================================
+           悬浮交互效果 (核心需求)
+           ======================================================== */
+        .member-card:hover .member-img {
+            transform: scale(1.08); /* 1. 图片拉近放大 */
+            filter: brightness(0.6); /* 2. 整体变暗 */
+        }
+
+        .member-card:hover .member-name {
+            transform: translateY(-5px); /* 名字稍微上浮一点点，增加动感 */
+        }
+
+        .member-card:hover .member-desc {
+            max-height: 200px; /* 3. 简介展开 */
+            opacity: 1;
+            margin-top: 10px;
+        }
+         .scroll-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .scroll-container {
+            display: flex;
+            gap: 30px;
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* 每个卡片占宽度的 1/3 (留点余量) */
+        .member-card-item {
+            min-width: calc(33.333% - 20px);
+            height: 480px;
+            flex-shrink: 0;
+        }
+
+        /* 左右按钮（漂浮在左右两侧） */
+        .scroll-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            z-index: 10;
+            transition: 0.2s;
+        }
+        .scroll-btn:hover { background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+        .scroll-btn.prev { left: 10px; }
+        .scroll-btn.next { right: 10px; }
+
+        /* 响应式：小屏变成一次看 2 个或 1 个 */
+        @media (max-width: 1000px) {
+            .member-card-item { min-width: calc(50% - 15px); }
+        }
+        @media (max-width: 700px) {
+            .member-card-item { min-width: 100%; }
+        }
+         .status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            border-top: 1px solid var(--border);
+            border-left: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        .status-item {
+            padding: 25px 30px;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-white);
+            transition: background 0.2s ease;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            color: var(--text-dark);
+        }
+
+        .status-item:hover {
+            background: #f1f5f9;
+        }
+
+        .status-item .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .status-item .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot.online { background: #1cb06c; } /* 绿色 */
+        .dot.anomaly { background: #b01c1c; } /* 红色 */
+
+        .status-badge.online { color: #1cb06c; }
+        .status-badge.anomaly { color: #b01c1c; }
+
+        .status-item.anomaly-box {
+            border-left: 3px solid #b01c1c;
+            background: #fffbfb;
+        }
+
+        /* 响应式：小屏变成两列或一列 */
+        @media (max-width: 1000px) {
+            .status-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 700px) {
+            .status-grid { grid-template-columns: 1fr; }
+            .status-item { padding: 20px; }
+        }
+          .permission-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 30, 0.5);
+            backdrop-filter: blur(3px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .permission-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .permission-modal {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            width: 350px;
+            padding: 40px 30px;
+            text-align: center;
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .permission-overlay.active .permission-modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .permission-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(139, 30, 30, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: var(--accent);
+            font-size: 24px;
+        }
+
+        .permission-modal h3 {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            color: var(--primary);
+            margin: 0 0 15px 0;
+            letter-spacing: 1px;
+        }
+
+        .permission-modal p {
+            font-family: var(--font-ui);
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .permission-actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .permission-login {
+            background: var(--primary);
+            color: #fff;
+            border: 1px solid var(--primary);
+            padding: 10px 25px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .permission-login:hover { background: var(--secondary); border-color: var(--secondary); }
+
+        .permission-cancel {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 10px 25px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .permission-cancel:hover { border-color: var(--text-dark); color: var(--text-dark); }
+ </style>
+</head>
+<body>
+
+    <!-- 导航栏 -->
+    <header>
+        <a href="inside.html" class="brand-fixed">
+           <img src="image/logo.png" alt="OFO Logo" style="height: 128px; width: auto;">
+            <div>
+                <span class="b-title">OfO
+                </span>
+                <span class="b-sub">Organization for Oneirology</span>
+            </div>
+        </a>
+
+        <div class="nav-links">
+            <a href="#sec-1">机构简介</a>
+            <a href="#sec-2">成员简介</a>
+            <a href="#sec-3">药剂申请</a>
+            <a href="#sec-5">怪奇事件</a>
+            <a href="#sec-6">QA答疑</a>
+            <a href="#sec-7">全球观测网络</a>
+            <button class="btn-med-check" type="button" aria-label="查看服药情况">服药情况</button>
+            <button class="btn-term" type="button" onclick="window.open('小恐龙.html')">干事终端登录</button>
+        </div>
+    </header>
+
+    <!-- 7大板块内容区 -->
+    <div class="section-wrapper">
+
+        <!-- 板块 1：机构简介 -->
+        <section id="sec-1" class="sec-block">
+            <div class="sec-container">
+                <div class="sec-header">
+                    <span class="sec-tag">机构简介</span>
+                    <h2 style="color: #316B83; font-size: 24px;">>Organization Profile</h2>
+                       <div class="sec-action-bar">
+            
+                        <a href="org.html" class="sec-more-link" target="_blank">更多 >></a>
+                    </div>
+                </div>
+               <div style="display: flex; align-items: center; justify-content: space-between; gap: 60px; padding-left: 0; margin-top: 20px;">
+                    
+                    <!-- 左侧图片 -->
+                    <div style="flex: 1; min-width: 300px;">
+                        <!-- 请把 src 换成你自己的真实图片路径 -->
+                        <img src="image/about.png" alt="解梦会插图" style="width: 80%; height: auto; ">
+                       
+                    </div>
+
+                    <!-- 右侧文本 -->
+                    <div style="flex: 1.2; font-family: var(--font-ui); color: var(--text-dark);">
+                        <h3 style="font-family: var(--font-heading); font-size: 40px; font-weight: 600; color: var(--primary); margin-top: 0; margin-bottom: 20px; letter-spacing: 1px;">欢迎来到解梦会</h3>
+                        
+                        <p style="font-size: 18px; line-height: 1.8; margin-bottom: 20px;">
+                            解梦会是由曾长期被异常梦境所困的人自发成立的互助组织。
+                        </p>
+                        
+                        <p style="font-size: 18px; line-height: 1.8; color: var(--text-muted);">
+                            组织成立的初衷是找到世界各地被异常梦境所困、或者没有意识到自己被异常梦境所困的人们，我们致力于提供一个值得信任的交流场所，与你一起寻找梦境的真相，夺回属于我们自己的生活。
+                        </p>
+                        
+                       
+                    </div>
+
+                </div>
+            </div>
+           
+        </section>
+
+       <section id="sec-2" class="sec-block" style="background: #F1F5F8; padding-bottom: 80px;">
+            <style>
+                /* ===== 这里补齐对应的横向滑动 CSS ===== */
+                .scroll-wrapper {
+                    position: relative;
+                    width: 100%;
+                    overflow: hidden; /* 隐藏超出屏幕的内容 */
+                    padding: 0 45px;  /* 给左右按钮留出空间 */
+                    box-sizing: border-box;
+                }
+
+                .scroll-container {
+                    display: flex;
+                    gap: 30px;
+                    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                    /* 注意：根据卡片数量，容器宽度会自动计算 */
+                }
+
+                .member-card-item {
+                    min-width: calc(33.333% - 20px); /* 屏幕够宽时，排成 3 列 */
+                    height: 480px;
+                    flex-shrink: 0;
+                }
+
+                .scroll-btn {
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: #ffffff;
+                    border: 1px solid #E2E8F0;
+                    border-radius: 50%;
+                    width: 66px;
+                    height: 66px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 20px;
+                    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+                    z-index: 10;
+                    transition: 0.2s;
+                    color: #1E293B;
+                }
+                .scroll-btn:hover { background: #1E293B; color: #fff; border-color: #1E293B; }
+                .scroll-btn.prev { left: 0; }
+                .scroll-btn.next { right: 0; }
+
+                /* 响应式 */
+                @media (max-width: 1000px) {
+                    .member-card-item { min-width: calc(50% - 15px); } /* 中等屏幕排 2 列 */
+                }
+                @media (max-width: 700px) {
+                    .member-card-item { min-width: 100%; } /* 手机排 1 列 */
+                    .scroll-wrapper { padding: 0 30px; }
+                }
+            </style>
+
+            <div class="sec-container">
+                <div class="sec-header">
+                    <span class="sec-tag">成员简介</span>
+                    <h2 style="color: #316B83; font-size: 24px;">>Key Personnel</h2>
+                </div>
+                
+                <!-- 横向滑动容器 -->
+                <div class="scroll-wrapper">
+                    
+                    <div class="scroll-container" id="memberScrollList">
+                        
+                        <!-- 卡片 1 -->
+                        <div class="member-card-item">
+                            <div class="member-card" style="width: 360px; height: 480px;">
+                                <div class="member-img" style="background-image: url('image/qingyao.jpg');"></div>
+                                <div class="member-content">
+                                    <h3 class="member-name">清瑶</h3>
+                                    <div class="member-desc">
+                                        <p>解梦会创始人之一，现任会长</p>
+                                        <a href="qingyao.html" class="member-link"><i class="fa-solid fa-arrow-right"></i> 查看更多</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 卡片 2 -->
+                        <div class="member-card-item">
+                            <div class="member-card" style="width: 360px; height: 480px;">
+                                <div class="member-img" style="background-image: url('image/jiuhe.jpg');"></div>
+                                <div class="member-content">
+                                    <h3 class="member-name">玖和</h3>
+                                    <div class="member-desc">
+                                        <p>解梦会创始人之一，现任副会长</p>
+                                        <a href="jiuhe.html" class="member-link"><i class="fa-solid fa-arrow-right"></i> 查看更多</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 卡片 3 -->
+                        <div class="member-card-item">
+                            <div class="member-card" style="width: 360px; height: 480px;">
+                                <div class="member-img" style="background-image: url('image/yinghe.jpg');"></div>
+                                <div class="member-content">
+                                    <h3 class="member-name">樱鹤</h3>
+                                    <div class="member-desc">
+                                        <p>解梦会创始人之一，怪奇事件部部长</p>
+                                        <a href="yinghe.html" class="member-link"><i class="fa-solid fa-arrow-right"></i> 查看更多</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 卡片 4 -->
+                        <div class="member-card-item">
+                            <div class="member-card" style="width: 360px; height: 480px;">
+                                <div class="member-img" style="background-image: url('image/lingbeibei.jpg');"></div>
+                                <div class="member-content">
+                                    <h3 class="member-name">凌北北</h3>
+                                    <div class="member-desc">
+                                        <p>解梦会创始人之一，外联部部长</p>
+                                        <a href="lingbeibei.html" class="member-link"><i class="fa-solid fa-arrow-right"></i> 查看更多</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 卡片 5 -->
+                        <div class="member-card-item">
+                            <div class="member-card" style="width: 360px; height: 480px;">
+                                <div class="member-img" style="background-image: url('image/lian.jpg');"></div>
+                                <div class="member-content">
+                                    <h3 class="member-name">黎安</h3>
+                                    <div class="member-desc">
+                                        <p>解梦会创始人之一，解梦会法务部部长</p>
+                                        <a href="lian.html" class="member-link"><i class="fa-solid fa-arrow-right"></i> 查看更多</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 卡片 6 -->
+                        <div class="member-card-item">
+                            <div class="member-card" style="width: 360px; height: 480px;">
+                                <div class="member-img" style="background-image: url('image/chenci.jpg');"></div>
+                                <div class="member-content">
+                                    <h3 class="member-name">陈赐</h3>
+                                    <div class="member-desc">
+                                        <p>解梦会创始人之一，解梦会后勤部部长兼厨师长</p>
+                                        <a href="chenci.html" class="member-link"><i class="fa-solid fa-arrow-right"></i> 查看更多</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- 左右切换按钮 -->
+                    <button class="scroll-btn prev" id="scrollLeft"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="scroll-btn next" id="scrollRight"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </section>
+   <!-- 板块 3：按时服药 -->
+        <section id="sec-3" class="sec-block" style="background: #1A1D21; padding: 0; border-bottom: none; display: flex; align-items: center; justify-content: center; min-height: 800px; width: 100%; box-sizing: border-box;">
+            
+     <div style="position: relative; width: 100%; max-width: 1200px; height: 600px; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+        
+        <!-- 2. 背景图片 (设置 fill 铺满容器) -->
+        <img src="image/medication.jpg" alt="背景" oncontextmenu="return false;" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; display: block; z-index: 1;">
+   
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; padding: 80px 60px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center;">
+                    
+                   
+
+                    
+
+                    <!-- 大标题 (只占左边一半，防止被图片切掉) -->
+                    <h2 style=" font-size: 62px; font-weight: 600; color: #ffffff; margin: 0 0 30px 0; line-height: 1.1; letter-spacing: -1px; max-width: 600px; text-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+                        按时服药
+                    </h2>
+
+                    <!-- 简介 (同样放在左边) -->
+                    <div style="max-width: 550px;">
+                        <p style="font-family: var(--font-ui); font-size: 17px; line-height: 1.8; color: rgba(255,255,255,0.9); margin-bottom: 25px; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+                            我们有专业的心理治疗师，与你感同身受的伙伴，每周召开的线上分享会。你可以把这里当作绝对安全的树屋，倾吐你的不快与怪梦。
+                        </p>
+                        <p style="font-family: var(--font-ui); font-size: 17px; line-height: 1.8; color: rgba(255,255,255,0.7); margin-bottom: 40px; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+                            我们正与相关的神经科学实验室进行内部合作，为饱受严重梦魇折磨的成员提供一种经过严格测试的特制安神配方。
+                        </p>
+
+                        <!-- 底部链接按钮 -->
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <a href="applepill.html" style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: #ffffff; color: #1A1D21; text-decoration: none; font-size: 20px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" target="_blank"><i class="fa-solid fa-arrow-right"></i></a>
+                            <span style="font-family: var(--font-mono); font-size: 13px; color: rgba(255,255,255,0.8);">了解更多</span>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+
+      
+
+        <!-- 板块 5：QA答疑 -->
+        <section id="sec-5" class="sec-block">
+            <div class="sec-container">
+                <div class="sec-header">
+                    <span class="sec-tag">怪奇事件</span>
+                    <h2 style="color: #316B83; font-size: 24px;">>Weird Events</h2>
+                      <div class="sec-action-bar">
+            
+                        <a href="odd.html"  class="sec-more-link" id="oddLink" target="_blank">更多 >></a>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 60px; padding-left: 0; margin-top: 20px;">
+                    
+                    <!-- 左侧图片 -->
+                    <div style="flex: 1; min-width: 300px;">
+                        <!-- 请把 src 换成你自己的真实图片路径 -->
+                        <img src="image/odd.png" alt="解梦会插图" style="width: 80%; height: auto; ">
+                       
+                    </div>
+
+                    <!-- 右侧文本 -->
+                    <div style="flex: 1.2; font-family: var(--font-ui); color: var(--text-dark);">
+                        <h3 style="font-family: var(--font-heading); font-size: 28px; font-weight: 600; color: var(--primary); margin-top: 0; margin-bottom: 20px; letter-spacing: 1px;">怪奇事件</h3>
+                        
+                        <p style="font-size: 18px; line-height: 1.8; margin-bottom: 20px;">
+                            解梦会是由曾长期被异常梦境所困的人自发成立的互助组织。
+                        </p>
+                        
+                        <p style="font-size: 18px; line-height: 1.8; color: var(--text-muted);">
+                            组织成立的初衷是找到世界各地被异常梦境所困、或者没有意识到自己被异常梦境所困的人们，我们致力于提供一个值得信任的交流场所，与你一起寻找梦境的真相，夺回属于我们自己的生活。
+                        </p>
+                        
+                       
+                    </div>
+
+                </div>
+            </div>
+           
+        </section>
+
+        <!-- 板块 6：全球观测网络 -->
+               <section id="sec-6" class="sec-block">
+            <div class="sec-container">
+                <div class="sec-header">
+                    <span class="sec-tag">QA答疑</span>
+                    <h2 style="color: #316B83; font-size: 24px;">>Frequently Asked Questions</h2>
+                    <div class="sec-action-bar">
+                        <a href="qa.html" class="sec-more-link" target="_blank">更多 >></a>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 60px; padding-left: 0; margin-top: 20px;">
+                    <!-- 左侧图片 -->
+                    <div style="flex: 1; min-width: 300px;">
+                        <img src="image/qa.png" alt="解梦会插图" style="width: 80%; height: auto;">
+                    </div>
+
+                    <!-- 右侧文本 -->
+                    <div style="flex: 1.2; font-family: var(--font-ui); color: var(--text-dark);">
+                        <h3 style="font-family: var(--font-heading); font-size: 28px; font-weight: 600; color: var(--primary); margin-top: 0; margin-bottom: 20px; letter-spacing: 1px;">常见问题与解答</h3>
+                        
+                        <p style="font-size: 18px; line-height: 1.8; margin-bottom: 20px;">
+                            关于解梦会的运作方式、入会标准、梦境数据的处理与隐私保护，我们整理了一份面向公众的答疑文档。
+                        </p>
+                        
+                        <p style="font-size: 18px; line-height: 1.8; color: var(--text-muted);">
+                            如果你对解梦会存有疑问，或想了解我们的宗旨与准则，可以前往独立页面查看完整的问答列表。
+                        </p>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 板块 7：怪奇事件 -->
+               <!-- 板块 7：全球观测网络 -->
+        <section id="sec-7" class="sec-block" style="border-bottom: none; padding-top: 80px;">
+            <div class="sec-container">
+                
+                <!-- 顶部标题区域 (参考图片风格) -->
+                <div style="text-align: center; margin-bottom: 20px; padding-bottom: 40px;">
+                    <div style="font-family: var(--font-mono); font-size: 14px; color: var(--secondary); letter-spacing: 3px; text-transform: uppercase; font-weight: 600; margin-bottom: 10px;">
+                        GLOBAL OBSERVATION
+                    </div>
+                    <h2 style="font-family: var(--font-heading); font-size: 46px; font-weight: 400; color: var(--text-dark); margin: 0 0 15px 0; letter-spacing: 2px;">
+                        全球临床观测网络
+                    </h2>
+                    <p style="font-family: var(--font-ui); font-size: 16px; color: var(--text-muted); max-width: 600px; margin: 0 auto; line-height: 1.6;">
+                        我们在全球设有 42 处深眠数据采集终端，确保物理坐标的稳定锚定。
+                    </p>
+                </div>
+
+                <!-- 监控数据网格 -->
+                <div class="status-grid">
+                    
+                    <div class="status-item">
+                        <span>GENEVA (HQ)</span>
+                        <span class="status-badge online"><span class="dot online"></span>ONLINE</span>
+                    </div>
+
+                    <div class="status-item">
+                        <span>TOKYO-01</span>
+                        <span class="status-badge online"><span class="dot online"></span>ONLINE</span>
+                    </div>
+
+                    <div class="status-item">
+                        <span>NEO-SHANGHAI</span>
+                        <span class="status-badge online"><span class="dot online"></span>ONLINE</span>
+                    </div>
+
+                    <div class="status-item">
+                        <span>LONDON-X</span>
+                        <span class="status-badge online"><span class="dot online"></span>ONLINE</span>
+                    </div>
+
+                    <div class="status-item">
+                        <span>NEW YORK</span>
+                        <span class="status-badge online"><span class="dot online"></span>ONLINE</span>
+                    </div>
+
+                    <div class="status-item">
+                        <span>BERLIN-MED</span>
+                        <span class="status-badge online"><span class="dot online"></span>ONLINE</span>
+                    </div>
+
+                    <!-- 异常项 -->
+                    <div class="status-item anomaly-box">
+                        <span>SECTOR-Y (ARCHIVE)</span>
+                        <span class="status-badge anomaly"><span class="dot anomaly"></span>ANOMALY</span>
+                    </div>
+
+                    <div class="status-item">
+                        <span>PARIS-02</span>
+                        <span class="status-badge online"><span class="dot online"></span>ONLINE</span>
+                    </div>
+
+                </div>
+
+                <!-- 底部隐藏线索留白 -->
+                <div style="margin-top: 50px; width: 100%; height: 1px; background: var(--border);"></div>
+            </div>
+        </section>
+
+    <!-- 页脚（保持不变） -->
+       <footer>
+        <div class="container" style="max-width: 1400px; margin: 0 auto;">
+            <div class="footer-grid">
+             
+                <!-- 列 2：神经调控与医疗耗材（合并了之前的硬件与药剂） -->
+                <div class="f-col">
+                    <h4>神经调控与医疗耗材</h4>
+                    <ul>
+                        <li><a href="https://www.medtronic.com" target="_blank">美敦力神经调控硬件申请</a></li>
+                        <li><a href="https://www.henryschein.com" target="_blank">医疗耗材来源指南</a></li>
+     
+                    </ul>
+                </div>
+
+                <!-- 列 3：伦理与治理 -->
+                <div class="f-col">
+                    <h4>伦理与治理</h4>
+                    <ul>
+                        <li><a href="https://primr.org" target="_blank">医学与研究公共责任组织</a></li>
+                        <li><a href="https://www.fda.gov/science-research/clinical-trials-and-human-subject-protection" target="_blank">临床研究与受试者保护监督</a></li>
+                    </ul>
+                </div>
+
+                <!-- 列 4：药物与疗法 -->
+                <div class="f-col">
+                    <h4>药物与疗法</h4>
+                    <ul>
+                        <li><a href="https://behavioralsleep.org" target="_blank">行为睡眠医学学会</a></li>
+                        <li><a href="https://emdr.com" target="_blank">眼动脱敏与再加工疗法</a></li>
+
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 底部极简信息条 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 20px; margin-top: 10px; font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);">
+                <div>© 2026 OFO. / Sys: Sandbox_Observer_Active</div>
+                <div>Y-Sector Override // TIME_ELAPSED: 22,000,000,000 YRS</div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="calendar-overlay" id="calendarOverlay" aria-hidden="true">
+        <div class="calendar-modal" role="dialog" aria-modal="true" aria-labelledby="calendarTitle">
+            <div class="calendar-header">
+                <h3 id="calendarTitle">服药记录</h3>
+                <button class="calendar-close" type="button" id="calendarClose" aria-label="关闭">×</button>
+            </div>
+            <div class="calendar-toolbar">
+                <button class="calendar-nav" type="button" id="calendarPrev" aria-label="上个月">‹</button>
+                <div class="calendar-month" id="calendarMonth">8月 2026</div>
+                <button class="calendar-nav" type="button" id="calendarNext" aria-label="下个月">›</button>
+            </div>
+            <div class="calendar-weekdays">
+                <span>日</span>
+                <span>一</span>
+                <span>二</span>
+                <span>三</span>
+                <span>四</span>
+                <span>五</span>
+                <span>六</span>
+            </div>
+            <div class="calendar-days" id="calendarDays"></div>
+            <div class="calendar-summary">
+     
+            </div>
+        </div>
+    </div>
+  <div class="permission-overlay" id="permissionOverlay">
+        <div class="permission-modal">
+            <h3>权限不足</h3>
+            <p>怪奇事件属于高级机密档案。</p>
+            <p style="color: var(--text-muted); font-size: 14px; margin-top: 10px;">请先登录账户，获取更高权限等级后查看。</p>
+            <div class="permission-actions">
+                <button class="permission-cancel" id="permissionCancelBtn">确定</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const medicalButton = document.querySelector('.btn-med-check');
+        const calendarOverlay = document.getElementById('calendarOverlay');
+        const calendarClose = document.getElementById('calendarClose');
+        const calendarPrev = document.getElementById('calendarPrev');
+        const calendarNext = document.getElementById('calendarNext');
+        const calendarMonth = document.getElementById('calendarMonth');
+        const calendarDays = document.getElementById('calendarDays');
+
+         const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+
+        // 完全从本地存储读取真实服药记录（没有记录就是空数组）
+        let storedRecords = [];
+        try {
+            storedRecords = JSON.parse(localStorage.getItem('ofo_medication_records')) || [];
+        } catch (e) {
+            storedRecords = [];
+        }
+        
+        // 只使用真实记录，没有默认假数据
+        const recordedDates = new Set(storedRecords);
+
+        let monthCursor = new Date(2026, 7, 1);
+
+        function formatDateKey(date) {
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+
+        function renderCalendar() {
+            const year = monthCursor.getFullYear();
+            const month = monthCursor.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startWeekday = firstDay.getDay();
+            const totalDays = lastDay.getDate();
+
+            calendarMonth.textContent = `${monthNames[month]} ${year}`;
+            calendarDays.innerHTML = '';
+
+            for (let i = 0; i < startWeekday; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'calendar-day muted';
+                calendarDays.appendChild(empty);
+            }
+
+            for (let day = 1; day <= totalDays; day++) {
+                const cell = document.createElement('div');
+                const currentDate = new Date(year, month, day);
+                const key = formatDateKey(currentDate);
+                cell.className = 'calendar-day';
+
+                if (recordedDates.has(key)) {
+                    cell.classList.add('recorded');
+                }
+
+                const today = new Date();
+                if (formatDateKey(today) === key) {
+                    cell.classList.add('today');
+                }
+
+                cell.textContent = day;
+                calendarDays.appendChild(cell);
+            }
+        }
+
+        function openCalendar() {
+            calendarOverlay.classList.add('active');
+            calendarOverlay.setAttribute('aria-hidden', 'false');
+            renderCalendar();
+        }
+
+        function closeCalendar() {
+            calendarOverlay.classList.remove('active');
+            calendarOverlay.setAttribute('aria-hidden', 'true');
+        }
+
+        medicalButton.addEventListener('click', openCalendar);
+        calendarClose.addEventListener('click', closeCalendar);
+        calendarOverlay.addEventListener('click', (event) => {
+            if (event.target === calendarOverlay) {
+                closeCalendar();
+            }
+        });
+
+        calendarPrev.addEventListener('click', () => {
+            monthCursor = new Date(monthCursor.getFullYear(), monthCursor.getMonth() - 1, 1);
+            renderCalendar();
+        });
+
+        calendarNext.addEventListener('click', () => {
+            monthCursor = new Date(monthCursor.getFullYear(), monthCursor.getMonth() + 1, 1);
+            renderCalendar();
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && calendarOverlay.classList.contains('active')) {
+                closeCalendar();
+            }
+        });
+           // 成员列表滑动逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('memberScrollList');
+            const prevBtn = document.getElementById('scrollLeft');
+            const nextBtn = document.getElementById('scrollRight');
+            
+            // 获取第一张卡片的宽度（包含间隙）
+            let slideWidth = 0;
+            
+            // 初始化计算
+            function updateSlideWidth() {
+                const firstCard = container.querySelector('.member-card-item');
+                if (firstCard) {
+                    // 获取卡片总宽度 (包括 gap)
+                    slideWidth = firstCard.offsetWidth + 30; 
+                }
+            }
+            updateSlideWidth();
+            // 如果窗口尺寸改变，重新计算滑动距离
+            window.addEventListener('resize', updateSlideWidth);
+
+            let currentPosition = 0;
+            const totalCards = container.children.length;
+
+            // 下一张
+            nextBtn.addEventListener('click', () => {
+                // 每次向左移动一张卡片的距离
+                currentPosition -= slideWidth;
+                
+                // 限制：不能滑出最后一张。可视范围内最少保留 1 张半。
+                // 这里做一个简单的限制，最多移到 -(总数-1) 张的宽度。
+                // 简单的降级处理：当滑到第 4 张时，硬性卡住（因为最多你看3张，6张滑3次就到头了）
+                if (currentPosition < -(slideWidth * 3)) {
+                    currentPosition = -(slideWidth * 3);
+                }
+                
+                container.style.transform = `translateX(${currentPosition}px)`;
+            });
+
+            // 上一张
+            prevBtn.addEventListener('click', () => {
+                currentPosition += slideWidth;
+                if (currentPosition > 0) {
+                    currentPosition = 0;
+                }
+                container.style.transform = `translateX(${currentPosition}px)`;
+            });
+        });
+          const oddLink = document.getElementById('oddLink');
+        const permissionOverlay = document.getElementById('permissionOverlay');
+        const permissionCancelBtn = document.getElementById('permissionCancelBtn');
+        const permissionLoginBtn = document.getElementById('permissionLoginBtn');
+
+        // 点击“更多”时触发拦截
+        oddLink.addEventListener('click', (e) => {
+            // 检查是否有本地登录记录（在outside.html登录时设置）
+            const isLoggedIn = localStorage.getItem('ofo_isLoggedIn') === 'true';
+
+            if (!isLoggedIn) {
+                e.preventDefault(); // 阻止默认跳转
+                permissionOverlay.classList.add('active'); // 弹出权限提示
+            }
+            // 如果已登录，代码会正常跳转到 odd.html
+        });
+
+        // 关闭权限弹窗
+        permissionCancelBtn.addEventListener('click', () => {
+            permissionOverlay.classList.remove('active');
+        });
+
+        // 点击弹窗外空白处也可关闭
+        permissionOverlay.addEventListener('click', (e) => {
+            if (e.target === permissionOverlay) {
+                permissionOverlay.classList.remove('active');
+            }
+        });
+
+        // 前往登录（回到 outside.html）
+        permissionLoginBtn.addEventListener('click', () => {
+            window.location.href = 'outside.html';
+        });
+    </script>
+
+</body>
+</html>

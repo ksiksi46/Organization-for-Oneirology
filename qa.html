@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+      <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA答疑 | 解梦会 OFO</title>
+    <!-- 引入你的网站原版字体 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        /* 基础变量与重置 */
+        :root {
+            --primary: #0F171E;
+            --secondary: #316B83;
+            --bg-light: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --text-dark: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --font-heading: 'EB Garamond', 'Times New Roman', serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-ui);
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* 顶部导航栏（与主页一致） */
+        .page-header {
+            padding: 60px 60px 20px 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--secondary);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            transition: 0.3s;
+            margin-bottom: 30px;
+        }
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .qa-title {
+            font-family: var(--font-heading);
+            font-size: 48px;
+            font-weight: 400;
+            margin: 0 0 10px 0;
+            letter-spacing: 1px;
+        }
+        .qa-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        /* 主体内容区 */
+        .content-wrapper {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* ================= 留言板区域 ================= */
+        .message-board {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            padding: 30px;
+            margin-bottom: 60px;
+        }
+
+        .board-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .board-header h3 {
+            font-family: var(--font-heading);
+            font-size: 22px;
+            margin: 0;
+        }
+        .board-header small {
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            font-size: 15px;
+            font-family: var(--font-ui);
+            outline: none;
+            transition: 0.3s;
+            min-width: 200px;
+        }
+        .input-group input:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 2px rgba(49, 107, 131, 0.1);
+        }
+
+        .btn-primary {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: 0.3s;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            border: 1px solid var(--primary);
+        }
+        .btn-primary:hover {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .message-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border-top: 1px dashed var(--border);
+        }
+        .msg-item {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .msg-item:last-child {
+            border-bottom: none;
+        }
+        .msg-content {
+            flex: 1;
+        }
+        .msg-content .msg-name {
+            font-weight: bold;
+            font-size: 15px;
+            color: var(--secondary);
+        }
+        .msg-content .msg-text {
+            margin: 5px 0 0 0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+        .msg-content .msg-time {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            margin-top: 5px;
+        }
+        
+        .btn-delete {
+            background: transparent;
+            border: none;
+            color: #8B1E1E;
+            cursor: pointer;
+            padding: 6px 12px;
+            font-size: 13px;
+            transition: 0.2s;
+            border: 1px solid transparent;
+            border-radius: 2px;
+            font-family: var(--font-ui);
+        }
+        .btn-delete:hover {
+            border-color: #8B1E1E;
+        }
+
+        /* ================= 固定问答列表 ================= */
+        .faq-list {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            padding: 30px;
+        }
+        .faq-list .section-tag {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .single-qa {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px dashed var(--border);
+        }
+        .single-qa:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .single-qa .q {
+            font-weight: bold;
+            font-size: 17px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .single-qa .q::before {
+            content: "Q: ";
+            color: var(--secondary);
+        }
+        .single-qa .a {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.7;
+            margin: 0 0 0 18px;
+        }
+        .single-qa .a::before {
+            content: "A: ";
+            color: var(--secondary);
+        }
+
+        /* 留言板空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+            .page-header { padding: 40px 20px 20px 20px; }
+            .input-group { flex-direction: column; }
+            .btn-primary { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 导航 -->
+    <header class="page-header">
+        <a href="inside.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> 返回主页</a>
+        <div class="qa-title">QA答疑</div>
+        <div class="qa-subtitle">向我们提问。你的困扰，也是解梦会的起点。</div>
+    </header>
+
+    <!-- 主体区 -->
+    <div class="content-wrapper">
+
+        <!-- 留言板 -->
+        <div class="message-board">
+            <div class="board-header">
+                <h3>游客留言板 <small>(可以匿名)</small></h3>
+                <small id="msgCountDisplay">0 条留言</small>
+            </div>
+
+            <!-- 输入区 -->
+            <div class="input-group">
+                <input type="text" id="msgName" placeholder="输入您的称呼 (如：王雷、某梦境调查员，可不填)" value="匿名访客">
+                <input type="text" id="msgContent" placeholder="写下您的疑问或想说的话...">
+                <button class="btn-primary" onclick="postMessage()">发布留言</button>
+            </div>
+
+            <!-- 留言列表 -->
+            <ul class="message-list" id="messageList">
+                <!-- 留言会通过 JS 动态注入，如果没有数据则显示空状态 -->
+            </ul>
+        </div>
+
+        <!-- 官方问答列表 -->
+        <div class="faq-list">
+            <span class="section-tag">// 历史精选问答</span>
+
+            <div class="single-qa">
+                <div class="q">什么样的梦才算是你们说的“异常梦境”？每个人偶尔都会做噩梦，这有什么区别吗？</div>
+                <div class="a">很好的问题。普通的噩梦往往在醒来后会迅速被遗忘，且不具有连贯性。但我们所关注的“异常梦境”，通常具有极强的现实入侵感，让人难以分清梦境与现实。比如：极其真实地与已故亲友交谈、醒来后发现丢失了某段现实记忆，甚至在梦中看到了违背常理的怪奇生物。如果您觉得某个梦境让您在白天也感到恍惚、疲惫，甚至身边开始出现无法用常理解释的事件，那么您就是我们需要帮助的朋友。</div>
+            </div>
+
+            <div class="single-qa">
+                <div class="q">王雷，你家的鱼买来可以放生吗？</div>
+                <div class="a">赣霖酿，林北是清瑶不是王雷啊。嘿嘿怎么样，我模仿得像吗？感谢这位提问者给我一个可以模仿王雷老师的机会，不小心说了句脏话实在抱歉，欢迎大家在QA板块上留下更多有趣的问题！说回正题，我们解梦会是由长期被异常梦境所困的人自发成立的互助组织。所有药物和治疗都是公益性质，免费为大家提供的，我们绝对不会售卖任何一种形式的产品，所以大家如果看到有人用解梦会的名号兜售产品，请及时联系我啦！</div>
+            </div>
+
+            <div class="single-qa">
+                <div class="q">你们的“解梦”是指周公解梦或者占星算命那种吗？</div>
+                <div class="a">当然不是。虽然我们的名字叫“解梦会”，但我们绝不涉及任何玄学、占星算命或是传统的解梦。这里的“解梦”，更多的是指从心理与神经科学层面上对因怪梦导致的怪奇事件进行解析。因此，我们是依靠专业的心理治疗师疏导、成员间感同身受的共情互助，以及与政府神经科学实验室合作的药物干预，来陪您一起剥丝抽茧，寻找这些异常梦境背后的真相。</div>
+            </div>
+
+            <div class="single-qa">
+                <div class="q">为什么玖和部长的介绍页面有时会弹出一些奇怪的视频啊？</div>
+                <div class="a">收到您的留言后，我们非常重视，并立刻组织技术人员对官网的前端代码与底层服务器日志进行了全面的溯源排查，感谢您对解梦会的支持与关注。在此，我可以非常明确且笃定地回复您：解梦会的官方网站绝对不会出现这种情况。我们的页面中从未有过任何弹出视频的交互设计，安全部门的核查也证实，我们的服务器近期并未遭到任何形式的黑客攻击或外部数据篡改。网站目前的运行状态一切正常。如果您确定自己的个人设备没有感染木马软件，却依然清晰地看到了那些“奇怪的视频”，请立刻停止浏览并关闭该页面。根据我们以往的怪奇事件归档经验，这极有可能是您近期受怪梦困扰后，精神压力过载而产生的一种视听幻觉。当异常梦境开始模糊梦境与现实的界线时，过度活跃的神经元往往会让大脑扭曲您在现实中观测到的信息。请您务必重视这一情况，这可能意味着您的怪梦症状正在加剧。如果该现象再次发生，或者您开始出现记忆断层与宿醉般的头痛，请立刻点击主页右下角的“紧急联络”按钮向我们上报。不要过度恐慌，解梦会的值班人员会为您安排最及时的干预与治疗。随时与我们保持联系。</div>
+            </div>
+
+            <div class="single-qa">
+                <div class="q">网站上提供的“红药丸”是安眠药吗？有副作用吗？我可以自己买来吃吗？</div>
+                <div class="a">它不是市面上普通的安眠药。是我们研发部与政府神经科学实验室内部合作研发的特制药物，主要作用是通过舒缓过度活跃的神经元，降低怪梦出现的频率。由于每个人的怪梦深度不同，该药物不对外公开售卖，也不能自行随意服用。只有在经过我们专业心理治疗师与医师的评估，确认您正饱受严重怪梦折磨后，我们才会为您提供，并全程跟踪您的睡眠状态。</div>
+            </div>
+
+            <div class="single-qa">
+                <div class="q">清瑶会长好漂亮！请问会长还是单身吗？</div>
+                <div class="a">谢谢你的夸奖！不过比起我的个人生活，我其实更挂念大家——挂念你们昨晚有没有睡个好觉，挂念那些新加入的成员有没有在解梦会得到帮助。这里会是我们所有被怪梦所困之人的避风港，我现在的全部精力，都放在了如何寻找真相、帮助大家夺回平静的生活上，至于感情问题，就留待梦醒时分吧。</div>
+            </div>
+
+            <div class="single-qa">
+                <div class="q">我看到有“高级成员”的说法，我加入后也能去调查那些怪奇事件吗？</div>
+                <div class="a">我们非常欢迎有能力的成员在怪梦频率减少后反哺组织。如果您能明确意识到梦与怪奇事件之间的联系，并在互助中表现出足够的智慧与担当，您自然而然就能成为高级会员受邀参与怪奇事件的调查。但请务必注意：调查归档工作具有一定的未知风险。我们对高级成员最重要的考核标准，不是您有多么强大，而是您是否具备“在面对自己无法处理的事件时，果断转身逃跑的勇气”。保护好自己，永远是排在第一位的。</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= 留言板逻辑脚本 ================= -->
+    <script>
+        // 1. 从 localStorage 加载已保存的留言，如果没有则设为空数组
+        let messages = JSON.parse(localStorage.getItem('ofoMessages')) || [];
+
+        // 2. 渲染留言到页面
+        function renderMessages() {
+            const list = document.getElementById('messageList');
+            const countDisplay = document.getElementById('msgCountDisplay');
+            
+            list.innerHTML = ''; // 清空列表
+
+            if (messages.length === 0) {
+                list.innerHTML = `<div class="empty-state">目前还没有留言，写下你的第一个问题吧。</div>`;
+                countDisplay.textContent = '0 条留言';
+                return;
+            }
+
+            countDisplay.textContent = messages.length + ' 条留言';
+
+            // 倒序排列，最新的在上面
+            messages.slice().reverse().forEach((msg, index) => {
+                const li = document.createElement('li');
+                li.className = 'msg-item';
+
+                // 计算真实索引（因为倒序了）
+                const realIndex = messages.length - 1 - index;
+
+                // 获取当前时间
+                const timeStr = new Date(msg.timestamp).toLocaleString('zh-CN', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit'
+                });
+
+                li.innerHTML = `
+                    <div class="msg-content">
+                        <div class="msg-name">${escapeHtml(msg.name)}</div>
+                        <div class="msg-text">${escapeHtml(msg.content)}</div>
+                        <div class="msg-time">${timeStr}</div>
+                    </div>
+                    <button class="btn-delete" onclick="deleteMessage(${realIndex})"><i class="fa-regular fa-trash-can"></i> 删除</button>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        // 简单的防XSS注入函数
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // 3. 发布新留言
+        function postMessage() {
+            const nameInput = document.getElementById('msgName');
+            const contentInput = document.getElementById('msgContent');
+
+            const name = nameInput.value.trim() || '匿名访客';
+            const content = contentInput.value.trim();
+
+            if (!content) {
+                alert('请写下您的问题或想说的话。');
+                return;
+            }
+
+            // 创建新留言对象
+            const newMsg = {
+                name: name,
+                content: content,
+                timestamp: Date.now()
+            };
+
+            messages.push(newMsg);
+            saveAndRender();
+
+            // 清空输入框
+            contentInput.value = '';
+        }
+
+        // 4. 删除留言 (用真实索引)
+        function deleteMessage(index) {
+            if (confirm('确定要删除这条留言吗？')) {
+                messages.splice(index, 1);
+                saveAndRender();
+            }
+        }
+
+        // 5. 保存到本地存储并重新渲染
+        function saveAndRender() {
+            localStorage.setItem('ofoMessages', JSON.stringify(messages));
+            renderMessages();
+        }
+
+        // 页面加载时渲染
+        document.addEventListener('DOMContentLoaded', renderMessages);
+    </script>
+
+</body>
+</html>

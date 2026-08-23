@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事件 · 沉沦游戏 · 解梦会 OFO</title>
+    <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <style>
+        :root {
+            --primary: #0F171E;
+            --secondary: #316B83;
+            --bg-light: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --text-dark: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --font-heading: 'EB Garamond', 'Times New Roman', serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-ui);
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator { color: var(--border); }
+
+        .content-wrapper {
+            padding: 0 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 60px;
+            margin-top: 40px;
+        }
+
+        .page-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 42px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0;
+        }
+        .header-action {
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .header-action:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .file-wrapper {
+            font-family: var(--font-ui);
+            color: var(--text-dark);
+        }
+
+        .file-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 50px;
+            background: var(--bg-light);
+            padding: 16px 24px;
+            border-left: 4px solid var(--secondary);
+            margin-bottom: 32px;
+            font-size: 15px;
+        }
+        .file-meta span {
+            display: inline-block;
+        }
+        .file-meta .label {
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.3px;
+        }
+        .file-meta .value {
+            color: var(--text-dark);
+            margin-left: 6px;
+        }
+
+        .section-block {
+            margin: 36px 0 30px 0;
+        }
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            letter-spacing: 0.3px;
+        }
+
+        .section-sub {
+            font-family: var(--font-heading);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 28px 0 12px 0;
+        }
+
+        .file-text {
+            font-size: 16px;
+            line-height: 1.75;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .blockquote-style {
+            padding-left: 24px;
+            color: var(--text-muted);
+            border-left: 2px solid var(--border);
+            margin: 12px 0 16px 0;
+        }
+
+        .archive-footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 0 20px 80px 20px; }
+            .main-card { padding: 30px 20px; }
+            .page-header-row { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .file-meta { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="page-header">
+    <a href="inside.html" class="logo-wrapper">
+        <img src="image/logo.png" alt="OFO Logo">
+        <div>
+            <span class="b-title">OFO</span>
+            <span class="b-sub">Organization for Oneirology</span>
+        </div>
+    </a>
+
+    <div class="breadcrumb">
+        <a href="inside.html">Home</a>
+        <span class="separator">/</span>
+        <a href="odd.html">怪奇事件</a>
+        <span class="separator">/</span>
+        <a href="odd1.html">已解决事件</a>
+        <span class="separator">/</span>
+        <span>沉沦游戏</span>
+    </div>
+</header>
+
+<div class="content-wrapper">
+    <div class="main-card">
+
+        <div class="page-header-row">
+            <h1 class="page-title">事件 · 沉沦游戏</h1>
+            <a href="odd1.html" class="header-action">← 返回已解决</a>
+        </div>
+
+        <div class="file-wrapper">
+
+            <div class="file-meta">
+                <span><span class="label">事件代号：</span><span class="value">沉沦游戏</span></span>
+                <span><span class="label">记录人员：</span><span class="value">"记者"，"枪手"</span></span>
+                <span><span class="label">初始记录：</span><span class="value">2026.05.28</span></span>
+                <span><span class="label">最后修订：</span><span class="value">2026.07.21</span></span>
+                <span><span class="label">状态：</span><span class="value">已解决</span></span>
+            </div>
+
+            <!-- 1、事件记录 -->
+            <div class="section-block">
+                <div class="section-title">1、事件记录</div>
+                <p class="file-text">
+                    受访者于实际时间20████年████月████日████时29分在论坛自述其经历，由"管理员"获知后投递名片，并在解梦会接手后于次日进行相关梦境处理。
+                </p>
+                <p class="file-text">
+                    受试梦境如下：
+                </p>
+                <p class="file-text">
+                    受访者于实际时间20████年████月████日20时████分收到来自朋友发送的未知游戏软件，并在打开后电脑闪退，重复多次后仍未能进入，遂放弃。
+                </p>
+                <p class="file-text">
+                    受访者于实际时间20████年████月████日23时██3分入睡。并在入睡后进入梦境。
+                </p>
+                <p class="file-text">
+                    其梦境表现为游戏场景，初期表现为深巷，伴有部分恐怖要素。受访者在场景中探索并未发现致死要素。
+                </p>
+                <p class="file-text">
+                    中期在受访者误触部分要素后触发恐怖死亡要素，并于潜意识获得脱出条件：找到朋友。由于受访者意识中尚未存在武器要素，中期始终处于逃亡状态。
+                </p>
+                <p class="file-text">
+                    后期场景出现明显崩坏现象，并伴随受访者体力不支现象。其最后挣扎时因视线直视恐怖之物而于梦境中死亡。
+                </p>
+                <p class="file-text">
+                    后遂惊醒。
+                </p>
+            </div>
+
+            <!-- 2、处理记录 -->
+            <div class="section-block">
+                <div class="section-title">2、处理记录</div>
+                <p class="file-text">
+                    执行员于实际时间20████年████月████日16时04分到达受访者家中。
+                </p>
+                <p class="file-text">
+                    实际时间17时55分与其交谈获得其梦境记录。
+                </p>
+                <p class="file-text">
+                    实际时间20时21分成功架构████████器并进行相关处理。
+                </p>
+                <p class="file-text">
+                    实际时间23时03分完成该梦境处理。
+                </p>
+            </div>
+
+            <!-- 3、事件补录 -->
+            <div class="section-block">
+                <div class="section-title">3、事件补录</div>
+                <p class="file-text">
+                    受访者自述其经历与朋友有关，并于梦境处理中不慎致其朋友死亡。后在相关调查中未发现其诉说的朋友存在，疑似梦境后遗症。
+                </p>
+            </div>
+
+            <!-- 4、受损物品记录 -->
+            <div class="section-block">
+                <div class="section-title">4、受损物品记录</div>
+                <p class="file-text">██████，████。</p>
+            </div>
+
+            <!-- 5、记录附件 -->
+            <div class="section-block">
+                <div class="section-title">5、记录附件</div>
+                <p class="file-text" style="color: var(--text-muted);">事件问询录音</p>
+             
+                    <p class="file-text">我朋友发给我一款旧恐怖游戏安装包的当晚，我通宵打到角色罗隐血条清零，眼皮一沉直接睡了过去。</p>
+                    <p class="file-text">坠入梦境的时候，我感觉周遭的一切正在慢慢异变。</p>
+                    <p class="file-text">街道墙壁渗出粘稠暗红，原本正常的商铺招牌扭曲变形，空气里飘着潮湿的腥气。</p>
+                    <p class="file-text">道路尽头立着一尊佛像，和寻常庙宇里的截然不同——那不是石头雕琢而成，整块佛身由层层叠叠的皮肉堆砌，眼窝空空荡荡，像是一直在无声注视路过的人。</p>
+                    <p class="file-text">四处游荡着说不清轮廓的杀人怪物，阴影里不断传来拖拽东西的声响。</p>
+                    <p class="file-text">我疯狂奔跑，心里只有一个念头，找到他。</p>
+                    <p class="file-text">梦里我清楚记得，是他把这款游戏分享给我的，只有我他带他离开这片诡异的空间。可无论怎么寻找，始终看不到他的身影。忽然地面裂开，温热粘稠的血肉浪潮涌上来，瞬间将我整个人吞没。这时我回头看了一眼，后面……后面就记不清了。</p>
+                    <p class="file-text">但我有一瞬间意识到自己身处梦境，却怎么都醒不过来。黑暗包裹住全身，窒息感不断收紧，耳边反复回荡模糊的低语。</p>
+                    <p class="file-text">就在我快要彻底沉沦时，一股力量拉扯着我。</p>
+                    <p class="file-text">朦胧间仿佛有人伸手，将我从血肉漩涡里拽了出来。</p>
+                    <p class="file-text">我第二天一早就把这个经历发到怪谈论坛了，后面突然就发现这个名片放在我床桌角了。反正就，挺奇怪的，然后我就照着名片联系你们了。</p>
+              
+            </div>
+
+            <div class="archive-footer">
+                <span>留档编号：OFO-2026-05-28-沉沦游戏</span>
+                <span>加密等级：内部 · 已解决</span>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

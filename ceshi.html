@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>解梦会 | 系统验证</title>
+    <style>
+        :root {
+            --bg-color: #2C3E50; /* 灰蓝色背景 */
+            --text-color: #D1D5DB;
+            --accent-color: #316B83;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            background-color: var(--bg-color);
+            font-family: 'Georgia', 'Songti SC', serif;
+            overflow: hidden; /* 禁止滚动 */
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        /* 1. 可被保存的隐写术背景图 */
+        /* 图片本身就是灰蓝色，但藏了颜色极近的密码表。右键保存图片，在修图软件拉高对比度即可看到 */
+        #stego-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            object-fit: cover; z-index: -1;
+            /* 阻止图片被鼠标拖拽，但不影响右键保存 */
+            -webkit-user-drag: none;
+        }
+
+        /* 2. 官方交流群号 (左下角) */
+        .group-num {
+            position: absolute; bottom: 30px; left: 40px;
+            font-family: monospace; font-size: 12px; color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 2px;
+            transition: color 0.3s;
+        }
+        .group-num:hover { color: rgba(255, 255, 255, 0.8); }
+
+        /* 3. 居中的 Logo、座右铭与登录按钮 */
+        .center-content {
+            text-align: center;
+            opacity: 0; /* 初始隐藏 */
+            animation: slowFadeIn 4s ease-in forwards; /* 缓慢浮现 */
+            animation-delay: 1s;
+        }
+        
+        .logo-svg {
+            width: 80px; height: 80px; margin-bottom: 20px;
+            stroke: #fff; fill: none; stroke-width: 2;
+        }
+        
+        .motto {
+            font-size: 22px; color: #fff; letter-spacing: 4px;
+            margin: 0 0 10px 0; font-weight: 300;
+        }
+        .motto-sub {
+            font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 2px;
+            font-family: monospace; margin-bottom: 40px;
+        }
+
+        .login-btn {
+            background: transparent; border: 1px solid rgba(255,255,255,0.4);
+            color: rgba(255,255,255,0.8); padding: 12px 30px; font-size: 14px;
+            letter-spacing: 2px; cursor: pointer; transition: 0.4s;
+            font-family: inherit;
+        }
+        .login-btn:hover {
+            background: rgba(255,255,255,0.1); border-color: #fff; color: #fff;
+        }
+
+        @keyframes slowFadeIn {
+            0% { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        /* 4. 登录弹窗 (Modal) */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
+            display: none; justify-content: center; align-items: center; z-index: 100;
+        }
+        .modal-box {
+            background: #111827; border: 1px solid #374151; padding: 40px;
+            text-align: center; width: 300px;
+        }
+        .modal-box h3 {
+            color: #fff; margin: 0 0 20px 0; font-weight: normal; letter-spacing: 2px;
+        }
+        .login-input {
+            width: 100%; background: transparent; border: none;
+            border-bottom: 1px solid #4B5563; color: #fff; font-size: 18px;
+            text-align: center; padding: 10px 0; font-family: monospace;
+            outline: none; margin-bottom: 20px;
+        }
+        .login-input:focus { border-bottom-color: var(--accent-color); }
+        .submit-btn {
+            width: 100%; background: var(--accent-color); color: #fff;
+            border: none; padding: 10px; cursor: pointer; font-family: inherit; letter-spacing: 1px;
+        }
+        #login-msg {
+            margin-top: 15px; font-size: 12px; height: 15px; font-family: monospace;
+        }
+
+        /* 5. 边缘的摩斯密码蛇 (SVG) */
+        #snake-svg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 50;
+            opacity: 0; transition: opacity 0.5s ease;
+        }
+        #snake-svg.active { opacity: 1; }
+        
+        .snake-path {
+            fill: none; stroke: rgba(255, 255, 255, 0.2); stroke-width: 3;
+            /* 摩斯密码花纹：点、线、空格交替 */
+            stroke-dasharray: 4 6 15 6 4 6; 
+            /* 让路径总长度变长，用于实现从尾部画到头部的动画 */
+            stroke-dashoffset: 4000;
+            transition: stroke-dashoffset 3s ease-in-out;
+        }
+        #snake-svg.active .snake-path {
+            stroke-dashoffset: 0; /* 鼠标靠近边缘时，蛇开始游动 */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. 隐写术背景图 (Base64编码的SVG) 
+         提示：玩家右键保存此图，放到PS里拉高对比度和曝光度，就能看到密码表和最新会员号 12043 -->
+    <img id="stego-bg" src="image/back.png" alt="Background">
+
+    <!-- 边缘的摩斯密码蛇 -->
+    <svg id="snake-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <!-- 蛇的路径：从左下角(尾部)出发，顺时针绕屏幕一圈，头部在左侧偏下位置 -->
+        <path class="snake-path" d="M 5 95 L 5 5 L 95 5 L 95 95 L 5 95 L 5 80" pathLength="4000"></path>
+        <!-- 蛇头 -->
+        <polygon points="3,80 7,80 5,75" fill="rgba(255,255,255,0.3)" class="snake-path" style="stroke:none; transition-delay: 2.8s; opacity: 0;"></polygon>
+    </svg>
+
+    <!-- 2. 官方交流群号 -->
+    <div class="group-num">官方交流群号：1042849</div>
+
+    <!-- 3. 中心区域 -->
+    <div class="center-content">
+        <!-- 解梦会 Logo -->
+        <svg class="logo-svg" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45"></circle>
+            <path d="M 20 50 Q 50 10 80 50"></path>
+            <circle cx="50" cy="50" r="8" fill="#fff"></circle>
+        </svg>
+        <!-- 座右铭 -->
+        <h1 class="motto">重建意识的秩序，打捞沉没的现实</h1>
+        <div class="motto-sub">ORGANIZATION FOR SUBCONSCIOUS INTERFERENCE</div>
+        
+        <button class="login-btn" onclick="openModal()">会员登录</button>
+    </div>
+
+    <!-- 4. 登录弹窗 -->
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal-box">
+            <h3>身份校验</h3>
+            <!-- autocomplete="off" 防止浏览器记住密码影响解谜体验 -->
+            <input type="text" id="member-id" class="login-input" placeholder="请输入最新会员序号" autocomplete="off">
+            <button class="submit-btn" onclick="checkLogin()">确 认</button>
+            <div id="login-msg"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- 边缘蛇现身逻辑 ---
+        const snakeSvg = document.getElementById('snake-svg');
+        const snakeHead = document.querySelector('polygon');
+        
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            // 判定阈值：光标距离屏幕边缘小于 100 像素时触发
+            const threshold = 100;
+
+            if (x < threshold || x > w - threshold || y < threshold || y > h - threshold) {
+                snakeSvg.classList.add('active');
+                setTimeout(() => snakeHead.style.opacity = '1', 2500);
+            } else {
+                snakeSvg.classList.remove('active');
+                snakeHead.style.opacity = '0';
+            }
+        });
+
+        // --- 登录逻辑 ---
+        const modal = document.getElementById('login-modal');
+        const msgDiv = document.getElementById('login-msg');
+        const inputField = document.getElementById('member-id');
+
+        // 在刚才的隐写术背景图中，设定的最新会员序号是 12043
+        // (呼应前一版网页里 "已有 12,042 名会员确认出现类似情况")
+        const TARGET_ID = "12043"; 
+
+        function openModal() {
+            modal.style.display = 'flex';
+            inputField.value = '';
+            msgDiv.innerText = '';
+            msgDiv.style.color = '';
+            inputField.focus();
+        }
+
+        // 点击黑色背景关闭弹窗
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+
+        function checkLogin() {
+            const val = inputField.value.trim();
+            if (!val) return;
+
+            if (val === TARGET_ID) {
+                msgDiv.style.color = '#10B981'; // 成功绿
+                msgDiv.innerText = "“欢迎加入解梦会。”";
+                
+                // 延迟 1.5 秒后跳转到内部网站（将 jiemenghui.html 替换为你真实的主页文件名）
+                setTimeout(() => {
+                    window.location.href = "jiemenghui.html"; 
+                }, 1500);
+            } else {
+                msgDiv.style.color = '#EF4444'; // 报错红
+                msgDiv.innerText = "该会员已录入。";
+                
+                // 输入错误时增加屏幕干扰闪烁特效
+                document.body.style.backgroundColor = "#000";
+                setTimeout(() => { document.body.style.backgroundColor = "var(--bg-color)"; }, 100);
+            }
+        }
+
+        // 支持回车键提交
+        inputField.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkLogin();
+        });
+    </script>
+</body>
+</html>

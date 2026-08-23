@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事件 · 自杀陷阱 · 解梦会 OFO</title>
+    <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <style>
+        :root {
+            --primary: #0F171E;
+            --secondary: #316B83;
+            --bg-light: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --text-dark: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --font-heading: 'EB Garamond', 'Times New Roman', serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-ui);
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator { color: var(--border); }
+
+        .content-wrapper {
+            padding: 0 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 60px;
+            margin-top: 40px;
+        }
+
+        .page-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 42px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0;
+        }
+        .header-action {
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .header-action:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .file-wrapper {
+            font-family: var(--font-ui);
+            color: var(--text-dark);
+        }
+
+        .file-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 50px;
+            background: var(--bg-light);
+            padding: 16px 24px;
+            border-left: 4px solid var(--secondary);
+            margin-bottom: 32px;
+            font-size: 15px;
+        }
+        .file-meta span {
+            display: inline-block;
+        }
+        .file-meta .label {
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.3px;
+        }
+        .file-meta .value {
+            color: var(--text-dark);
+            margin-left: 6px;
+        }
+
+        .section-block {
+            margin: 36px 0 30px 0;
+        }
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            letter-spacing: 0.3px;
+        }
+
+        .section-sub {
+            font-family: var(--font-heading);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 28px 0 12px 0;
+        }
+
+        .file-text {
+            font-size: 16px;
+            line-height: 1.75;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .day-item {
+            padding-left: 20px;
+            margin-bottom: 12px;
+        }
+        .day-item .day-label {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .archive-footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 0 20px 80px 20px; }
+            .main-card { padding: 30px 20px; }
+            .page-header-row { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .file-meta { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="page-header">
+    <a href="inside.html" class="logo-wrapper">
+        <img src="image/logo.png" alt="OFO Logo">
+        <div>
+            <span class="b-title">OFO</span>
+            <span class="b-sub">Organization for Oneirology</span>
+        </div>
+    </a>
+
+    <div class="breadcrumb">
+        <a href="inside.html">Home</a>
+        <span class="separator">/</span>
+        <a href="odd.html">怪奇事件</a>
+        <span class="separator">/</span>
+        <a href="odd1.html">已解决事件</a>
+        <span class="separator">/</span>
+        <span>自杀陷阱</span>
+    </div>
+</header>
+
+<div class="content-wrapper">
+    <div class="main-card">
+
+        <div class="page-header-row">
+            <h1 class="page-title">事件 · 自杀陷阱</h1>
+            <a href="odd1.html" class="header-action">← 返回已解决</a>
+        </div>
+
+        <div class="file-wrapper">
+
+            <div class="file-meta">
+                <span><span class="label">事件代号：</span><span class="value">自杀陷阱</span></span>
+                <span><span class="label">记录人员：</span><span class="value">"模仿大师"，"心理委员"</span></span>
+                <span><span class="label">初始记录：</span><span class="value">2025.06.17</span></span>
+                <span><span class="label">最后修订：</span><span class="value">2026.06.22</span></span>
+                <span><span class="label">状态：</span><span class="value">已解决</span></span>
+            </div>
+
+            <!-- 1、事件记录 -->
+            <div class="section-block">
+                <div class="section-title">1、事件记录</div>
+                <p class="file-text">
+                    该事件由受访者主动联系解梦会进行干涉处理，据已有档案获知该受访者曾于"未命名电话"事件获得解梦会名片，依据《解析梦境处理法》第十条及受访者本人意愿于梦境时间20**年**月12日23时00分处理。
+                </p>
+            </div>
+
+            <!-- 2、受试梦境如下 -->
+            <div class="section-block">
+                <div class="section-title">2、受试梦境如下</div>
+                <p class="file-text">
+                    受访于近日频繁梦见自己死亡，且死亡方式不定。
+                </p>
+                <div class="day-item">
+                    <p class="file-text"><span class="day-label">第一日</span> 梦见自己右部脸突然灼烧并伴随灼烧感环绕面部，直至自身完全灼烧而死。当日自身在烧菜时突发烧锅起火，后成功灭火。</p>
+                </div>
+                <div class="day-item">
+                    <p class="file-text"><span class="day-label">第二日</span> 梦见自己突然四肢断裂，剧痛而死。当日出门时打车因有人闯红灯而导致差点出车祸。</p>
+                </div>
+                <div class="day-item">
+                    <p class="file-text"><span class="day-label">第三日</span> 梦见于家中闯入陌生人而被捅死。当日许久未见好友突然拜访。</p>
+                </div>
+                <div class="day-item">
+                    <p class="file-text"><span class="day-label">第四日</span> 梦见自己被割喉，失血过多而死。当日刮胡子时因未处理好力度而使下巴伤痕。</p>
+                </div>
+            </div>
+
+            <!-- 3、处理记录 -->
+            <div class="section-block">
+                <div class="section-title">3、处理记录</div>
+                <p class="file-text">
+                    受访者声称接打电话后从电话听筒吐出的名片联系上解梦会寻求帮助。执行者当日到达受访者家中并获得梦境相关信息。因其处理特殊性可能会导致现象级梦境发生，与受访者交流后获得批准，于梦境时间处理。
+                </p>
+                <p class="file-text">
+                    梦境时间处理六小时后受访者苏醒，解梦会以将其吸纳，并持续提供红药丸。事件处理结束。
+                </p>
+                <p class="file-text">
+                    受损物品记录：很多钱。
+                </p>
+            </div>
+
+            <div class="archive-footer">
+                <span>留档编号：OFO-2025-06-17-自杀陷阱</span>
+                <span>加密等级：内部 · 已解决</span>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

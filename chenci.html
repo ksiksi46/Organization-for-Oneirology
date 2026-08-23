@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+      <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陈赐 - 解梦会 OFO</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        :root { 
+            --primary: #0F171E; 
+            --secondary: #316B83; 
+            --bg-light: #F8FAFC; 
+            --bg-white: #FFFFFF; 
+            --text-dark: #1E293B; 
+            --text-muted: #64748B; 
+            --border: #E2E8F0; 
+            --font-heading: 'EB Garamond', 'Times New Roman', serif; 
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;  
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif; 
+        }
+
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            font-family: var(--font-ui);  
+            background-color: var(--bg-light); 
+            color: var(--text-dark); 
+            overflow-x: hidden; 
+        }
+
+        /* ================= 头部标识与面包屑 ================= */
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        /* 极简面包屑导航 */
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator {
+            color: var(--border);
+        }
+
+        /* ================= 核心内容区 ================= */
+        .content-wrapper {
+            padding: 60px 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            margin-top: 40px;
+            border-radius: 4px;
+        }
+
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 48px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0 0 30px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .page-content {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        /* ===== 左侧：主内容区 ===== */
+        .main-text {
+            flex: 2;
+        }
+        .main-text p {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        /* 照片展示区 */
+        .profile-photo {
+            width: 360px;
+            height: auto;
+            object-fit: cover;
+        }
+
+        /* 语录引用框 */
+        .member-quote {
+            border-left: 4px solid var(--secondary);
+            margin: 0 0 30px 0;
+            padding: 15px 25px;
+            background: var(--bg-light);
+            color: var(--text-muted);
+            font-style: italic;
+            border-radius: 2px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .member-quote cite {
+            display: block;
+            margin-top: 10px;
+            font-style: normal;
+            font-size: 14px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        /* 自定义标题 */
+        .section-subhead {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 40px 0 15px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* 责任领域列表 */
+        .duty-list {
+            margin: 15px 0 20px 0;
+        }
+        .duty-item {
+            margin-bottom: 15px;
+        }
+        .duty-item strong {
+            display: block;
+            color: var(--secondary);
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .duty-item p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* 档案备注特殊排版 */
+        .archival-note {
+            border: 1px dashed var(--border);
+            background: #F8F9FA;
+            padding: 20px 25px;
+            margin-top: 40px;
+            position: relative;
+            border-radius: 4px;
+        }
+        .archival-note::before {
+            content: '【档案备注】';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #fff;
+            padding: 0 10px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: bold;
+            font-family: var(--font-mono);
+        }
+        .archival-note p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+        .archival-note p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ===== 右侧：边栏信息卡 ===== */
+        .sidebar-info {
+            flex: 1;
+            min-width: 250px;
+            border: 1px solid var(--border);
+            padding: 25px;
+            background: var(--bg-light);
+            position: sticky;
+            top: 40px;
+        }
+        .sidebar-info h4 {
+            font-family: var(--font-heading);
+            font-size: 16px;
+            margin: 0 0 15px 0;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+        .sidebar-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-info ul li {
+            font-size: 14px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+        .sidebar-info ul li:last-child {
+            border-bottom: none;
+        }
+        .sidebar-info ul li span {
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        /* ================= 响应式适配 ================= */
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 30px 20px; }
+            .page-content { flex-direction: column; }
+            .sidebar-info { width: 100%; box-sizing: border-box; position: static; }
+            .profile-photo { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部 Logo与面包屑 -->
+    <header class="page-header">
+        <a href="inside.html" class="logo-wrapper">
+            <img src="image/logo.png" alt="OFO Logo">
+            <div>
+                <span class="b-title">OFO</span>
+                <span class="b-sub">Organization for Oneirology</span>
+            </div>
+        </a>
+
+        <!-- 极简返回导航 -->
+        <div class="breadcrumb">
+            <a href="inside.html">Home</a>
+            <span class="separator">/</span>
+            <a href="inside.html#sec-2">成员简介</a>
+            <span class="separator">/</span>
+            <span>陈赐</span>
+        </div>
+    </header>
+
+    <!-- 主体内容 -->
+    <div class="content-wrapper">
+        <h1 class="page-title">陈赐 <span style="font-size: 18px; font-weight: 300; color: var(--text-muted);">CC</span></h1>
+
+        <div class="page-content">
+            <!-- 左侧：主文章 -->
+            <div class="main-text">
+                
+                <!-- 顶部照片 -->
+                <!-- 注意：请确保 image 文件夹里有 cc.jpg 这张图片 -->
+                <img src="image/chenci.jpg" alt="陈赐的档案照片" class="profile-photo">
+
+                <div class="member-quote">
+                    “天才厨神总是有着直觉性的灵机一动，随之出炉的结果往往是震撼美味。”
+                    <cite>—— 解梦会厨王大赛颁奖致辞</cite>
+                </div>
+
+                <h2 class="section-subhead">▍ 公开简介</h2>
+                <p>
+                    解梦会创始人之一，解梦会后勤部部长兼厨师长。
+                </p>
+                <p>
+                    说来你可能不信，陈赐可以双手同时制作多个不同的菜品，色香味多年无差评，是解梦会必不可缺的存在，当然，他的能力不止于此。作为后勤部部长，他随时待命，承担“解梦”的解字作用，陈赐总能从怪梦中得到直觉的提示，继而指点迷津，无论梦的主人是谁。当然，在解梦会高级成员执行怪奇事件调查任务的时候，他也能给成员提供他所能提供的最大规模的硬件帮助。
+                </p>
+                <p>
+                    事实上，陈赐在全职掌勺之前可是掌舵的，他是白马世界赛艇协会的金牌赛艇手，实力过硬，渴望自由和认可。不过比起荣誉，似乎有其他事物对他更加重要。
+                </p>
+
+                <h2 class="section-subhead">▍ 负责领域</h2>
+                
+                <div class="duty-list">
+                    <div class="duty-item">
+                        <strong>解梦会食堂：</strong>
+                        <p>最有力的招新只需要最淳朴的方式，负责照顾解梦会所有成员的胃口和体重，以出色的烹饪实力和惊人的出品速度在高手云集的解梦会中留出一块让人放松的休憩站。大家都说他的食物能安神息梦，陈赐对此倍感骄傲，但始终坚称自己纯天然无添加，都是捧杀和谣传。</p>
+                    </div>
+                    <div class="duty-item">
+                        <strong>解梦与提供后勤援助：</strong>
+                        <p>拥有解读怪梦和梦境逻辑的能力，为有需要的人提供决策参考。在他这里没有光怪陆离和胡言乱语，只有梦中人的过去、现在和未来。所有梦都基于人的精神，听过他分析的人大多都会主动回来分享一些故事，或是以前或是今后，他都整理下来并称之为“后日谈”，可能写得很烂，这是他的文化极限了。而在解梦之外，他负责利用各种空壳公司，在海外暗网或二手市场大批量采购退役的多功能设备，为成员执行任务提供最有力的保障。而当一些怪梦亲历者已经彻底失控无法收容时，后勤部部长会派成员进行物理隔离或灭口。</p>
+                    </div>
+                </div>
+
+                <!-- 档案备注区 -->
+                <div class="archival-note">
+                    <p>
+                        陈赐原本是白马赛艇协会未来会长的头号候选人，前途无量。白马协会换届前，陈赐去意大利外培时认识了小义，小义神秘兮兮地拿出一副类似塔罗牌的卡牌，陈赐跟着抽了一张玩，翻来一看却是很莫名其妙的牌面——云朵吊着的宝剑。
+                    </p>
+                    <p>
+                        剑柄被一根细细的雨线拽住，在云底摇曳。深夜，陈赐被细细簌簌的声音吵醒，借着月光，陈赐看见自己胳膊染上了黑渍，而床头的窗户竟破了，流进一滩黑色的粘液，密密麻麻的小虫子顺着黑印爬到床上，似乎要将他包围吞噬，孤月在夜幕中摇摇欲坠，他的信念也是。
+                    </p>
+                    <p>
+                        后来陈赐偶然讲起这个故事，有文化的朋友听完突然讲起西西里的历史和一堆希腊传说，那天陈赐想了很多，最后宣布放弃竞争，提前解约离开白马协会，永久退役。
+                    </p>
+                    <p>
+                        赛艇的底部要密不透风，才能载起期望和忏悔，方寸之间无数次的起死回生，囚万物为困兽。残缺的十字架捅死的墓碑，穿过风浪窥探到的泱泱乌云。张开双臂，一直划一直划，就能逃脱遗憾和恐惧的牢笼吧。
+                    </p>
+                    <p>
+                        其实赛艇手的生活很简单，只要每天认真训练，在赛场上全力展现，而赛艇协会要面对的……噢你问白马协会？陈赐走后的第二年，基地意外起了场大火，新会长和主成员都在那里，无人生还。
+                    </p>
+                    <p>
+                        双桨是恣意热烈的羽翼，在倒计时的温存冻结以前。
+                    </p>
+                    <p style="color: var(--text-muted); font-size: 14px; border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 10px;">
+                        ①经调查，当期意大利赛艇培训并无“小义”这一人物存在。<br>
+                        ②经调查，白马火灾事件与陈赐无关。
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- 右侧：基本信息边栏 -->
+            <div class="sidebar-info">
+                <h4>基本信息</h4>
+                <ul>
+                    <li>姓名 <span>陈赐 (CC)</span></li>
+                    <li>性别 <span>男</span></li>
+                    <li>年龄 <span>30</span></li>
+                    <li>国籍 <span>韩国</span></li>
+                    <li>职位 <span>厨师长，后勤部部长</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

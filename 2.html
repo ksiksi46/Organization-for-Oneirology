@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+      <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事件 · 倒吊人 · 解梦会 OFO</title>
+    <style>
+   
+        :root {
+            --primary: #0F171E;
+            --secondary: #316B83;
+            --bg-light: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --text-dark: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --font-heading: 'EB Garamond', 'Times New Roman', serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-ui);
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* ========== 头部标识与面包屑 ========== */
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator { color: var(--border); }
+
+        /* ========== 内容区 ========== */
+        .content-wrapper {
+            padding: 0 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 60px;
+            margin-top: 40px;
+        }
+
+        /* 页面标题与返回 */
+        .page-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 42px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0;
+        }
+        .header-action {
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .header-action:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* ===== 档案风格 (无框，仿SCP) ===== */
+        .file-wrapper {
+            font-family: var(--font-ui);
+            color: var(--text-dark);
+        }
+
+        .file-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 50px;
+            background: var(--bg-light);
+            padding: 16px 24px;
+            border-left: 4px solid var(--secondary);
+            margin-bottom: 32px;
+            font-size: 15px;
+        }
+        .file-meta span {
+            display: inline-block;
+        }
+        .file-meta .label {
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.3px;
+        }
+        .file-meta .value {
+            color: var(--text-dark);
+            margin-left: 6px;
+        }
+
+        .section-block {
+            margin: 36px 0 30px 0;
+        }
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            letter-spacing: 0.3px;
+        }
+
+        .file-text {
+            font-size: 16px;
+            line-height: 1.75;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        /* 对话记录专用样式 (无框，保持干净) */
+        .dialogue-block {
+            margin: 12px 0 18px 0;
+            padding-left: 6px;
+        }
+        .dialogue-line {
+            display: flex;
+            gap: 12px;
+            padding: 4px 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        .dialogue-speaker {
+            font-weight: 500;
+            color: var(--secondary);
+            min-width: 28px;
+            letter-spacing: 0.2px;
+        }
+        .dialogue-text {
+            color: var(--text-dark);
+        }
+
+        /* 分析记录卡片 (无框, 仅底色) */
+        .analysis-card {
+            background: var(--bg-light);
+            padding: 20px 24px;
+            margin: 20px 0 24px 0;
+            border-radius: 2px;
+        }
+        .analysis-card .analysis-label {
+            font-family: var(--font-mono);
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--secondary);
+            display: block;
+            margin-bottom: 6px;
+        }
+        .analysis-card p {
+            margin: 8px 0 0 0;
+            line-height: 1.7;
+        }
+
+        .archive-footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 0 20px 80px 20px; }
+            .main-card { padding: 30px 20px; }
+            .page-header-row { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .file-meta { flex-direction: column; gap: 10px; }
+            .dialogue-line { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 顶部 Logo与面包屑 -->
+<header class="page-header">
+    <a href="inside.html" class="logo-wrapper">
+        <img src="image/logo.png" alt="OFO Logo">
+        <div>
+            <span class="b-title">OFO</span>
+            <span class="b-sub">Organization for Oneirology</span>
+        </div>
+    </a>
+
+    <div class="breadcrumb">
+        <a href="inside.html">Home</a>
+        <span class="separator">/</span>
+        <a href="odd.html">怪奇事件</a>
+        <span class="separator">/</span>
+        <a href="odd1.html">已解决事件</a>
+        <span class="separator">/</span>
+        <span>倒吊人</span>
+    </div>
+</header>
+
+<!-- 主体 -->
+<div class="content-wrapper">
+    <div class="main-card">
+
+        <!-- 标题与返回 -->
+        <div class="page-header-row">
+            <h1 class="page-title">事件 · 倒吊人</h1>
+            <a href="odd1.html" class="header-action">← 返回已解决</a>
+        </div>
+
+        <!-- 档案内容 (无框风格) -->
+        <div class="file-wrapper">
+
+            <!-- 元数据行 -->
+            <div class="file-meta">
+                <span><span class="label">事件代号：</span><span class="value">倒吊人</span></span>
+                <span><span class="label">记录人员：</span><span class="value">雨虹</span></span>
+                <span><span class="label">初始记录：</span><span class="value">2024.11.17</span></span>
+                <span><span class="label">最后修订：</span><span class="value">2026.04.29</span></span>
+                <span><span class="label">状态：</span><span class="value">监测中</span></span>
+            </div>
+
+            <!-- 1、对话记录 -->
+            <div class="section-block">
+                <div class="section-title">1、对话记录</div>
+
+                <div class="dialogue-block">
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"上次说到哪了，从那个森林里逃出来？还是从那个湖边离开？"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"不是的，不是森林也不是湖。我想起来了，我都想起来了，那是一栋楼！对，是楼！不会错的！"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"又变成楼了么。好吧，那你说说你是怎么进到那栋楼里面的？总不能还是被野人亦或者狼人一类的掳走。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"不是，什么野人狼人的我可从来没见过。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"看来又出现错乱了啊。。。行吧，那你仔细说说。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"我知道这很难令人信服，但请你们一定要相信我！那个楼里有不干净的东西！"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"冷静一下先生，我们相信你说的话。请你仔细回忆一下那天的经历，事无巨细的告诉我们，这样我们才好帮你。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"好的我说，我说，前一天晚上我和朋友一起喝了个烂醉，你们也知道的，失恋这种事情只有喝酒才能缓解了。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"陪伴对象从家人变成了朋友、理由则是从失业变为失恋。这是第三十四次变更了，每次理由都不一样还真是有点难为他。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"喝完酒的事我我记不太清了，只记得我打车到我家楼下，上楼之后感觉我家环境似乎有些不对，可是我真的太晕了草草洗漱就睡了过去。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"然后是：'第二天醒来，发现自己出现在了一个纯白的房间里，这个房间只有一扇门，推开之后就到了那个地方。'"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"第二天醒来。。你们怎么知道我要说什么，不会是一直在监控我吧，我就知道你们绝对没安好心！"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"请你冷静先生，这已经不是我们第一次听到这句话了，请你相信我们的一切目的都是为了帮助您康复。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"好吧好吧我说，推开那扇门，门的后面是一栋破败的烂尾楼，我刚推开门一看，门居然原地消失了！"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"门会消失。也算是有了一些进展，你继续。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"我看着前后空无一人的走廊，想着总得找机会出去，就这样漫无目的地往前走着。不知道走了多久，大概两小时？眼前的楼道似乎没有尽头一样的，只有无穷无尽的墙壁与广告在陪着我。广告的覆盖面积越来越大了，我心想前面绝对有出路，就这样继续往前走着，两个小时？一扇被广告覆盖铁门出现在了墙面上，我看见了也没多想......"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"抱歉打断一下，你说的广告是指那种？"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"就是广告！非要我回忆的话大概是开锁、修水管、推销各种产品、还有一些小广告比如......"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"好的先生，继续说吧。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"好，好，我走进那扇铁门，发现门背后是老式的楼梯间，你知道吧，七八十年代的那种。我沿着楼梯下去，视线被爬满爬山虎的铁栏杆挡住了，直到我看见了一座大佛！对！大佛！楼里怎么会有大佛呢，不会的不会的不会的不会的不会的......"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"先生，先生，请你冷静一下先生。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"冷静，对，那不是一座大佛，那是一具巨大的尸体，对，披着黑色裹尸袋的尸体！我实在是太害怕了就不断往回跑，直到走回那扇铁门内。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"尸体的性状出现在了每一次访谈中，上次是森林里的十字架，上上次是湖中央的火箭，这次则是楼里的大佛么。尸体到底代表了社么，为什么每次都与错乱的记忆毫无联系。啊，抱歉，你继续说。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"当我走回那个走廊的时候，灯光突然变成红色的了，墙上贴的哪是什么广告，明明是一张又一张的人皮面具！他们一直目不转睛的盯着我，我头也不敢回的往来时的路跑去，两小时？还是再加两小时？我突然又看到了那扇门！"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"又看见了那扇门？这是之前从未有过的记录，这部分请说细节一点。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"对！我又看见了那扇门！那是一扇毫无特色的木门，甚至由于长时间的潮湿环境有些发霉，就这么再普通不过的一扇门此刻却变成了我的救命稻草，就这样我毫不犹豫的冲了过去，可我扑空了！那根本不是一扇门！根本不是！"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"冷静先生，慢慢回想更多细节，慢慢来不着急我们有的是时间。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"那不是门！分明是有人在墙上画了一幅画！可是这里除了我哪来的别人？我又怎么会看到墙上的画？不知道不知道不知道不知道不对不对不对。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"又回到这一块了吗，本来还以为有些进展的。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"对了！我想起来我是怎么逃出来的了！我找到了出口！不是门，是真正的出口！等我醒来就被你们带到这了，真正的出口是绿色的，只有跟随安全通道的指引才能逃离！"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"故事的结尾依旧是逃出生天么，还以为这次看见门了会有额外进展的。感谢你的配合，明天我们会继续来看你的，今天先好好休息吧。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"我说的都是真的！我从没去过你说的什么森林和湖！是楼，我是从楼里逃出来的，你们要相信我啊！。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"我们相信你，先生，明天这个时间我还会再来找你的。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"相信我就好，相信我就好，明天能放我出去吗，都关了我一整天了。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">B:</span><span class="dialogue-text">"等我们查清楚了会放你出去的，至少不是现在，这么久了也不差这一天了，先生。"</span></div>
+                    <div class="dialogue-line"><span class="dialogue-speaker">A:</span><span class="dialogue-text">"关了我一天还不够吗，好吧，希望你说话算话。"</span></div>
+                </div>
+            </div>
+
+            <!-- 2、分析记录1553 -->
+            <div class="section-block">
+                <div class="section-title">2、分析记录1553</div>
+            
+                    <span class="analysis-label">分析记录1553</span>
+                    <p>
+                        本次分析经由第32次循环中的第34小结出发，目标A相较第31次循环能够完整的叙述出梦境迷宫的内容，同时目标B对目标A叙述的容忍度也提高到了前所未有的程度。
+                    </p>
+                    <p style="margin-top: 10px;">
+                        本次目标A对梦境的描述清晰度以达梦境内容的百分之二十，对梦境锚点的确认次数并未增加，同时目标A的描述中依旧对梦境锚点存在恐惧等情绪。
+                    </p>
+                    <p style="margin-top: 10px;">
+                        目标B的记录能力与分析对比能力相较之前也有所提升，同时B对A的情绪抚慰能力也逐步逼近预期，AB个体性状都在逐步趋近于目标值。或许存在B的趋近速度高于A导致AB性状的不匹配，后续需要时可以进行人工干预。
+                    </p>
+                    <p style="margin-top: 10px;">
+                        以上是对本市二三八七年七月十三日灭门抛尸分尸案的第1553次实验内容分析，依照目标重合度，预计于2000次内AB人格可以同步完成，届时将转移目标进行人格分裂性状的治愈实验，并对嫌疑人本人进行案件细节的质询。
+                    </p>
+                    <p style="margin-top: 10px; color: var(--text-muted); font-size: 14px;">记录于二三八六年七月十二日</p>
+                    <p style="margin-top: 4px; color: var(--text-muted); font-size: 14px;">记录者：月一</p>
+                </div>
+      
+
+            <!-- 3、分析记录1789 -->
+            <div class="section-block">
+                <div class="section-title">3、分析记录1789</div>
+           
+                    <span class="analysis-label">分析记录1789</span>
+                    <p>
+                        本次分析经由第36次循环中的第25小结出发，目标A相较第35次循环能够完整的叙述出梦境迷宫的内容，同时目标B对目标A叙述的容忍度也提高到了前所未有的程度。
+                    </p>
+                    <p style="margin-top: 10px;">
+                        本次目标A对梦境的描述清晰度以达梦境内容的百分之四十五，对梦境锚点的确认次数首次从一增加至二，同时目标A的描述中对梦境锚点存在恐惧等情绪相较于过去有所减弱。
+                    </p>
+                    <p style="margin-top: 10px;">
+                        目标B的记录能力与分析对比能力相较之前有显著提升，同时B对A的情绪抚慰能力也逐步逼近预期，AB个体性状都在逐步趋近于目标值。AB同步率也照之前产生了明显进步，不再需要分别控制AB目标同步进度。
+                    </p>
+                    <p style="margin-top: 10px;">
+                        以上是对本市二三二六年七月十三日灭门抛尸分尸案的第1789次实验内容分析，依照目标重合度，预计于2500次内AB人格可以同步完成，届时将转移目标进行人格分裂性状的治愈实验，并对嫌疑人本人进行案件细节的质询。
+                    </p>
+                    <p style="margin-top: 10px;">
+                        本实验相较于以往发现奇怪目标，目标具体内容为四角分散二维码，中间记录LOGO的"解梦会"介绍名片，将于五次实验内分析名片内容是否符合实验需求。
+                    </p>
+                    <p style="margin-top: 10px; color: var(--text-muted); font-size: 14px;">记录于二三二六年七月一日</p>
+                    <p style="margin-top: 4px; color: var(--text-muted); font-size: 14px;">记录者：月一</p>
+                </div>
+            
+
+            <!-- 4、解梦会重点关注对象46号 -->
+            <div class="section-block">
+                <div class="section-title">4、解梦会重点关注对象46号</div>
+                
+                    <p>
+                        通过对"月一"，以下简称46号，持续一周的潜意识引导与时间观念构建，初步达到让46号被关注对象意识到AB的存在由人格分裂产生，后续对46号的精神疾病例如"时间观念严重错乱"、"'灭门案'等虚构幻想"、"多人格分裂无主导人格"等由梦境产生的精神疾病管控可以迈入下一阶段，尝试通过研发部最新研发的红药丸进行治愈。
+                    </p>
+                    <p style="margin-top: 10px;">
+                        本阶段的目标为完全引导46号被关注对象重新建立正确的时间尺度，继续修改由脑部冲击带来的时间观念倒转现象，重塑46号的精神裂痕。同时引导产生"分析者"为主人格，接纳并吸收"A""B"等副人格，尝试治愈46号的人格分裂现象。
+                    </p>
+                    <p style="margin-top: 10px;">
+                        对于"灭门案"等虚构幻想，目前采取精神迷宫引导梳理等方法，并逐渐产生成效，本阶段应继续本方案的应用，以达到完整的虚构目标删除效果。
+                    </p>
+                    <p style="margin-top: 10px; color: var(--text-muted); font-size: 14px;">—— 雨虹</p>
+                </div>
+           
+            <!-- 附注：留档脚注 -->
+            <div class="archive-footer">
+                <span>留档编号：OFO-2024-11-17-倒吊人</span>
+                <span>加密等级：内部 · 已解决</span>
+            </div>
+
+        </div> <!-- /file-wrapper -->
+
+    </div> <!-- /main-card -->
+</div> <!-- /content-wrapper -->
+
+</body>
+</html>
