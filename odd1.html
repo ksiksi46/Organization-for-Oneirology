@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+      <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>已解决事件 - 解梦会 OfO</title>
+    <style>
+        :root { 
+            --primary: #0F171E; 
+            --secondary: #316B83; 
+            --bg-light: #F8FAFC; 
+            --bg-white: #FFFFFF; 
+            --text-dark: #1E293B; 
+            --text-muted: #64748B; 
+            --border: #E2E8F0; 
+            --font-heading: 'EB Garamond', 'Times New Roman', serif; 
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;  
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif; 
+        }
+
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            font-family: var(--font-ui);  
+            background-color: var(--bg-light); 
+            color: var(--text-dark); 
+            overflow-x: hidden; 
+        }
+
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator { color: var(--border); }
+
+        .content-wrapper {
+            padding: 0 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 60px;
+            margin-top: 40px;
+        }
+
+        .page-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 42px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0;
+        }
+        .header-action {
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+       
+            transition: 0.3s;
+        }
+        .header-action:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .event-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-item {
+            display: flex;
+            align-items: stretch;
+            border-bottom: 1px solid var(--border);
+            padding: 30px 0;
+            gap: 30px;
+            transition: background 0.2s;
+        }
+        .event-item:first-child {
+            border-top: 1px solid var(--border);
+        }
+
+        .event-title {
+            flex: 0 0 220px;
+            font-family: var(--font-heading);
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--primary);
+            line-height: 1.3;
+        }
+
+        .event-desc {
+            flex: 1;
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--text-muted);
+        }
+        .event-desc strong, .event-desc u {
+            color: var(--text-dark);
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            text-decoration-thickness: 1px;
+        }
+
+        .event-img {
+            flex: 0 0 200px;
+            height: 150px;
+            width: 200px;
+            background-size: cover;
+            background-position: center;
+           
+            border: 1px solid var(--border);
+        }
+
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 0 20px 80px 20px; }
+            .main-card { padding: 30px 20px; }
+            .page-header-row { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .event-item { flex-direction: column; }
+            .event-title { flex: auto; }
+            .event-img { flex: auto; height: 200px; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="inside.html" class="logo-wrapper">
+            <img src="image/logo.webp" alt="OfO Logo">
+            <div>
+                <span class="b-title">OfO</span>
+                <span class="b-sub">Organization for Oneirology</span>
+            </div>
+        </a>
+
+        <div class="breadcrumb">
+            <a href="inside.html">Home</a>
+            <span class="separator">/</span>
+            <a href="odd.html">怪奇事件</a>
+            <span class="separator">/</span>
+            <span>已解决事件</span>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <div class="main-card">
+            
+            <div class="page-header-row">
+                <h1 class="page-title">已解决事件</h1>
+                <a href="odd.html" class="header-action">返回总览</a>
+            </div>
+
+            <div class="event-list">
+                
+                <!-- 事件 1：教授 -->
+                <div class="event-item">
+                    <div class="event-title"><a href="1.html" style="color: inherit; text-decoration: none;">教授</a></div>
+                    <div class="event-desc">
+                        大学历史系副教授J持续梦见自己以不同方式死亡，次日清晨却安然苏醒。每次死亡前均出现古老神像幻觉与布谷钟声。调查发现其祖父书房中的布谷钟与考古遗址明信片上的神像存在关联。判定为 创伤记忆与潜意识共振</u> 的复合梦境现象。
+                    </div>
+                    <div class="event-img" style="background-image: url('image/event1.webp');"></div>
+                </div>
+
+                <!-- 事件 2：倒吊人 -->
+                <div class="event-item">
+                    <div class="event-title"><a href="2.html" style="color: inherit; text-decoration: none;">倒吊人</a></div>
+                    <div class="event-desc">
+                        目标A反复叙述梦境迷宫中的经历，场景在森林、湖泊与楼宇之间不断变迁。每次访谈均由目标B记录。分析发现AB人格同步率逐步提升，实为 人格分裂治愈实验 的一部分。名片上的二维码指向 解梦会关注对象46号</u>。
+                    </div>
+                    <div class="event-img" style="background-image: url('image/event2.webp');"></div>
+                </div>
+
+                <!-- 事件 3：借阅证 -->
+                <div class="event-item">
+                    <div class="event-title"><a href="3.html" style="color: inherit; text-decoration: none;">借阅证</a></div>
+                    <div class="event-desc">
+                        作家DR-024-A从图书馆获得一张旧借阅证，此后每晚以第一视角经历其他生命的存续过程，并将梦境写成小说《我曾活过很多次》。持续接触导致身份认知崩塌，最终被安置于第七病区。卡片背面曾浮现 "可外借"</u> 字样后自行消失。
+                    </div>
+                    <div class="event-img" style="background-image: url('image/event3.webp');"></div>
+                </div>
+
+                <!-- 事件 4：太行柳氏沉眠异事 -->
+                <div class="event-item">
+                    <div class="event-title"><a href="4.html" style="color: inherit; text-decoration: none;">太行柳氏沉眠异事</a></div>
+                    <div class="event-desc">
+                        冀州柳文远少时赴太行古观求取吕翁遗枕，一梦十载地狱酷刑，醒时四肢痿痹、神识昏乱。古观老道已羽化，留青瓷枕残片五枚，触之阴寒彻骨。司中老吏称为 "逆枕"</u>，一枕两面，一荣一辱。柳文远每夜惊起，以头撞壁，呼"狱卒复来"。
+                    </div>
+                    <div class="event-img" style="background-image: url('image/event4.webp');"></div>
+                </div>
+
+                <!-- 事件 5：沉沦游戏 -->
+                <div class="event-item">
+                    <div class="event-title"><a href="5.html" style="color: inherit; text-decoration: none;">沉沦游戏</a></div>
+                    <div class="event-desc">
+                        受访者收到朋友发送的未知游戏安装包后，于梦中进入恐怖游戏场景。深巷、血肉佛像、杀人怪物、崩坏的地面——他四处奔跑寻找朋友，最终被血肉浪潮吞没。醒来后发现 名片 出现在床桌角。经调查，其朋友 并不存在</u>，疑似梦境后遗症。
+                    </div>
+                    <div class="event-img" style="background-image: url('image/event5.webp');"></div>
+                </div>
+
+                <!-- 事件 6：自杀陷阱 -->
+                <div class="event-item">
+                    <div class="event-title"><a href="6.html" style="color: inherit; text-decoration: none;">自杀陷阱</a></div>
+                    <div class="event-desc">
+                        受访者连续四日梦见自己以不同方式死亡：灼烧、四肢断裂、被捅死、割喉。而次日现实中均发生 对应危险事件：烧锅起火、差点出车祸、好友突然拜访、刮伤下巴。通过电话听筒吐出的名片联系解梦会后，经梦境处理 成功干预</u>。
+                    </div>
+                    <div class="event-img" style="background-image: url('image/event6.webp');"></div>
+                </div>
+
+                <!-- 事件 7：备用机1958 -->
+                <div class="event-item">
+                    <div class="event-title"><a href="7.html" style="color: inherit; text-decoration: none;">备用机1958</a></div>
+                    <div class="event-desc">
+                        主角发现备用机收到神秘讯息，密码被改为1958——父亲的死亡时间。与此同时，母亲性情大变，从冷漠刻薄变得温柔体贴。快递盒上插着 解梦会名片。会员梓赫现已加入解梦会。手机讯息经查验为 垃圾邮件</u>。
+                    </div>
+                    <div class="event-img" style="background-image: url('image/event7.webp');"></div>
+                </div>
+
+                <!-- 事件 8：孩童 -->
+                <div class="event-item">
+                    <div class="event-title"><a href="8.html" style="color: inherit; text-decoration: none;">孩童</a></div>
+                    <div class="event-desc">
+                        保安林某在写字楼楼梯间听见小孩笑声，随后发现墙面出现黑色火柴人涂鸦——全部面朝天花板角落的旧摄像头。解梦会判定为 "梦境实体化投射"。手机壳内凭空生出一张名片，按短信指引用手电筒照射梦中火柴人后 成功化解</u>。
+                    </div>
+                    <div class="event-img" style="background-image: url('image/event8.webp');"></div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

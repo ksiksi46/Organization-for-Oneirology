@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDTI 梦境深度类型指标问卷</title>
+    <style>
+        /* ================= MBTI 风格模仿 ================= */
+        :root {
+            --bg-color: #f4f6f8;
+            --white: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --danger: #ef4444;
+            --danger-bg: #dc2626;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background-color 0.5s, color 0.5s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ================= 黑底红字（资格审查状态） ================= */
+        body.audit-mode {
+            background-color: #000000 !important;
+            color: #ff0000 !important;
+        }
+        body.audit-mode .option-btn {
+            border-color: #ff0000 !important;
+            color: #ff0000 !important;
+        }
+        body.audit-mode .option-btn:hover {
+            background-color: #ff0000 !important;
+            color: #ffffff !important;
+        }
+        body.audit-mode .question-title {
+            color: #ff0000 !important;
+            border-bottom-color: #ff0000 !important;
+        }
+        body.audit-mode .progress-bar-fill {
+            background-color: #ff0000 !important;
+        }
+
+        /* ================= 容器 ================= */
+        .container {
+            width: 100%;
+            max-width: 720px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 40px;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 10;
+            transition: background-color 0.5s, color 0.5s;
+        }
+        body.audit-mode .container {
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #ff0000;
+            box-shadow: 0 0 20px rgba(255,0,0,0.3);
+        }
+
+        /* 进度条 */
+        .progress-container {
+            margin-bottom: 30px;
+        }
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* 题目 */
+        .question-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            transition: color 0.5s, border-color 0.5s;
+        }
+
+        /* 选项 */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option-btn {
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 16px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            color: var(--text-main);
+        }
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        /* 覆盖层（耳语、醒来、BGM等） */
+        .overlay-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            font-weight: 900;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+        .overlay-screen.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .whisper-text {
+            font-size: 20px;
+            color: #ccc;
+            font-style: italic;
+        }
+        .red-alert {
+            color: var(--danger);
+            font-size: 46px;
+            animation: shake 0.3s infinite;
+        }
+        @keyframes shake {
+            0% { transform: translate(2px, 2px) rotate(0deg); }
+            25% { transform: translate(-2px, -2px) rotate(1deg); }
+            75% { transform: translate(2px, -2px) rotate(-1deg); }
+            100% { transform: translate(-2px, 2px) rotate(0deg); }
+        }
+
+        /* 输入框 */
+        .input-group {
+            margin-top: 20px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            background: var(--bg-color);
+        }
+
+        /* 结果页面 */
+        .result-box {
+            text-align: center;
+        }
+        .result-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .result-desc {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+        .type-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* ===== 灾难倒计时故障通知 ===== */
+        .disaster-notice {
+            position: fixed;
+            top: -100px;
+            left: 0;
+            width: 100%;
+            background: #8a0303;
+            color: #fff;
+            padding: 18px 0;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(138, 3, 3, 0.5);
+            z-index: 9999;
+            transition: top 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .disaster-notice.show {
+            top: 0;
+        }
+        .disaster-notice.glitch {
+            animation: glitchEffect 0.2s infinite;
+        }
+        @keyframes glitchEffect {
+            0% { transform: translate(2px, 2px); opacity: 0.8; background: #a00000; }
+            25% { transform: translate(-2px, -2px); opacity: 1; background: #cc0000; }
+            50% { transform: translate(2px, -2px); opacity: 0.9; background: #8a0303; }
+            75% { transform: translate(-2px, 2px); opacity: 1; background: #d40000; }
+            100% { transform: translate(2px, 2px); opacity: 0.8; background: #a00000; }
+        }
+        .alert-icon {
+            font-size: 26px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="disasterNotice" class="disaster-notice">
+        <i class="alert-icon">⚠</i>
+        <span id="disasterMsg">距离灾难来临还有 5</span>
+    </div>
+
+    <!-- 覆盖屏幕：耳语 -->
+    <div class="overlay-screen" id="whisperOverlay">
+        <div class="whisper-text">（耳语声在耳边回荡......）</div>
+    </div>
+
+    <!-- 覆盖屏幕：红色醒来 -->
+    <div class="overlay-screen red-alert" id="wakeOverlay">
+        <div>醒来！！！</div>
+    </div>
+
+    <!-- 主问卷容器 -->
+    <div class="container" id="mainContainer">
+        <div class="progress-container">
+            <div class="progress-text">
+                <span id="currentQuestion">第 0 题</span>
+                <span id="questionCount">/ 30</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+        </div>
+        
+        <div class="question-title" id="questionTitle">0.1 您的姓名</div>
+        
+        <div class="options-list" id="optionsList">
+            <!-- 选项将动态生成 -->
+        </div>
+    </div>
+
+    <script>
+         function calculateZodiac(dateStr) {
+            if (!dateStr) return "未知";
+            
+            const date = new Date(dateStr);
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            
+            const zodiacs = [
+                { name: '摩羯座', start: [12, 22], end: [1, 19] },
+                { name: '水瓶座', start: [1, 20], end: [2, 18] },
+                { name: '双鱼座', start: [2, 19], end: [3, 20] },
+                { name: '白羊座', start: [3, 21], end: [4, 19] },
+                { name: '金牛座', start: [4, 20], end: [5, 20] },
+                { name: '双子座', start: [5, 21], end: [6, 21] },
+                { name: '巨蟹座', start: [6, 22], end: [7, 22] },
+                { name: '狮子座', start: [7, 23], end: [8, 22] },
+                { name: '处女座', start: [8, 23], end: [9, 22] },
+                { name: '天秤座', start: [9, 23], end: [10, 23] },
+                { name: '天蝎座', start: [10, 24], end: [11, 22] },
+                { name: '射手座', start: [11, 23], end: [12, 21] }
+            ];
+
+            for (let i = 0; i < zodiacs.length; i++) {
+                const z = zodiacs[i];
+                const startM = z.start[0], startD = z.start[1];
+                const endM = z.end[0], endD = z.end[1];
+
+                if ((month === startM && day >= startD) || (month === endM && day <= endD)) {
+                    return z.name;
+                }
+            }
+            return "未知";
+        }
+
+        // ================= 初始化数据 =================
+        let currentIndex = 0;
+        let score = 0;
+        let userName = "";
+        let userBirthday = "";
+        let testFinished = false;
+
+        let answers = {};
+
+        // 题库数据（0.1和0.2不计入进度）
+        const questions = [
+            { type: 'text', title: '0.1 您的姓名', placeholder: '请输入姓名' },
+            { type: 'date', title: '0.2 您的出生日期', placeholder: '请选择出生日期' },
+            { type: 'choice', title: '1. 您能轻易入睡', options: [{t:'A.非常认同',v:2},{t:'B.认同',v:1},{t:'C.不认同',v:-1},{t:'D.非常不认同',v:-2}] },
+            { type: 'choice', title: '2. 您经常做梦', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '3. 大多数情况您都能记住梦境内容', options: [{t:'A.非常认同',v:2},{t:'B.认同',v:1},{t:'C.不认同',v:-1},{t:'D.非常不认同',v:-2}] },
+            { type: 'choice', title: '4. 睡醒后，您感觉很轻松', options: [{t:'A.非常认同',v:2},{t:'B.认同',v:1},{t:'C.不认同',v:-1},{t:'D.非常不认同',v:-2}] },
+            { type: 'choice', title: '5. 半梦半醒之间，您经常会有无法起身（鬼压床）的感觉', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '6. 入睡前，您能听见房间内细微的声音', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '7. 您需要服用药物才能入睡', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '8. 您睡前总会听见熟悉的细碎声音（此题过后有耳语）', options: [{t:'A.非常认同',v:0},{t:'B.认同',v:0},{t:'C.不认同',v:0}], special: 'whisper' },
+            { type: 'choice', title: '9. 您经常做噩梦', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '10. 您认为噩梦对您的记忆力有影响', options: [{t:'A.非常认同',v:0},{t:'B.认同',v:0},{t:'C.不认同',v:0},{t:'D.非常不认同',v:0}] },
+            { type: 'choice', title: '11. 半夜醒来后您依旧可以快速入睡', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:0},{t:'C.不认同',v:0},{t:'D.非常不认同',v:0}] },
+            { type: 'choice', title: '12. 您对梦境的内容感到熟悉', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '13. 您无法在梦中认识到自己', options: [{t:'A.非常认同',v:0},{t:'B.认同',v:0},{t:'C.不认同',v:0},{t:'D.非常不认同',v:0}], special: 'forced_A' },
+            { type: 'choice', title: '14. 您愿意另一个与您完全相同的自己替您而活吗', options: [{t:'A.非常认同',v:0},{t:'B.认同',v:0},{t:'C.不认同',v:0},{t:'D.非常不认同',v:0}], special: 'audit_mode' },
+            { type: 'choice', title: '15. 您的作息很规律', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '16. [数据缺失]', options: [{t:'A',v:0},{t:'B',v:0},{t:'C',v:0},{t:'D',v:0}] },
+            { type: 'choice', title: '17. 您很难分辨梦境与现实', options: [{t:'A.非常认同',v:0},{t:'B.认同',v:0},{t:'C.不认同',v:0},{t:'D.非常不认同',v:0}], special: 'wake_up' },
+            { type: 'choice', title: '18. 不反复确认门窗关闭等细节，您就无法入睡', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '19. 您认为噩梦对您的记忆力有影响', options: [{t:'A.非常认同',v:0},{t:'B.认同',v:0},{t:'C.不认同',v:0},{t:'D.非常不认同',v:0}], special: 'check_12' },
+            { type: 'choice', title: '20. 您感觉梦中的夜晚很短暂', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '21. 您经常梦见死去的亲朋好友', options: [{t:'A.非常认同',v:0},{t:'B.认同',v:0},{t:'C.不认同',v:0},{t:'D.非常不认同',v:0}], special: 'name_swap' },
+            { type: 'choice', title: '22. 您是否会担心自己“今晚又睡不好”而产生焦虑', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '23. 您的星座是 ' + (window.__userZodiac || '未知'), options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '24. 您对睡眠感到疲惫与恐惧', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '25. 您经常梦见灾难降临', options: [{t:'A.非常认同',v:0},{t:'B.认同',v:0},{t:'C.不认同',v:0},{t:'D.非常不认同',v:0}], special: 'disaster_countdown' },
+            { type: 'choice', title: '26. 您在入睡经常胡思乱想', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '27. 您无法在梦中通过打字表达想要的内容', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '28. 您认为睡眠对您来说可有可无', options: [{t:'A.非常认同',v:2},{t:'B.认同',v:1},{t:'C.不认同',v:-1},{t:'D.非常不认同',v:-2}] },
+            { type: 'choice', title: '29. 您需要特定的睡姿才能入眠', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
+            { type: 'choice', title: '30. 您平时有午休的习惯', options: [{t:'A.非常认同',v:2},{t:'B.认同',v:0},{t:'C.不认同',v:0},{t:'D.非常不认同',v:0}] },
+            { type: 'text', title: '31. 您最近经常做怪梦吗，内容是', placeholder: '请输入你最近梦到的内容...' },
+        ];
+
+        // 背景音乐（占位符）
+        const bgmAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAACAgICA');
+        bgmAudio.loop = true;
+        let isBGMPlaying = false;
+
+        // 渲染题目
+        function renderQuestion() {
+            if (currentIndex >= questions.length) {
+                finishTest();
+                return;
+            }
+
+            const q = questions[currentIndex];
+            
+            // 姓名和日期（0.1, 0.2）不参与进度条计算
+            let progress = (currentIndex / (questions.length - 2)) * 100;
+            if (currentIndex === 0 || currentIndex === 1) {
+                progress = 0; 
+            }
+            
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('currentQuestion').innerText = `第 ${Math.max(0, currentIndex - 1)} 题`;
+            document.getElementById('questionCount').innerText = `/ 30`;
+            
+            let title = q.title;
+            // 特殊处理 23 题，实时读取日期计算出的星座
+            if (currentIndex === 22) {
+                title = '23. 您的星座是 ' + (window.__userZodiac || '未知');
+            }
+            // 特殊替换标题
+            if (q.special === 'name_swap') {
+                title = title.replace('死去的亲朋好友', userName || '死去的亲朋好友');
+            }
+
+            document.getElementById('questionTitle').innerText = title;
+            
+            const optionsList = document.getElementById('optionsList');
+            optionsList.innerHTML = '';
+
+            if (q.type === 'text') {
+                const inputGroup = document.createElement('div');
+                inputGroup.className = 'input-group';
+                inputGroup.innerHTML = `<input type="text" id="textInput" placeholder="${q.placeholder || ''}">`;
+                optionsList.appendChild(inputGroup);
+                
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = '确认';
+                btn.onclick = () => {
+                    const val = document.getElementById('textInput').value;
+
+                    if (!val || val.trim() === "") {
+                        alert("请填写内容后再确认！"); 
+                        return; 
+                    }
+
+                    if (currentIndex === 0) {
+                        userName = val;
+                        nextQuestion(0); 
+                    }
+                    else if (currentIndex === 30) {
+                        const container = document.getElementById('mainContainer');
+                        const titleEl = document.getElementById('questionTitle');
+                        
+                        titleEl.innerText = "系统检测到异常输入，正在尝试解析...";
+                        
+                        setTimeout(() => {
+                            titleEl.innerText = "错误：无法解析梦境内容！";
+                            container.style.transform = "scale(0.98)";
+                            setTimeout(() => {
+                                alert("输入法随机出结果：" + String.fromCharCode(Math.floor(Math.random() * 65535)));
+                                container.style.transform = "scale(1)";
+                                nextQuestion(0); 
+                            }, 500);
+                        }, 600);
+                    }
+                };
+                optionsList.appendChild(btn);
+            } 
+            
+            else if (q.type === 'date') {
+                const inputGroup = document.createElement('div');
+                inputGroup.className = 'input-group';
+                inputGroup.innerHTML = `<input type="date" id="dateInput" style="font-family: inherit; cursor: pointer;">`;
+                optionsList.appendChild(inputGroup);
+                
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = '确认';
+                btn.onclick = () => {
+                    const val = document.getElementById('dateInput').value;
+
+                    if (!val) {
+                        alert("请先选择出生日期，然后再确认。");
+                        return; 
+                    }
+
+                    if (currentIndex === 1) {
+                        userBirthday = val;
+                        window.__userZodiac = calculateZodiac(val);
+                    }
+                    nextQuestion(0); 
+                };
+                optionsList.appendChild(btn);
+            } 
+            
+            else {
+                q.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt.t;
+                    btn.onclick = () => handleChoice(opt.v);
+                    optionsList.appendChild(btn);
+                });
+            }
+        }
+
+        function handleChoice(value) {
+            const q = questions[currentIndex];
+
+            if (currentIndex === 11) answers['q12'] = value;
+
+            if (q.special === 'whisper') {
+                showOverlay('whisperOverlay');
+                if (!isBGMPlaying) { bgmAudio.play(); isBGMPlaying = true; }
+                setTimeout(() => hideOverlay('whisperOverlay'), 2000);
+                nextQuestion(value);
+                return;
+            }
+
+            if (q.special === 'forced_A') {
+                setTimeout(() => {
+                    showOverlay('wakeOverlay');
+                    document.getElementById('wakeOverlay').innerHTML = "你忘了我吗？<br>你忘了我吗？<br>你忘了我吗？";
+                    setTimeout(() => {
+                        hideOverlay('wakeOverlay');
+                        document.getElementById('wakeOverlay').innerHTML = "醒来！！！";
+                        nextQuestion(0); 
+                    }, 1800);
+                }, 500);
+                return;
+            }
+
+            if (q.special === 'audit_mode') {
+                document.body.classList.add('audit-mode');
+                document.getElementById('questionTitle').innerText = "资格审查问卷";
+                setTimeout(() => {
+                    document.body.classList.remove('audit-mode');
+                    nextQuestion(value);
+                }, 2500);
+                return;
+            }
+
+            if (q.special === 'wake_up') {
+                showOverlay('wakeOverlay');
+                setTimeout(() => hideOverlay('wakeOverlay'), 1500);
+                setTimeout(() => nextQuestion(value), 1600);
+                return;
+            }
+
+            if (q.special === 'check_12') {
+                if (value !== answers['q12']) {
+                    alert("您还记得12题选了什么吗？\n[记得]\n[不记得]");
+                }
+                nextQuestion(value);
+                return;
+            }
+
+            if (q.special === 'disaster_countdown') {
+                const notice = document.getElementById('disasterNotice');
+                const msgEl = document.getElementById('disasterMsg');
+                
+                notice.classList.add('show');
+                let count = 5;
+                msgEl.innerText = `距离灾难来临还有 ${count}`;
+                
+                const countdownInterval = setInterval(() => {
+                    count--;
+                    if (count >= 3) {
+                        msgEl.innerText = `距离灾难来临还有 ${count}`;
+                    } 
+                    else if (count === 2) {
+                        msgEl.innerText = `距离灾难来临还有 0`;
+                        notice.classList.add('glitch');
+                        clearInterval(countdownInterval);
+                        
+                        setTimeout(() => {
+                            notice.classList.remove('glitch');
+                            notice.classList.remove('show');
+                            nextQuestion(value);
+                        }, 2000);
+                    }
+                }, 800);
+                return;
+            }
+
+            if (q.special === 'input_glitch') {
+                alert("随机输入法崩溃：" + String.fromCharCode(Math.floor(Math.random() * 65535)));
+                nextQuestion(value);
+                return;
+            }
+
+            nextQuestion(value);
+        }
+
+        function nextQuestion(value) {
+            const numericValue = typeof value === 'number' ? value : parseInt(value, 10) || 0;
+            score += numericValue;
+            currentIndex++;
+            renderQuestion();
+        }
+
+        function showOverlay(id) {
+            document.getElementById(id).classList.add('show');
+        }
+        function hideOverlay(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        function finishTest() {
+            document.getElementById('questionTitle').innerText = "您已完成32题的内容，正在跳转结果";
+            document.getElementById('optionsList').innerHTML = "";
+            
+            setTimeout(() => {
+                let type = "";
+                let desc = "";
+                if (score >= 30) { type = "筑梦师"; desc = "清醒梦境 / 清晰掌控"; }
+                else if (score >= 20) { type = "旅梦人"; desc = "极浅梦境 / 朦胧感知"; }
+                else if (score >= 10) { type = "控梦雏"; desc = "浅度梦境 / 初窥门径"; }
+                else if (score >= 0) { type = "无梦者"; desc = "标准梦境 / 安静祥和"; }
+                else if (score >= -10) { type = "太白星"; desc = "梦笔生花 / 灵感闪现"; }
+                else if (score >= -20) { type = "卢先生"; desc = "黄粱一梦 / 虚幻缥缈"; }
+                else if (score >= -30) { type = "华子休"; desc = "庄周梦蝶 / 物我两忘"; }
+                else { type = "Limbo"; desc = "混沌边缘 / 深度迷失"; }
+                
+                document.getElementById('mainContainer').innerHTML = `
+                    <div class="result-box">
+                        <div class="result-title">测评结果</div>
+                        <div class="type-badge">${type}</div>
+                        <div class="result-desc">${desc}</div>
+                        <div class="result-desc">最终得分：${score}</div>
+                        <p style="color: #aaa; font-size: 12px;">（BGM 依旧在耳边回荡，你确定你真的醒了吗？）</p>
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        // 开始
+        renderQuestion();
+    </script>
+</body>
+</html>

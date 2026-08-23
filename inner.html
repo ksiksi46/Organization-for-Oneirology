@@ -247,16 +247,16 @@
             background: transparent;
         }
 
+      
+
         .calendar-day.today {
             box-shadow: inset 0 0 0 1.5px var(--secondary);
         }
-
-          .calendar-day.recorded {
+  .calendar-day.recorded {
             background: rgba(28, 176, 108, 0.15); /* 绿色的浅背景 */
             border-color: rgba(28, 176, 108, 0.4);
         }
-
-        .calendar-day.recorded::after {
+          .calendar-day.recorded::after {
             content: '✓'; /* 显示对勾 */
             position: absolute;
             width: 100%;
@@ -663,104 +663,6 @@
             .status-grid { grid-template-columns: 1fr; }
             .status-item { padding: 20px; }
         }
-          .permission-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 30, 0.5);
-            backdrop-filter: blur(3px);
-            z-index: 3000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .permission-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .permission-modal {
-            background: var(--bg-white);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-            width: 350px;
-            padding: 40px 30px;
-            text-align: center;
-            transform: translateY(20px) scale(0.95);
-            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .permission-overlay.active .permission-modal {
-            transform: translateY(0) scale(1);
-        }
-
-        .permission-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(139, 30, 30, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            color: var(--accent);
-            font-size: 24px;
-        }
-
-        .permission-modal h3 {
-            font-family: var(--font-heading);
-            font-size: 24px;
-            color: var(--primary);
-            margin: 0 0 15px 0;
-            letter-spacing: 1px;
-        }
-
-        .permission-modal p {
-            font-family: var(--font-ui);
-            font-size: 16px;
-            line-height: 1.6;
-            color: var(--text-dark);
-            margin: 0;
-        }
-
-        .permission-actions {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .permission-login {
-            background: var(--primary);
-            color: #fff;
-            border: 1px solid var(--primary);
-            padding: 10px 25px;
-            font-family: var(--font-mono);
-            font-size: 14px;
-            letter-spacing: 1px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .permission-login:hover { background: var(--secondary); border-color: var(--secondary); }
-
-        .permission-cancel {
-            background: transparent;
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            padding: 10px 25px;
-            font-family: var(--font-mono);
-            font-size: 14px;
-            letter-spacing: 1px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .permission-cancel:hover { border-color: var(--text-dark); color: var(--text-dark); }
  </style>
 </head>
 <body>
@@ -780,11 +682,11 @@
             <a href="#sec-1">机构简介</a>
             <a href="#sec-2">成员简介</a>
             <a href="#sec-3">药剂申请</a>
-            <a href="#sec-5">怪奇事件</a>
-            <a href="#sec-6">QA答疑</a>
-            <a href="#sec-7">全球观测网络</a>
+            <a href="#sec-5">QA答疑</a>
+            <a href="#sec-6">全球观测网络</a>
+            <a href="#sec-7">怪奇事件</a>
             <button class="btn-med-check" type="button" aria-label="查看服药情况">服药情况</button>
-            <button class="btn-term" type="button" onclick="window.open('小恐龙.html')">干事终端登录</button>
+            <button class="btn-term" >已登录</button>
         </div>
     </header>
 
@@ -1021,7 +923,7 @@
 
                         <!-- 底部链接按钮 -->
                         <div style="display: flex; align-items: center; gap: 15px;">
-                            <a href="applepill.html" style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: #ffffff; color: #1A1D21; text-decoration: none; font-size: 20px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" target="_blank"><i class="fa-solid fa-arrow-right"></i></a>
+                            <a href="pill.html" style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: #ffffff; color: #1A1D21; text-decoration: none; font-size: 20px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" target="_blank"><i class="fa-solid fa-arrow-right"></i></a>
                             <span style="font-family: var(--font-mono); font-size: 13px; color: rgba(255,255,255,0.8);">了解更多</span>
                         </div>
                     </div>
@@ -1040,7 +942,7 @@
                     <h2 style="color: #316B83; font-size: 24px;">>Weird Events</h2>
                       <div class="sec-action-bar">
             
-                        <a href="odd.html"  class="sec-more-link" id="oddLink" target="_blank">更多 >></a>
+                        <a href="odd.html" class="sec-more-link" target="_blank">更多 >></a>
                     </div>
                 </div>
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 60px; padding-left: 0; margin-top: 20px;">
@@ -1241,20 +1143,11 @@
             </div>
             <div class="calendar-days" id="calendarDays"></div>
             <div class="calendar-summary">
-     
+                <p><strong>本月服药记录：</strong> 6 次，整体保持稳定。最近一次服药为 8 月 30 日。</p>
             </div>
         </div>
     </div>
-  <div class="permission-overlay" id="permissionOverlay">
-        <div class="permission-modal">
-            <h3>权限不足</h3>
-            <p>怪奇事件属于高级机密档案。</p>
-            <p style="color: var(--text-muted); font-size: 14px; margin-top: 10px;">请先登录账户，获取更高权限等级后查看。</p>
-            <div class="permission-actions">
-                <button class="permission-cancel" id="permissionCancelBtn">确定</button>
-            </div>
-        </div>
-    </div>
+
     <script>
         const medicalButton = document.querySelector('.btn-med-check');
         const calendarOverlay = document.getElementById('calendarOverlay');
@@ -1264,7 +1157,7 @@
         const calendarMonth = document.getElementById('calendarMonth');
         const calendarDays = document.getElementById('calendarDays');
 
-         const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+       const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
 
         // 完全从本地存储读取真实服药记录（没有记录就是空数组）
         let storedRecords = [];
@@ -1401,39 +1294,6 @@
                 }
                 container.style.transform = `translateX(${currentPosition}px)`;
             });
-        });
-          const oddLink = document.getElementById('oddLink');
-        const permissionOverlay = document.getElementById('permissionOverlay');
-        const permissionCancelBtn = document.getElementById('permissionCancelBtn');
-        const permissionLoginBtn = document.getElementById('permissionLoginBtn');
-
-        // 点击“更多”时触发拦截
-        oddLink.addEventListener('click', (e) => {
-            // 检查是否有本地登录记录（在outside.html登录时设置）
-            const isLoggedIn = localStorage.getItem('ofo_isLoggedIn') === 'true';
-
-            if (!isLoggedIn) {
-                e.preventDefault(); // 阻止默认跳转
-                permissionOverlay.classList.add('active'); // 弹出权限提示
-            }
-            // 如果已登录，代码会正常跳转到 odd.html
-        });
-
-        // 关闭权限弹窗
-        permissionCancelBtn.addEventListener('click', () => {
-            permissionOverlay.classList.remove('active');
-        });
-
-        // 点击弹窗外空白处也可关闭
-        permissionOverlay.addEventListener('click', (e) => {
-            if (e.target === permissionOverlay) {
-                permissionOverlay.classList.remove('active');
-            }
-        });
-
-        // 前往登录（回到 outside.html）
-        permissionLoginBtn.addEventListener('click', () => {
-            window.location.href = 'outside.html';
         });
     </script>
 

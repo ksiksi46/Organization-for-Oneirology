@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于宣传赵弘远同志先进事迹的通告 - 邺山村村民委员会</title>
+    <style>
+        /* ==================== 基础重置 ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+      body {
+  
+    background-image: url('image/beijing.webp'); /* 你的真实蓝天背景图 */
+    background-repeat: no-repeat;               /* 不重复 */
+    background-size: cover;                     /* 图片等比放大铺满整个浏览器窗口 */
+    background-position: center center;         /* 居中显示 */
+    background-attachment: fixed;               /* 【关键】固定，不随页面滚动 */
+    font-family: "Microsoft YaHei", "微软雅黑", "SimSun", "宋体", sans-serif;
+    font-size: 14px;
+    color: #333;
+
+}
+
+/* 白色蒙版，让背景变淡，不干扰中间内容阅读 */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  
+    z-index: 10;
+    pointer-events: none;                    /* 让蒙版不阻挡点击 */
+}
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+        a:hover {
+            color: #c00;
+            text-decoration: underline;
+        }
+        .clearfix:after {
+            content: ".";
+            display: block;
+            height: 0;
+            clear: both;
+            visibility: hidden;
+        }
+        .clearfix {
+            display: block;
+        }
+        .fl {
+            float: left;
+        }
+        .fr {
+            float: right;
+        }
+
+        /* ==================== 顶部栏（正常跟随滚动） ==================== */
+        .top-bar {
+            height: 35px;
+            line-height: 35px;
+            background: #f7f7f7;
+            border-bottom: 1px solid #ddd;
+            font-size: 12px;
+            color: #666;
+            padding: 0 20px;
+            width: 100%; /* 铺满全屏，但跟随滚动 */
+        }
+        .top-bar a {
+            color: #666;
+            margin: 0 5px;
+        }
+        .top-bar a:hover {
+            color: #c8161d;
+        }
+
+        /* ==================== 抬头图片（正常跟随滚动，铺满全屏） ==================== */
+     .header {
+    width: 100%;
+    height: auto;       /* 高度跟随图片 */
+  
+    text-align: center; /* 让内部图片居中 */
+    overflow: hidden;
+}
+
+.header img {
+    display: block;
+    margin: 0 auto;     /* 水平居中 */
+    max-width: 1200px;  /* 设置最大宽度，图片不会超过这个数 */
+    width: 100%;        /* 如果屏幕小于1400px，则铺满屏幕 */
+    height: 300px;       /* 高度按比例自动缩放，绝对不变形 */
+}
+        /* ==================== 整体内容容器 ==================== */
+        .wrapper {
+            width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.08);
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            padding: 15px 20px;
+            background: #f9f9f9;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+        .breadcrumb a {
+            color: #333;
+        }
+        .breadcrumb a:hover {
+            color: #c8161d;
+        }
+        .breadcrumb .current {
+            color: #c8161d;
+            font-weight: bold;
+        }
+
+        /* 主体内容区 */
+        .main-container {
+            padding: 30px 20px;
+            min-height: 600px;
+        }
+
+        /* 详情页内容 */
+        .detail-area {
+            width: 900px;
+            margin: 0 auto;
+        }
+        .detail-title {
+            font-size: 28px;
+            font-family: "SimHei", "黑体";
+            color: #c8161d;
+            text-align: center;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+        .detail-meta {
+            text-align: center;
+            color: #888;
+            font-size: 13px;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        .detail-meta span {
+            margin: 0 15px;
+        }
+        .detail-content {
+            font-family: "SimSun", "宋体";
+            font-size: 16px;
+            line-height: 2;
+            color: #333;
+        }
+        .detail-content p {
+            margin-bottom: 20px;
+            text-indent: 2em;
+        }
+        .detail-content .signature {
+            text-align: right;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+        .detail-content .signature p {
+            text-indent: 0;
+            margin-bottom: 8px;
+        }
+
+        /* 附件列表 */
+        .attach-list {
+            margin: 30px 0;
+            padding: 15px 20px;
+            background: #f9f9f9;
+            border-left: 4px solid #c8161d;
+        }
+        .attach-list h4 {
+            font-family: "SimHei", "黑体";
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 16px;
+        }
+        .attach-list ul {
+            list-style: none;
+        }
+        .attach-list li {
+            padding: 6px 0;
+        }
+        .attach-list li a {
+            color: #0066cc;
+            font-size: 14px;
+        }
+        .attach-list li a:hover {
+            color: #c8161d;
+        }
+
+        /* 页脚 */
+        .footer {
+            background: #e5e5e5;
+            border-top: 3px solid #c8161d;
+            padding: 30px 0;
+            margin-top: 30px;
+        }
+        .footer-content {
+            width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .footer-text {
+            font-family: "SimSun", "宋体";
+            font-size: 12px;
+            line-height: 24px;
+            color: #555;
+        }
+        .footer-text span {
+            margin: 0 10px;
+        }
+        .footer-text a {
+            color: #555;
+        }
+        .footer-text a:hover {
+            color: #c8161d;
+        }
+
+        /* 返回顶部按钮 */
+        #goTop {
+            position: fixed;
+            right: 30px;
+            bottom: 50px;
+            width: 45px;
+            height: 45px;
+            background: #004b97;
+            color: #fff;
+            text-align: center;
+            line-height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            transition: all 0.3s;
+            font-size: 20px;
+            z-index: 2000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        #goTop:hover {
+            background: #c8161d;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部栏（正常在顶部，滚动时消失） -->
+    <div class="top-bar">
+        <div class="fl">
+            今天是：<span id="date-str"></span> |
+        </div>
+        <div class="fr">
+            <a href="javascript:void(0)" onclick="alert('该功能只在IE6浏览器下生效。')">设为首页</a> | 
+            <a href="javascript:void(0)" onclick="alert('快捷键 Ctrl+D 加入收藏。')">加入收藏</a> | 
+            <a href="javascript:void(0)">领导信箱</a> | 
+            <a href="javascript:void(0)">旧版网站(2006版)</a>
+        </div>
+    </div>
+
+    <!-- 抬头图片（正常在顶部，滚动时消失，铺满全屏） -->
+    <div class="header">
+        <img src="image/taitou.webp" alt="滨海市公安" />
+    </div>
+
+    <!-- 主内容区域（正常文档流） -->
+    <div class="wrapper">
+        <!-- 面包屑导航 -->
+        <div class="breadcrumb">
+            <a href="javascript:void(0)">首页</a> &gt; 
+            <a href="javascript:void(0)">通知公告</a> &gt; 
+            <span class="current">无名尸体案件调查档案</span>
+        </div>
+
+        <!-- 主体内容 -->
+         <!-- 主内容区域 -->
+   
+
+        <div class="main-container">
+            <div class="detail-title">无名尸体案件调查档案</div>
+            <div class="detail-meta">
+                <span>案件编号：U-6202-4080-027</span>
+                <span>保密级别：机密</span>
+                <span>录入时间：2026年8月21日</span>
+                <span>访问权限：解梦会/外联部</span>
+            </div>
+            
+            <div class="detail-content">
+                <h3>【线索来源】</h3>
+                <p>本档案的初始触发点并非直接来自社交媒体或警方调查回执，而是源于外联部与研发部对官方合作组织人员的一次例行异常行为监测。</p>
+                <p>近期，本会在对官方合作组织成员进行例行精神检查时，系统截获了滨海市局刑侦大队副队长——<strong>宏</strong>的异常行为轨迹。作为近期一宗“荒野抛尸案”的主办刑警，宏在过去两周内频繁在深夜使用内网检索“连续坠落感”、“无法辨认人脸的梦境”以及“熟悉的陌生人”等高度敏感词汇。同时，外联部的线下渠道反馈，宏的现实精神状态正急速恶化，出现严重的睡眠剥夺症状。不少工作上的同事目睹到他最近精神状态不佳，出现喃喃自语，频繁走神等症状，并有在非工作时间多次独自前往停尸房的记录。</p>
+                <p>目前，宏已被暂停负责对此案的调查。</p>
+
+                <h3>【怪梦关联度评估】</h3>
+                <p>我们怀疑宏警官经手的这桩无名尸体案件并非普通的刑事案件，而是一桩以警官宏的怪梦为源头扩散的怪奇事件，理由如下：</p>
+                <p><strong>1，无名尸身份的抹除：</strong>根据外联部获取的内部验尸报告，该尸体极度违背常理。除了能确认其生理性别为男性外，其指纹、面部特征、牙科记录被以极其精密且诡异的手法完全毁坏。更令人不安的是，其遗留的生物样本在全国DNA库中呈现绝对空白，就像是这个人的存在痕迹，被某种力量从物理和社会层面上彻底格式化。</p>
+                <p><strong>2，接触者的梦境污染症状：</strong>宏警官在接触该尸体及相关证物后，其行为模式与本会记录的梦境污染（二期）症状高度吻合。</p>
+
+                <h3>【行动指令】</h3>
+                <p>该案件还未正式定性为怪奇事件。现指派高级成员介入，对该事件进行以下调查：</p>
+                <p>1，根据解梦会已有的调查资料，利用外联部提供的合法证明，调查警官宏的个人资料，并主动接触警官宏。确认他近期的异常行为是否确由怪梦引起。</p>
+                <p>2，若验证为【是】，且宏的梦境污染程度正进一步加深，授权对其展示解梦会名片。因其为解梦会官方合作组织成员，可通过提供基础版红药丸缓解其症状以获取信任。在确认其保密意识与抗压能力后，将其正式吸纳入解梦会外围编制。</p>
+                <p>3，利用宏警官的官方权限，调取无名尸案被封存的第一手现场物证。继续对无名尸体案件的调查。</p>
+
+                <h3>【案件资料】</h3>
+                <p>下面是解梦会与警方共同合作建立的案件资料库，请点击下方附件链接查阅详细卷宗。</p>
+                
+                <!-- 附件列表 -->
+               <div class="attach-list">
+    <h4>📎 附件（点击下载）：</h4>
+    <ul>
+        <li>
+            <a href="市公安局督察处谈话笔录.docx" download="附件1：市公安局督察处谈话笔录.docx">附件1：市公安局督察处谈话笔录.docx</a>
+        </li>
+        <li>
+            <a href="解梦会协助调查未知名尸体信息登记表.docx" download="附件2：解梦会协助调查未知名尸体信息登记表.docx">附件2：解梦会协助调查未知名尸体信息登记表.docx</a>
+        </li>
+        <li>
+            <a href="解梦会协助调查未知名尸体勘验信息登记表.docx" download="附件3：解梦会协助调查未知名尸体勘验信息登记表.docx">附件3：解梦会协助调查未知名尸体勘验信息登记表.docx</a>
+        </li>
+        <li>
+            <a href="悬赏通告.webp" download="附件4：悬赏通告.webp">附件4：悬赏通告.webp</a>
+        </li>
+    </ul>
+</div>
+
+                <div class="signature">
+                    <p>解梦会 · 滨海市公安局</p>
+                    <p>2026年8月 归档</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-text">
+                <p>
+                    <a href="javascript:void(0)">关于我们</a> <span>|</span> 
+                    <a href="javascript:void(0)">网站声明</a> <span>|</span> 
+                    <a href="javascript:void(0)">联系方式</a> <span>|</span> 
+                    <a href="javascript:void(0)">隐私保护</a>
+                </p>
+              
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <div id="goTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+
+    <script>
+        // 日期显示
+        window.onload = function() {
+            var dateObj = new Date();
+            var year = dateObj.getFullYear();
+            var month = dateObj.getMonth() + 1;
+            var date = dateObj.getDate();
+            var dayArr = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+            var day = dayArr[dateObj.getDay()];
+            document.getElementById("date-str").innerHTML = year + "年" + month + "月" + date + "日 " + day;
+            
+            // 返回顶部按钮显示隐藏
+            window.addEventListener('scroll', function() {
+                var goTop = document.getElementById('goTop');
+                if (window.scrollY > 300) {
+                    goTop.style.display = 'block';
+                } else {
+                    goTop.style.display = 'none';
+                }
+            });
+        };
+    </script>
+</body>
+</html>

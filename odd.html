@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+      <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>怪奇事件 - 解梦会 OFO</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        :root { 
+            --primary: #0F171E; 
+            --secondary: #316B83; 
+            --accent: #8B1E1E; 
+            --bg-light: #F8FAFC; 
+            --bg-white: #FFFFFF; 
+            --text-dark: #1E293B; 
+            --text-muted: #64748B; 
+            --border: #E2E8F0; 
+            --font-heading: 'EB Garamond', 'Times New Roman', serif; 
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;  
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif; 
+        }
+
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            font-family: var(--font-ui);  
+            background-color: var(--bg-light); 
+            color: var(--text-dark); 
+            overflow-x: hidden; 
+        }
+
+        /* ================= 头部标识与面包屑 ================= */
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator { color: var(--border); }
+
+        /* ================= 核心内容区 ================= */
+        .content-wrapper {
+            padding: 60px 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 60px;
+            margin-top: 40px;
+            position: relative;
+        }
+
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 48px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0 0 30px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        /* 右上角双按钮 */
+        .top-actions {
+            position: absolute;
+            top: 60px;
+            right: 60px;
+            display: flex;
+            gap: 15px;
+        }
+        .top-actions a {
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 24px;
+            border: 1px solid var(--border);
+            background: var(--bg-white);
+            color: var(--text-dark);
+            transition: 0.3s;
+            font-family: var(--font-mono);
+            letter-spacing: 0.5px;
+        }
+        .top-actions a:hover {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        /* ===== 左侧：主介绍 ===== */
+        .intro-area {
+            margin-top: 30px;
+            max-width: 700px;
+        }
+        .intro-area h3 {
+            font-family: var(--font-heading);
+            font-size: 28px;
+            font-weight: 500;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        .intro-area p {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        .intro-area blockquote {
+            border-left: 4px solid var(--secondary);
+            margin: 30px 0;
+            padding: 15px 25px;
+            background: var(--bg-light);
+            color: var(--text-muted);
+            font-style: italic;
+            border-radius: 2px;
+            font-size: 17px;
+        }
+
+        /* ================= 响应式适配 ================= */
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 0 20px 80px 20px; }
+            .main-card { padding: 30px 20px; }
+            .top-actions {
+                position: static;
+                margin-top: 15px;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部 Logo与面包屑 -->
+    <header class="page-header">
+        <a href="inside.html" class="logo-wrapper">
+            <img src="image/logo.webp" alt="OFO Logo">
+            <div>
+                <span class="b-title">OFO</span>
+                <span class="b-sub">Organization for Oneirology</span>
+            </div>
+        </a>
+
+        <div class="breadcrumb">
+            <a href="inside.html">Home</a>
+            <span class="separator">/</span>
+            <a href="inside.html#sec-7">怪奇事件</a>
+        </div>
+    </header>
+
+    <!-- 主体内容 -->
+    <div class="content-wrapper">
+        <div class="main-card">
+            
+            <!-- 标题与右上角操作区 -->
+            <h1 class="page-title">怪奇事件</h1>
+            <img src="image/odd.webp" alt="解梦会插图" style="width: 80%; height: auto; ">
+            <div class="top-actions">
+                <a href="odd1.html">已解决事件</a>
+                <a href="odd2.html">未解决事件</a>
+            </div>
+
+            <!-- 介绍内容 -->
+            <div class="intro-area">
+                <h3>观测者档案</h3>
+                <p>
+                    世上没有不可思议的事，只有尚未被记录下来的异常。解梦会对那些游离于现实边缘的怪奇事件进行搜集、分类与观测。
+                </p>
+                <blockquote>
+                    “你有没有想过，也许你的怪梦，是通往某个真实世界的唯一入口？”
+                </blockquote>
+                <p>
+                    本页分为 <strong>已解决</strong> 与 <strong>未解决</strong> 两个维度。已完成调查的将归于档案库，正在追踪的将陈列于待办观测栏。我们的调查从未中断，也期待你能带来新的记录。
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
