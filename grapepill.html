@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>按时服药 - 解梦会 OFO</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        :root { 
+            --primary: #4A2B34; 
+            --secondary: #D9849B; 
+            --accent: #B1637A; 
+            --bg-light: #FFF5F7; 
+            --bg-white: #FFFFFF; 
+            --text-dark: #3E2A30; 
+            --text-muted: #8A6673; 
+            --border: #F2D9E2; 
+            --font-heading: 'EB Garamond', 'Times New Roman', serif; 
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;  
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif; 
+        }
+
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            font-family: var(--font-ui);  
+            background-color: var(--bg-light); 
+            color: var(--text-dark); 
+            overflow-x: hidden; 
+        }
+
+        /* ================= 顶部 Logo与面包屑 ================= */
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator { color: var(--border); }
+
+        /* ================= 切换标签栏 ================= */
+        .tab-nav {
+            max-width: 1200px;
+            margin: 40px auto 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+        .tab-btn {
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-muted);
+            padding: 12px 30px;
+            transition: 0.3s;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            letter-spacing: 1px;
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+        .tab-btn:hover {
+            color: var(--primary);
+            background: rgba(217, 132, 155, 0.08);
+        }
+        .tab-btn.active {
+            color: var(--secondary);
+            border-color: var(--secondary);
+            background: var(--bg-white);
+        }
+
+        /* ================= 核心内容区容器 ================= */
+        .content-wrapper {
+            padding: 0 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 内容卡片基础样式 */
+        .section-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 60px;
+            margin-top: 40px;
+            display: none;
+        }
+
+        /* 当加上 .active 时，显示 */
+        .section-card.active {
+            display: block;
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 36px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0 0 30px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        /* ---- 药物介绍 ---- */
+        .medication-block { margin-bottom: 20px; }
+        .medication-block strong {
+            display: block;
+            color: var(--secondary);
+            font-size: 15px;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+        .medication-block p {
+            margin: 0 0 10px 0;
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        .medication-block ul {
+            margin: 5px 0 0 20px;
+            padding: 0;
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+        .medication-block strong.warning {
+            color: var(--accent);
+            margin-top: 10px;
+        }
+
+        /* ---- 每日仪式 ---- */
+        .ritual-card {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            border: 1px solid var(--border);
+        }
+        .ritual-card .section-title {
+            color: var(--primary);
+            border-bottom-color: var(--border);
+        }
+        .ritual-card .medication-block p {
+            color: var(--text-muted);
+        }
+        .ritual-card .medication-block strong {
+            color: var(--secondary);
+        }
+
+        .audio-player-wrapper {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 30px;
+            margin: 20px 0 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .audio-player-wrapper i { 
+            color: var(--secondary); 
+            font-size: 32px; 
+        }
+        .audio-player-wrapper audio { 
+            width: 100%; 
+        }
+
+        .ritual-steps {
+            border: 1px solid var(--border);
+            background: var(--bg-light);
+            padding: 20px 30px;
+            margin-top: 30px;
+        }
+        .ritual-steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .ritual-steps ol li {
+            font-size: 15px;
+            line-height: 2;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+        .ritual-steps ol li::marker { 
+            color: var(--secondary); 
+            font-weight: bold; 
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 0 20px 80px 20px; }
+            .section-card { padding: 30px 20px; }
+            .tab-nav { gap: 15px; flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部 Logo与面包屑 -->
+    <header class="page-header">
+        <a href="inside.html" class="logo-wrapper">
+            <img src="image/logo.webp" alt="OFO Logo">
+            <div>
+                <span class="b-title">OFO</span>
+                <span class="b-sub">Organization for Oneirology</span>
+            </div>
+        </a>
+
+        <div class="breadcrumb">
+            <a href="inside.html">Home</a>
+            <span class="separator">/</span>
+            <a href="inside.html#sec-3">按时服药</a>
+        </div>
+    </header>
+
+    <!-- 两个独立的导航按钮 -->
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('drug-info')">药物介绍</button>
+        <button class="tab-btn" onclick="switchTab('daily-ritual')">每日仪式</button>
+    </div>
+
+    <!-- 内容展示区 -->
+    <div class="content-wrapper">
+
+        <!-- ================= 板块一：药物介绍 ================= -->
+        <section id="drug-info" class="section-card active">
+            <h2 class="section-title">▍ 蓝药丸 / 药物介绍</h2>
+               <img src="image/blue.webp" alt="OFO Logo"style="width: 250px; height: auto; ">
+            <div class="medication-block">
+                <strong>通用名称：</strong>
+                <p>复方妥钠二乙酰胺胶囊 (Compound Sodium Diacetamide Capsules)<br>复方妥钠二乙酰胺潜意识干预波 (Auditory Subconscious Intervention Wave of Compound Sodium Diacetamide)</p>
+                <strong>商品名称：</strong>
+                <p>蓝药丸 / Blue Pill</p>
+            </div>
+
+            <div class="medication-block">
+                <strong>成分：</strong>
+                <p><b>实物成分：</b>本品实物为极其特殊的“生化-电子”复合制剂，由两部分核心成分构成：<br>药理激活性质：盐酸二甲基色胺（DMT）变体衍生物R-74，及高浓度神经递质泵激动剂。<br>数字微件：悬浮于药液中的纳米级可降解生物射频芯片，及意识上传集成网络的微型物理端口集线器。<br>辅料：微晶纤维素、硬脂酸镁、交联聚维酮、导电生理盐水缓冲液、浅蓝色薄膜包衣预混剂。</p>
+                <p><b>线上成分：</b>本品线上成分为以盐酸二甲基色胺变体衍生R-74为核心，通过超声波载荷构建的一套含有微型的网络通讯协议的特殊音频序列。</p>
+            </div>
+
+            <div class="medication-block">
+                <strong>性状：</strong>
+                <p><b>实物性状：</b>本品实物为半透明海蓝色硬胶囊，内部封装高黏度亮蓝色液体。对光观察时，可见液体内部有极其微小的银色金属粉尘呈现无规则布朗运动。</p>
+                <p><b>线上性状：</b>本品线上表现蓝色波形图标加密音频文件。听感上极其尖锐、刺耳。初始阶段类似旧式56调制解调器的“滴答”拨号声与传真机的高频啸叫，随后会转变为极具压迫感的多重失真人声合唱底噪。长时间聆听会导致严重的心跳加速与耳膜胀痛。</p>
+            </div>
+
+            <div class="medication-block">
+                <strong>适应症：</strong>
+                <p>通过药物强行打破大脑血脑屏障与潜意识防火墙，并利用体内的纳米芯片建立局域网直连，允许服用者的意识短暂上传并接入人类集体潜意识的集成网络层。帮助患者加强异常链接，增强梦境细节，调查梦境真相。</p>
+            </div>
+
+            <div class="medication-block">
+                <strong>规格：</strong>
+                <p>10mg（活性药理成分）+1.5亿个纳米生物节点/粒。</p>
+            </div>
+
+            <div class="medication-block">
+                <strong>禁忌：</strong>
+                <p>严禁与“红药丸”在72小时内混合使用！“红药丸”的神经抑制效果与“蓝药丸”的神经超频效果将发生致死性冲突，极易引发不可逆的脑溢血或神经元烧毁。</p>
+                <p>精神状态极度不稳定、存在严重心理创伤未愈合的成员禁用。</p>
+            </div>
+
+            <div class="medication-block" style="border-top: 1px solid var(--border); padding-top: 15px; margin-top: 25px;">
+                <strong>注意事项：</strong>
+                <p><b>下潜时限：</b>现实世界中的药效维持时间约15分钟（在集体潜意识的时间流速感知中可能长达数天）。一旦监控脑电波峰值逼近红线，看护者必须立即向服用者注射肾上腺素进行强制物理唤醒，强行切断上传网络。</p>
+                <p>服药后8小时内，绝对禁止从事驾驶、高空作业及任何需要高度集中注意力的脑力活动。</p>
+                <p><b>药片保管：</b>本药物实体化合物对特定频率的光波及电磁辐射极其敏感，必须存放于解梦会配发的特制避光防磁袋中。若发现药片褪色、开裂或表面出现不规则的黑色斑块，请立即交由研发部销毁，严禁吞服。</p>
+            </div>
+
+            <div class="medication-block">
+                <strong>不良反应：</strong>
+                <p>本品是对人类神经系统极具破坏性的破解工具，服用后必将产生以下不良反应：</p>
+                <p><b>常见：</b>强烈的濒死感、失重感；苏醒后伴随长达数小时的现实解体症状；严重的脱水与体温飙升，长期服用会散发类似葡萄香气的体味。</p>
+                <p><b>长期副作用：</b>服用者的怪梦频率将产生不可逆的激增。</p>
+                <p><b>极罕见：</b>意识迷失。若下潜过深或遇异常切断，服用者的脑电波将迷失在集体潜意识的深海中无法下载，肉体将陷入永久性脑死亡（植物人状态）。</p>
+            </div>
+
+            <div class="medication-block">
+                <strong>药理毒理：</strong>
+                <p>本品打破了生物学与信息学的边界。胶囊吞服后，外壳在胃酸中溶解。高浓度的变体DMT瞬间随血液冲入大脑，强行将所有的突触接收器全部敞开，使大脑进入超频感知状态。同时，释出的纳米生物芯片会附着在胃壁毛细血管上，利用人体生物电启动。这些芯片相当于在服用者体内建立了一个微型基站。外部启动特定的集成网络协议后，服用者的神经电信号将被转化为数字信号进行实时抓取，将意识打包上传至私有服务器构筑的潜意识深网接口。</p>
+            </div>
+
+            <div class="medication-block">
+                <strong>生产企业 / 研发机构：</strong>
+                <p>研发机构：解梦会理事会-研发部<br>批准文号：核心绝密文件。该药品的存在严禁对其余成员提及</p>
+            </div>
+        </section>
+
+        <!-- ================= 板块二：每日仪式 ================= -->
+        <section id="daily-ritual" class="section-card ritual-card">
+            <h2 class="section-title">▍ 每日服药仪式</h2>
+            
+            <div class="medication-block">
+                <strong>用法用量：</strong>
+                <p><b>实物：</b>口服。儿童不宜服用，成人起始剂量为每日一次，每次1粒（10mg），于睡前30分钟内温水送服。</p>
+                <p><b>线上：</b>儿童不宜服用，成人起始剂量为每日一次，每次1轨（30分钟）。</p>
+            </div>
+
+            <!-- 音频播放器 -->
+            <div class="audio-player-wrapper">
+                <i class="fa-solid fa-headphones"></i>
+                <!-- 请在此替换为真实的音频文件链接 -->
+                <audio controls>
+                    <source src="grapepill.wav" type="audio/mpeg">
+                    您的浏览器不支持音频播放。
+                </audio>
+            </div>
+
+            <!-- 服药仪式步骤 -->
+            <div class="ritual-steps">
+                <strong style="font-family: var(--font-mono); display: block; margin-bottom: 15px; color: var(--secondary);">[ 线上用药请严格按照以下步骤服用 ]</strong>
+                <ol>
+                    <li>完整聆听解梦会提供的音频。</li>
+                    <li>点击下方连接按钮开启集成网络预连接通道。</li>
+                    <li>进入心智游移状态想象本药物的形象。</li>
+                    <li>使用温水将想象的药丸送入嘴中吞服。</li>
+                    <li>吞服后进行类呕吐动作。</li>
+                    <li>闭上双眼将五感放大感受客观环境。</li>
+                    <li>感受药效的扩散，维持良好作息。</li>
+                </ol>
+                <p style="font-size: 13px; color: var(--accent); margin-top: 15px; font-family: var(--font-mono); border-top: 1px solid var(--border); padding-top: 15px;">
+                    * 注：具体用药频率需严格遵照理事会下发的排期表执行，未经研发部（玖和主任）授权，严禁擅自增减剂量。
+                </p>
+            </div>
+
+            <div style="display: flex; justify-content: center; margin-top: 50px; border-top: 1px solid var(--border); padding-top: 40px;">
+                <button onclick="startRitual()" id="startRitualBtn" style="background: #ffffff; color: var(--primary); border: 1px solid var(--primary); padding: 18px 60px; font-size: 18px; font-weight: 600; font-family: var(--font-mono); letter-spacing: 2px; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(180, 110, 130, 0.12);">
+                    开始仪式
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // 简单的 JavaScript 切换函数
+        function switchTab(tabId) {
+            const contents = document.querySelectorAll('.section-card');
+            const buttons = document.querySelectorAll('.tab-btn');
+            
+            contents.forEach(el => el.classList.remove('active'));
+            buttons.forEach(el => el.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // 仪式启动逻辑（配合多步骤说明）
+        function startRitual() {
+            alert('仪式已启动。请佩戴耳机，准备进入服药环节');
+            // 如果需要播放音频，请解除下面注释，并把 id="ritualAudio" 赋予 audio 标签
+            // const audio = document.getElementById('ritualAudio');
+            // const btn = document.getElementById('startRitualBtn');
+            // if (audio.paused) {
+            //     audio.play();
+            //     btn.style.background = '#8A6673';
+            //     btn.style.cursor = 'default';
+            //     audio.onended = function() {
+            //         btn.style.background = '#FFFFFF';
+            //         btn.style.cursor = 'pointer';
+            //     }
+            // }
+        }
+    </script>
+</body>
+</html>

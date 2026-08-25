@@ -258,6 +258,9 @@
             .page-content { flex-direction: column; }
             .sidebar-info { width: 100%; box-sizing: border-box; position: static; }
         }
+        #videoOverlay.show {
+    display: flex !important;
+}
     </style>
 </head>
 <body>
@@ -348,6 +351,174 @@
             </div>
         </div>
     </div>
+<div id="videoOverlay" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.92);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    flex-direction: column;
+    cursor: pointer;
+">
+    <video id="secretVideo" controls style="
+        max-width: 80%;
+        max-height: 70%;
+        border-radius: 8px;
+        display: none;
+    "></video>
+    <div id="countdownHint" style="
+        color: #fff;
+        font-size: 36px;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 300;
+        letter-spacing: 4px;
+        display: none;
+    "></div>
+    
+</div>
+
+<script>
+    (function() {
+        const STORAGE_KEY = 'jiuhe_video_watched';
+        const COUNTDOWN_SECONDS = 5;
+        const VIDEO_FILES = [
+             'video1.mp4',
+             'video2.mp4',
+             'video1.mp4',
+             'video1.mp4'
+           
+        ];
+
+        const overlay = document.getElementById('videoOverlay');
+        const videoEl = document.getElementById('secretVideo');
+        const hintEl = document.getElementById('countdownHint');
+        let timer = null;
+        let countdownInterval = null;
+
+       function hasWatched() {
+    return localStorage.getItem(STORAGE_KEY) === 'true';  // ✅ 真正读取
+}
+
+        function markWatched() {
+            localStorage.setItem(STORAGE_KEY, 'true');
+        }
+
+        function showWatchedMessage() {
+            overlay.classList.add('show');
+            videoEl.style.display = 'none';
+            hintEl.style.display = 'none';
+            const old = document.getElementById('watchedMsg');
+            if (old) old.remove();
+            const msg = document.createElement('div');
+            msg.className = 'watched-message';
+            msg.id = 'watchedMsg';
+            msg.innerHTML = '<small style="font-size:48px; color:#F8F9FA;">您已观看过</small><br><small style="font-size:48px;color:#aaa;">梦不会重复</small>';
+            overlay.appendChild(msg);
+        }
+
+        function getRandomVideo() {
+            const idx = Math.floor(Math.random() * VIDEO_FILES.length);
+            return VIDEO_FILES[idx];
+        }
+
+        function playVideo() {
+            const videoFile = getRandomVideo();
+            videoEl.src = videoFile;
+            videoEl.style.display = 'block';
+            const oldMsg = document.getElementById('watchedMsg');
+            if (oldMsg) oldMsg.remove();
+            overlay.classList.add('show');
+            hintEl.style.display = 'block';
+            hintEl.textContent = '';
+
+            videoEl.play().catch(function() {
+                hintEl.textContent = '点击画面播放';
+                overlay.addEventListener('click', function playOnClick() {
+                    videoEl.play().catch(function() {});
+                    overlay.removeEventListener('click', playOnClick);
+                }, { once: true });
+            });
+
+            videoEl.addEventListener('play', function() {
+                hintEl.style.display = 'none';
+            });
+        }
+
+        function startCountdown() {
+            let secondsLeft = COUNTDOWN_SECONDS;
+            hintEl.style.display = 'block';
+            hintEl.textContent = secondsLeft + 's';
+
+            countdownInterval = setInterval(function() {
+                secondsLeft -= 1;
+                if (secondsLeft > 0) {
+                    hintEl.textContent = secondsLeft + 's';
+                } else {
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                    markWatched();
+                    playVideo();
+                }
+            }, 1000);
+        }
+
+        function init() {
+            if (hasWatched()) {
+                showWatchedMessage();
+                return;
+            }
+
+            // 页面可见时才开始计时
+            if (!document.hidden) {
+                startCountdown();
+            } else {
+                // 如果页面隐藏，等可见时再开始
+                document.addEventListener('visibilitychange', function onVisible() {
+                    if (!document.hidden && !hasWatched() && !countdownInterval) {
+                        startCountdown();
+                        document.removeEventListener('visibilitychange', onVisible);
+                    }
+                });
+            }
+        }
+
+        // 页面加载启动
+        if (hasWatched()) {
+            showWatchedMessage();
+        } else {
+            setTimeout(init, 100);
+        }
+
+        // 点击背景关闭（仅当已观看或视频结束后）
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) {
+                if (videoEl.ended || document.getElementById('watchedMsg')) {
+                    overlay.classList.remove('show');
+                }
+            }
+        });
+
+        videoEl.addEventListener('ended', function() {
+            hintEl.style.display = 'block';
+            hintEl.textContent = '点击空白处关闭';
+        });
+
+        // 如果用户刷新页面但计时还没结束，取消旧计时器
+        window.addEventListener('beforeunload', function() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+        });
+
+    })();
+</script>
 
 </body>
+
 </html>
