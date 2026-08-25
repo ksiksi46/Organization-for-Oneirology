@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>小恐龙：噩梦难度与惊悚彩蛋版</title>
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f7f7f7;
+    font-family: 'Courier New', Courier, monospace;
+    margin-top: 80px;
+    transition: background-color 0.3s, color 0.3s;
+    user-select: none;
+    overflow: hidden; /* 防止花屏时出现滚动条 */
+  }
+  body.night-mode {
+    background-color: #202124;
+    color: #fff;
+  }
+  
+  #game-wrapper {
+    position: relative;
+    width: 600px;
+    height: 150px;
+  }
+  
+  canvas {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    display: block;
+  }
+  
+  #secret-link {
+    position: absolute;
+    display: none; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 70px;
+    font-weight: bold;
+    color: #f1c40f;
+    text-decoration: none;
+    z-index: 10;
+    cursor: pointer;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    transition: all 0.2s ease;
+    letter-spacing: 5px;
+  }
+  #secret-link:hover {
+    color: #ffffff;
+    text-shadow: 0 0 20px #f1c40f, 0 0 40px #f1c40f;
+    transform: translate(-50%, -55%);
+  }
+
+  #error-text {
+    width: 600px;
+    margin-top: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #5f6368;
+    transition: opacity 0.5s ease;
+  }
+  #error-text h2 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #202124;
+    margin-bottom: 15px;
+  }
+  #error-text ul {
+    padding-left: 20px;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+  #error-text p {
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .error-code {
+    margin-top: 30px !important;
+    font-size: 12px !important;
+    color: #70757a !important;
+  }
+
+  body.night-mode #error-text h2 { color: #e8eaed; }
+  body.night-mode #error-text, 
+  body.night-mode .error-code { color: #9aa0a6 !important; }
+
+  #instructions {
+    margin-top: 15px;
+    font-family: sans-serif;
+    color: #888;
+    text-align: center;
+    line-height: 1.6;
+    transition: opacity 0.5s ease;
+  }
+  body.night-mode #instructions { color: #aaa; }
+</style>
+</head>
+<body>
+
+  <div id="game-wrapper">
+    <canvas id="gameCanvas" width="600" height="150"></canvas>
+  </div>
+  
+  <div id="instructions">
+    <strong>[空格键 (Space)]</strong> : 跳跃 / 开始游戏
+  </div>
+
+  <div id="error-text">
+    <h2>未连接到互联网</h2>
+    <p>请试试以下办法：</p>
+    <ul>
+      <li>检查网线、调制解调器和路由器</li>
+      <li>重新连接到 Wi-Fi 网络</li>
+    </ul>
+    <p class="error-code">ERR_INTERNET_DISCONNECTED</p>
+  </div>
+
+  <script>
+    // --- 第一重防御：反调试快捷键拦截 ---
+    document.addEventListener('contextmenu', e => e.preventDefault()); 
+    document.addEventListener('keydown', e => {
+      if (e.key === 'F12' || 
+         (e.ctrlKey && e.shiftKey && ['I','i','J','j','C','c'].includes(e.key)) || 
+         (e.ctrlKey && ['U','u'].includes(e.key))) {
+        e.preventDefault();
+      }
+    });
+
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    
+    // 防崩溃自修复机制
+    let secretLink = document.getElementById("secret-link");
+    let wrapper = document.getElementById("game-wrapper");
+
+    // 第三重防御：混淆密文数组
+    const _linkHash = [104,116,116,112,115,58,47,47,115,112,97,99,101,46,98,105,108,105,98,105,108,105,46,99,111,109,47,51,53,52,54,57,54,54,57,57,50,54,50,48,49,51,52,47,100,121,110,97,109,105,99];
+    const _wordHash = [36827, 20837];
+
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) audioCtx = new AudioContext();
+      }
+    }
+
+    let score = 0;
+    let coinsCollected = 0;
+    let highScore = localStorage.getItem('dinoCoinsHighScore') || 0;
+    let gameOver = true;
+    let gameStarted = false;
+    let gameSpeed = 8.5; 
+    let frameCount = 0;
+    let isNight = false;
+
+    // 恐怖彩蛋系统状态
+    let isHorrorPaused = false;
+    let hasTriggeredHorror = false;
+    let horrorTimer = 0;
+
+    // 穿越彩蛋系统状态
+    let isEasterEggMode = false;
+    let easterEggPhase = 0; 
+    let eggObj = { x: 0, y: 0 };
+
+    const dino = {
+      x: 50,
+      y: 73,             
+      width: 44,
+      height: 47,
+      dy: 0,
+      gravity: 0.7,      
+      jumpPower: -11.5,  
+      isJumping: false,
+      groundY: 110
+    };
+
+    let obstacles = [];
+    let coins = [];
+    let clouds = [];
+    let groundParticles = [];
+
+    // --- 音效生成器 ---
+    function playSound(type) {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'jump') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+      } else if (type === 'score') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(1200, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+      } else if (type === 'coin') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(987.77, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(1318.51, audioCtx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+      } else if (type === 'die') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+      } else if (type === 'magic') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+        osc.frequency.linearRampToValueAtTime(1200, audioCtx.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+      }
+    }
+
+    // --- 恐怖乱码音效 ---
+    function playHorrorNoise() {
+      if (!audioCtx) return;
+      // 制造极度不适的高频尖啸 + 低频轰鸣白噪音
+      const bufferSize = audioCtx.sampleRate * 2; 
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1; 
+      }
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(2000, audioCtx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 1.0);
+
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(1.5, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.4);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+      noise.start();
+
+      // 底噪低频震动
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(30, audioCtx.currentTime);
+      const oscGain = audioCtx.createGain();
+      oscGain.gain.setValueAtTime(1.0, audioCtx.currentTime);
+      oscGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
+      osc.connect(oscGain);
+      oscGain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 1.5);
+    }
+
+    function hideText() {
+      const errText = document.getElementById('error-text');
+      const insText = document.getElementById('instructions');
+      if(errText) errText.style.opacity = '0';
+      if(insText) insText.style.opacity = '0';
+    }
+
+    function revealSecret() {
+      let sl = document.getElementById("sl_hidden");
+      if (!sl) {
+        let wrp = document.getElementById("game-wrapper");
+        sl = document.createElement('a');
+        sl.id = 'sl_hidden';
+        sl.href = 'inner.html';
+        sl.target = '_blank';
+        sl.innerText = String.fromCharCode(..._wordHash);
+        sl.style.position = 'absolute';
+        sl.style.top = '50%';
+        sl.style.left = '50%';
+        sl.style.transform = 'translate(-50%, -50%)';
+        sl.style.fontSize = '70px';
+        sl.style.fontWeight = 'bold';
+        sl.style.color = '#f1c40f';
+        sl.style.textDecoration = 'none';
+        sl.style.zIndex = '10';
+        sl.style.letterSpacing = '5px';
+        sl.style.textShadow = '0 4px 10px rgba(0,0,0,0.5)';
+        sl.style.transition = 'all 0.2s ease';
+        
+        sl.addEventListener('mouseenter', () => {
+            sl.style.color = '#ffffff';
+            sl.style.textShadow = '0 0 20px #f1c40f, 0 0 40px #f1c40f';
+            sl.style.transform = 'translate(-50%, -55%)';
+        });
+        sl.addEventListener('mouseleave', () => {
+            sl.style.color = '#f1c40f';
+            sl.style.textShadow = '0 4px 10px rgba(0,0,0,0.5)';
+            sl.style.transform = 'translate(-50%, -50%)';
+        });
+        wrp.appendChild(sl);
+      }
+      sl.style.display = 'block';
+    }
+
+    function hideSecret() {
+      let sl = document.getElementById("sl_hidden");
+      if (sl) sl.style.display = 'none';
+    }
+
+    document.addEventListener("keydown", function(e) {
+      initAudio();
+
+      if (e.code === "ArrowLeft" && (!gameStarted || gameOver) && !isEasterEggMode) {
+        e.preventDefault();
+        startEasterEgg();
+        return;
+      }
+
+      if (e.code === "Space") {
+        e.preventDefault();
+        
+        // 恐怖挂起期间，无视任何按键
+        if (isHorrorPaused) return;
+
+        if (isEasterEggMode) {
+          isEasterEggMode = false;
+          hideSecret();
+          resetGame();
+          return;
+        }
+
+        if (!gameStarted || gameOver) {
+          resetGame();
+        } else if (!dino.isJumping) {
+          dino.dy = dino.jumpPower;
+          dino.isJumping = true;
+          playSound('jump');
+        }
+      }
+    });
+
+    function startEasterEgg() {
+      isEasterEggMode = true;
+      easterEggPhase = 1; 
+      frameCount = 0;
+      hideText(); 
+      loop(); 
+    }
+
+    function resetGame() {
+      score = 0;
+      coinsCollected = 0;
+      gameSpeed = 8.5; 
+      gameOver = false;
+      gameStarted = true;
+      isEasterEggMode = false;
+      
+      // 重置恐怖彩蛋状态
+      isHorrorPaused = false;
+      hasTriggeredHorror = false;
+
+      obstacles = [];
+      coins = [];
+      clouds = [];
+      groundParticles = [];
+      frameCount = 0;
+      dino.x = 50;
+      dino.dy = 0;
+      dino.y = dino.groundY + 10 - dino.height; 
+      dino.isJumping = false;
+      isNight = false;
+      document.body.classList.remove('night-mode');
+      
+      hideSecret();
+      hideText(); 
+      
+      for(let i=0; i<3; i++) spawnCloud();
+      for(let i=0; i<20; i++) spawnGroundParticle(Math.random() * canvas.width);
+      
+      loop();
+    }
+
+    function spawnCloud() { clouds.push({ x: canvas.width + Math.random() * 100, y: 20 + Math.random() * 30, speed: 1 + Math.random() * 0.5 }); }
+    function spawnGroundParticle(xPos) { groundParticles.push({ x: xPos || canvas.width, y: dino.groundY + 10 + Math.random() * 15, size: Math.random() * 2 + 1 }); }
+    
+    function spawnObstacle() {
+      let isLarge = Math.random() > 0.5;
+      let count = Math.floor(Math.random() * 5) + 1; 
+      let width = isLarge ? 20 * count : 13 * count;
+      let height = isLarge ? 46 : 33;
+      obstacles.push({ x: canvas.width, y: dino.groundY + 10 - height, width: width, height: height });
+    }
+    
+    function spawnCoin() {
+      coins.push({ x: canvas.width, y: [dino.groundY - 10, dino.groundY - 50][Math.floor(Math.random() * 2)], radius: 7 });
+    }
+
+    // 触发恐怖事件
+    function triggerHorror() {
+      isHorrorPaused = true;
+      horrorTimer = 85; // 冻结时间：大约 1.4 秒 (60帧/秒)
+      playHorrorNoise();
+      // 瞬间强行切黑夜模式增加压抑感
+      document.body.classList.add('night-mode');
+    }
+
+    function update() {
+      if (gameOver && !isEasterEggMode) return;
+      frameCount++;
+
+      // ==========================
+      // 恐怖挂起逻辑（时间停止）
+      // ==========================
+      if (isHorrorPaused) {
+        horrorTimer--;
+        if (horrorTimer <= 0) {
+          // 时间恢复流动，一切恢复正常
+          isHorrorPaused = false;
+          // 恢复原有的昼夜环境
+          if (!isNight) document.body.classList.remove('night-mode');
+        }
+        return; // **核心**：直接 Return，跳过所有物理、移动和碰撞更新
+      }
+
+      // === 穿越彩蛋模式逻辑更新 ===
+      if (isEasterEggMode) {
+        dino.dy += dino.gravity;
+        dino.y += dino.dy;
+        if (dino.y + dino.height >= dino.groundY + 10) {
+          dino.y = dino.groundY + 10 - dino.height;
+          dino.dy = 0;
+          dino.isJumping = false;
+        }
+
+        if (easterEggPhase === 1) {
+          dino.x -= 2; 
+          if (dino.x + dino.width < -10) {
+            easterEggPhase = 2; 
+            dino.x = canvas.width; 
+            eggObj.x = canvas.width / 2 - 20; 
+            eggObj.y = dino.groundY - 15; 
+          }
+        } else if (easterEggPhase === 2) {
+          dino.x -= 2.5; 
+          if (dino.x <= eggObj.x + 18) {
+            easterEggPhase = 3; 
+            playSound('magic');
+            revealSecret(); 
+          }
+        }
+        return; 
+      }
+
+      // === 正常游戏逻辑更新 ===
+      dino.dy += dino.gravity;
+      dino.y += dino.dy;
+
+      if (dino.y + dino.height >= dino.groundY + 10) {
+        dino.y = dino.groundY + 10 - dino.height;
+        dino.dy = 0;
+        dino.isJumping = false;
+      }
+
+      if (frameCount % 60 === 0 && Math.random() > 0.5) spawnCloud();
+      if (frameCount % 5 === 0) spawnGroundParticle();
+      clouds.forEach(c => c.x -= c.speed);
+      groundParticles.forEach(g => g.x -= gameSpeed);
+      clouds = clouds.filter(c => c.x > -50);
+      groundParticles = groundParticles.filter(g => g.x > -10);
+
+      let spawnRate = Math.max(25, 60 - Math.floor(score / 30));
+      if (frameCount % spawnRate === 0 && (obstacles.length === 0 || canvas.width - obstacles[obstacles.length-1].x > 110)) spawnObstacle();
+      if (frameCount % 80 === 0 && Math.random() > 0.3 && (obstacles.length === 0 || canvas.width - obstacles[obstacles.length-1].x > 60)) spawnCoin();
+
+      for (let i = 0; i < coins.length; i++) {
+        let c = coins[i];
+        c.x -= gameSpeed;
+        if (c.x + c.radius > dino.x && c.x - c.radius < dino.x + dino.width &&
+            c.y + c.radius > dino.y && c.y - c.radius < dino.y + dino.height) {
+          
+          coinsCollected++;
+          coins.splice(i, 1);
+          i--;
+          
+          // 恐怖触发检测：吃到第3个硬币
+          if (coinsCollected === 6 && !hasTriggeredHorror && !isEasterEggMode) {
+            hasTriggeredHorror = true;
+            triggerHorror(); 
+            return; // 立即跳出当前帧更新
+          } else {
+            playSound('coin'); // 正常吃金币音效
+          }
+        }
+      }
+      coins = coins.filter(c => c.x > -20);
+
+      for (let i = 0; i < obstacles.length; i++) {
+        let obs = obstacles[i];
+        obs.x -= gameSpeed;
+        let margin = 5; 
+        if (dino.x + margin < obs.x + obs.width - margin && dino.x + dino.width - margin > obs.x + margin &&
+            dino.y + margin < obs.y + obs.height - margin && dino.y + dino.height - margin > obs.y + margin) {
+          gameOver = true;
+          playSound('die');
+          if (score > highScore) {
+            highScore = Math.floor(score);
+            localStorage.setItem('dinoCoinsHighScore', highScore);
+          }
+        }
+      }
+      obstacles = obstacles.filter(obs => obs.x + obs.width > 0);
+
+      score += 0.1;
+      gameSpeed += 0.003; 
+
+      if (Math.floor(score) % 700 === 0 && (score - Math.floor(score)) < 0.1) {
+        isNight = !isNight;
+        if (isNight) document.body.classList.add('night-mode');
+        else document.body.classList.remove('night-mode');
+      }
+    }
+
+    function draw() {
+      // ==========================
+      // 绘制恐怖花屏与血字
+      // ==========================
+      if (isHorrorPaused) {
+        // 画出原始定格的黑暗场景
+        ctx.fillStyle = "#202124";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // 疯狂生成黑白/暗红噪点花屏
+        for (let i = 0; i < canvas.width; i += Math.floor(Math.random()*8 + 4)) {
+          for (let j = 0; j < canvas.height; j += Math.floor(Math.random()*8 + 4)) {
+             let rand = Math.random();
+             if (rand > 0.8) {
+               ctx.fillStyle = rand > 0.95 ? '#8a0303' : '#555'; // 偶尔闪烁暗红血块
+               ctx.fillRect(i, j, Math.random()*20, Math.random()*5);
+             }
+          }
+        }
+        
+        // 撕裂效果 (错位条纹)
+        if (Math.random() > 0.6) {
+           ctx.fillStyle = "#ffffff";
+           ctx.globalAlpha = 0.1;
+           ctx.fillRect(0, Math.random()*canvas.height, canvas.width, Math.random()*20 + 5);
+           ctx.globalAlpha = 1.0;
+        }
+
+        // 血字狂闪
+        if (Math.random() > 0.2) {
+          ctx.fillStyle = "#8a0303"; // 猩红
+          ctx.font = "bold 90px 'SimHei', 'Microsoft YaHei', sans-serif";
+          // 疯狂抖动的坐标
+          let shakeX = canvas.width / 2 - 100 + (Math.random() * 20 - 10);
+          let shakeY = canvas.height / 2 + 30 + (Math.random() * 20 - 10);
+          
+          ctx.fillText("回 头", shakeX, shakeY);
+          
+          // 逼真的血滴线条
+          ctx.fillRect(shakeX + 30, shakeY + 5, 4, 30 + Math.random() * 30);
+          ctx.fillRect(shakeX + 130, shakeY + 2, 6, 20 + Math.random() * 50);
+          ctx.fillRect(shakeX + 150, shakeY, 3, 10 + Math.random() * 20);
+        }
+        return; // 直接覆盖画布，不画普通画面
+      }
+
+      // ============================================
+      // 以下为正常绘制逻辑
+      // ============================================
+      if (isEasterEggMode && easterEggPhase >= 2) {
+        ctx.fillStyle = "#3a1c71";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+        ctx.beginPath();
+        ctx.moveTo(0, dino.groundY + 10);
+        ctx.lineTo(canvas.width, dino.groundY + 10);
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        if (easterEggPhase === 2) {
+          ctx.fillStyle = "#e74c3c";
+          ctx.beginPath();
+          ctx.ellipse(eggObj.x, eggObj.y + 5, 18, 24, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = "#f1c40f";
+          ctx.fillRect(eggObj.x - 17, eggObj.y - 2, 34, 6);
+          ctx.fillRect(eggObj.x - 14, eggObj.y + 10, 28, 6);
+        }
+
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+        ctx.fillStyle = "#3a1c71"; 
+        ctx.fillRect(dino.x + 12, dino.y + 5, 4, 4); 
+        
+        if (easterEggPhase === 2 && frameCount % 16 < 8) {
+          ctx.fillRect(dino.x + 10, dino.y + dino.height - 5, 8, 5);
+        } else if (easterEggPhase === 2) {
+          ctx.fillRect(dino.x + 25, dino.y + dino.height - 5, 8, 5);
+        }
+        return; 
+      }
+
+      const drawColor = isNight ? "#fff" : "#535353";
+      ctx.fillStyle = isNight ? "#202124" : "#f7f7f7";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = drawColor;
+      ctx.strokeStyle = drawColor;
+
+      ctx.beginPath();
+      ctx.moveTo(0, dino.groundY + 10);
+      ctx.lineTo(canvas.width, dino.groundY + 10);
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      groundParticles.forEach(g => ctx.fillRect(g.x, g.y, g.size, g.size));
+      clouds.forEach(c => {
+        ctx.fillRect(c.x, c.y, 25, 8);
+        ctx.fillRect(c.x + 5, c.y - 5, 15, 5);
+      });
+
+      coins.forEach(c => {
+        ctx.fillStyle = "#f1c40f";
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = isNight ? "#202124" : "#f7f7f7";
+        ctx.fillRect(c.x - 1, c.y - 4, 2, 8);
+      });
+
+      ctx.fillStyle = drawColor;
+      obstacles.forEach(obs => {
+        ctx.fillRect(obs.x + obs.width/2 - 3, obs.y, 6, obs.height);
+        ctx.fillRect(obs.x, obs.y + 10, obs.width, 4);
+        ctx.fillRect(obs.x, obs.y + 6, 4, 5);
+        ctx.fillRect(obs.x + obs.width - 4, obs.y + 6, 4, 5);
+      });
+
+      ctx.fillStyle = drawColor;
+      ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+      
+      ctx.fillStyle = isNight ? "#202124" : "#f7f7f7";
+      if (isEasterEggMode && easterEggPhase === 1) {
+        ctx.fillRect(dino.x + 12, dino.y + 5, 4, 4); 
+      } else {
+        ctx.fillRect(dino.x + 28, dino.y + 5, 4, 4); 
+      }
+      
+      if (!dino.isJumping) {
+        let isRunning = (gameStarted && !gameOver && !isEasterEggMode) || (isEasterEggMode && easterEggPhase === 1);
+        if (isRunning) {
+          if (frameCount % 12 < 6) {
+            ctx.clearRect(dino.x + 10, dino.y + dino.height - 5, 8, 5);
+          } else {
+            ctx.clearRect(dino.x + 25, dino.y + dino.height - 5, 8, 5);
+          }
+        } else {
+          ctx.clearRect(dino.x + 10, dino.y + dino.height - 5, 8, 5);
+        }
+      }
+
+      ctx.fillStyle = drawColor;
+      ctx.font = "bold 16px Courier New";
+      ctx.fillText("🪙 × " + coinsCollected.toString().padStart(3, '0'), 20, 25);
+
+      if (gameOver && !isEasterEggMode && gameStarted) {
+        ctx.font = "bold 24px Courier New";
+        ctx.fillText("G A M E  O V E R", canvas.width / 2 - 110, canvas.height / 2 - 10);
+      }
+    }
+
+    function loop() {
+      if (gameStarted || isEasterEggMode) update();
+      draw();
+      if (!gameOver || !gameStarted || isEasterEggMode) {
+        requestAnimationFrame(loop);
+      }
+    }
+
+    draw();
+  </script>
+</body>
+</html>
