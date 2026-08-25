@@ -1,0 +1,279 @@
+</body>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <title>机构简介 - 解梦会 OFO</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        :root { 
+            --primary: #0F171E; 
+            --secondary: #316B83; 
+            --bg-light: #F8FAFC; 
+            --bg-white: #FFFFFF; 
+            --text-dark: #1E293B; 
+            --text-muted: #64748B; 
+            --border: #E2E8F0; 
+            --font-heading: 'EB Garamond', 'Times New Roman', serif; 
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;  
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif; 
+        }
+
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            font-family: var(--font-ui);  
+            background-color: var(--bg-light); 
+            color: var(--text-dark); 
+            overflow-x: hidden; 
+        }
+
+        /* ================= 头部标识与面包屑 ================= */
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+
+        /* 极简面包屑导航 */
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator {
+            color: var(--border);
+        }
+
+        /* ================= 核心内容区 ================= */
+        .content-wrapper {
+            padding: 60px 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            margin-top: 40px;
+            border-radius: 4px;
+        }
+
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 48px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0 0 30px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .page-content {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        /* 左侧：主内容区 */
+        .main-text {
+            flex: 2;
+        }
+        .main-text p {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 25px;
+        }
+        .main-text blockquote {
+            border-left: 4px solid var(--secondary);
+            margin: 30px 0;
+            padding: 15px 25px;
+            background: var(--bg-light);
+            color: var(--text-muted);
+            font-style: italic;
+            border-radius: 2px;
+        }
+
+        /* 自定义小标题（模仿你给的▍符号） */
+        .section-subhead {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 40px 0 15px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        
+        .member-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0 25px 0;
+        }
+        .member-list li {
+            font-size: 16px;
+            line-height: 1.8;
+            padding: 4px 0;
+            color: var(--text-dark);
+        }
+        .member-list li span {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        /* 右侧：边栏信息卡（保持极简质感） */
+        .sidebar-info {
+            flex: 1;
+            min-width: 250px;
+            border: 1px solid var(--border);
+            padding: 25px;
+            background: var(--bg-light);
+            position: sticky;
+            top: 40px;
+        }
+        .sidebar-info h4 {
+            font-family: var(--font-heading);
+            font-size: 16px;
+            margin: 0 0 15px 0;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+        .sidebar-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-info ul li {
+            font-size: 14px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+        .sidebar-info ul li:last-child {
+            border-bottom: none;
+        }
+
+        /* ================= 响应式适配 ================= */
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 30px 20px; }
+            .page-content { flex-direction: column; }
+            .sidebar-info { width: 100%; box-sizing: border-box; position: static; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部 Logo与面包屑 -->
+    <header class="page-header">
+        <a href="inner.html" class="logo-wrapper">
+            <img src="image/logo.webp" alt="OFO Logo">
+            <div>
+                <span class="b-title">OFO</span>
+                <span class="b-sub">Organization for Oneirology</span>
+            </div>
+        </a>
+
+        <!-- 极简返回首页导航 -->
+        <div class="breadcrumb">
+            <a href="inner.html">Home</a>
+            <span class="separator">/</span>
+            <span>机构简介</span>
+        </div>
+    </header>
+
+    <!-- 主体内容 -->
+    <div class="content-wrapper">
+        <h1 class="page-title">Organization Profile</h1>
+
+        <div class="page-content">
+            <!-- 左侧：主文章 -->
+            <div class="main-text">
+                
+                <blockquote>
+                    <p style="margin: 0; font-size: 20px; color: var(--text-dark);">
+                        欢迎来到解梦会。<br>
+                        看见已经去世的亲朋好友？丢失了上周约会的记忆？目击了神秘的尼斯湖水怪？<br>
+                        不要害怕，这可能只是你做的一个怪梦。
+                    </p>
+                </blockquote>
+
+                <h2 class="section-subhead">▍ 关于解梦会</h2>
+                <p>
+                    解梦会是由曾长期被异常梦境所困的人自发成立的互助组织。<br>
+                    组织成立的初衷是找到世界各地被异常梦境所困、或者没有意识到自己被异常梦境所困的人们，我们致力于提供一个值得信任的交流场所，与你一起寻找梦境的真相，夺回属于我们自己的生活。
+                </p>
+
+                <h2 class="section-subhead">▍ 核心援助介绍</h2>
+                <p>
+                    我们有专业的心理治疗师，与你感同身受的伙伴，每周召开的线上分享会。你可以把这里当作绝对安全的树屋，倾吐你的不快与怪梦。
+                </p>
+                <p>
+                    我们正与相关的神经科学实验室进行内部合作，为饱受严重梦魇折磨的成员提供一种经过严格测试的特制安神配方。它能有效舒缓神经元过度活跃，降低异常梦境出现的频率，帮助你回归正常的现实作息。
+                </p>
+                <p>
+                    我们积极参与相关公共卫生倡议，致力于推动将特定频发性怪梦纳入更严肃的健康观测指标。当被怪梦所困的人出现时，我们会启动紧急联络机制，提供最及时的物理与心理双重干预。
+                </p>
+
+                <h2 class="section-subhead">▍ 理事会成员简介</h2>
+                <ul class="member-list">
+                    <li>解梦会会长：<span>清瑶</span></li>
+                    <li>解梦会副会长，研发部主任：<span>玖和</span></li>
+                </ul>
+
+                <h2 class="section-subhead">▍ 如何成为高级成员</h2>
+                <p>
+                    能明确意识到梦与怪奇事件之间联系的普通成员，即可参与成为高级成员的测试，测试通过后，高级成员即可参与怪奇事件的调查与归档。高级成员不仅需要具备的是智慧与担当，更需要具备的是面对自己无法处理的事件转身逃跑的勇气。
+                </p>
+
+                <h2 class="section-subhead">▍ 如何成为理事会成员</h2>
+                <p>
+                    理事会有六个固定席位，当某席理事因自身或其他原因，不再担任该席理事，高级解梦会成员在经历一段考察期后，即可被该席理事或其他五席理事推荐为理事会成员，负责解梦会内某一具体领域的管理工作。
+                </p>
+
+            </div>
+
+            <!-- 右侧：极简信息卡 -->
+           
+        </div>
+    </div>
+
+</body>
+</html>

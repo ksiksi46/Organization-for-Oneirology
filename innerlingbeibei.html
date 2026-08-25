@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+      <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>凌北北 - 解梦会 OFO</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        :root { 
+            --primary: #0F171E; 
+            --secondary: #316B83; 
+            --bg-light: #F8FAFC; 
+            --bg-white: #FFFFFF; 
+            --text-dark: #1E293B; 
+            --text-muted: #64748B; 
+            --border: #E2E8F0; 
+            --font-heading: 'EB Garamond', 'Times New Roman', serif; 
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;  
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif; 
+        }
+
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            font-family: var(--font-ui);  
+            background-color: var(--bg-light); 
+            color: var(--text-dark); 
+            overflow-x: hidden; 
+        }
+
+        /* ================= 头部标识与面包屑 ================= */
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        /* 极简面包屑导航 */
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator {
+            color: var(--border);
+        }
+
+        /* ================= 核心内容区 ================= */
+        .content-wrapper {
+            padding: 60px 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            margin-top: 40px;
+            border-radius: 4px;
+        }
+
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 48px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0 0 30px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .page-content {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        /* ===== 左侧：主内容区 ===== */
+        .main-text {
+            flex: 2;
+        }
+        .main-text p {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        /* 照片展示区 (顶部照片) */
+        .profile-photo {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            display: block;
+            margin-bottom: 30px;
+            background: var(--bg-light);
+        }
+
+        /* 语录引用框 */
+        .member-quote {
+            border-left: 4px solid var(--secondary);
+            margin: 0 0 30px 0;
+            padding: 15px 25px;
+            background: var(--bg-light);
+            color: var(--text-muted);
+            font-style: italic;
+            border-radius: 2px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .member-quote cite {
+            display: block;
+            margin-top: 10px;
+            font-style: normal;
+            font-size: 14px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        /* 自定义标题 */
+        .section-subhead {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 40px 0 15px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* 责任领域列表 */
+        .duty-list {
+            margin: 15px 0 20px 0;
+        }
+        .duty-item {
+            margin-bottom: 15px;
+        }
+        .duty-item strong {
+            display: block;
+            color: var(--secondary);
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .duty-item p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* 档案备注特殊排版 */
+        .archival-note {
+            border: 1px dashed var(--border);
+            background: #F8F9FA;
+            padding: 20px 25px;
+            margin-top: 40px;
+            position: relative;
+            border-radius: 4px;
+        }
+        .archival-note::before {
+            content: '【档案备注】';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #fff;
+            padding: 0 10px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: bold;
+            font-family: var(--font-mono);
+        }
+        .archival-note p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        /* ===== 右侧：边栏信息卡 ===== */
+        .sidebar-info {
+            flex: 1;
+            min-width: 250px;
+            border: 1px solid var(--border);
+            padding: 25px;
+            background: var(--bg-light);
+            position: sticky;
+            top: 40px;
+        }
+        .sidebar-info h4 {
+            font-family: var(--font-heading);
+            font-size: 16px;
+            margin: 0 0 15px 0;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+        .sidebar-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-info ul li {
+            font-size: 14px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+        .sidebar-info ul li:last-child {
+            border-bottom: none;
+        }
+        .sidebar-info ul li span {
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+.profile-photo {
+    width: 360px; /* 或者你想要的任意尺寸 */
+    height: auto;
+    object-fit: cover; /* 保证图片不变形 */
+
+}
+        /* ================= 响应式适配 ================= */
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 30px 20px; }
+            .page-content { flex-direction: column; }
+            .sidebar-info { width: 100%; box-sizing: border-box; position: static; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部 Logo与面包屑 -->
+    <header class="page-header">
+        <a href="inner.html" class="logo-wrapper">
+            <img src="image/logo.webp" alt="OFO Logo">
+            <div>
+                <span class="b-title">OFO</span>
+                <span class="b-sub">Organization for Oneirology</span>
+            </div>
+        </a>
+
+        <!-- 极简返回导航 -->
+        <div class="breadcrumb">
+            <a href="inner.html">Home</a>
+            <span class="separator">/</span>
+            <a href="inner.html#sec-2">成员简介</a>
+            <span class="separator">/</span>
+            <span>凌北北</span>
+        </div>
+    </header>
+
+    <!-- 主体内容 -->
+    <div class="content-wrapper">
+        <h1 class="page-title">凌北北 <span style="font-size: 18px; font-weight: 300; color: var(--text-muted);">Lingue Nord</span></h1>
+
+        <div class="page-content">
+            <!-- 左侧：主文章 -->
+            <div class="main-text">
+                
+                <!-- 顶部照片 -->
+                <img src="image/lingbeibei.webp" alt="凌北北的档案照片" class="profile-photo">
+
+                <div class="member-quote">
+                    “Faoi scáth an Darach, fréamhaigh san oíche.”
+                    <cite>—— 摘自凌北北演讲之后的谢幕词</cite>
+                </div>
+
+                <h2 class="section-subhead">▍ 公开简介</h2>
+                <p>
+                    解梦会创始人之一，解梦会外联部部长。
+                </p>
+                <p>
+                    高卢大学经济学大四学生，凯尔特血脉中最后的德鲁伊。精通十八种语言，熟练掌握户外生存技能，拥有独特的信息获取渠道。大二便修完全部课程，常年参与援助非洲等志愿者活动，与各地政要官方机构皆有联系，活动期间结识了解梦会会长清瑶并积极参与解梦会的建设。怪梦频发后自筹资金巡回世界各地进行演讲，帮助人们消除对怪梦的认知偏差与恐惧的同时，为解梦会吸收新鲜血液。
+                </p>
+
+                <h2 class="section-subhead">▍ 负责领域</h2>
+                
+                <div class="duty-list">
+                    <div class="duty-item">
+                        <strong>全球宣发与公众认知管理：</strong>
+                        <p>负责在全球各地及社交媒体筹办关于“睡眠健康与潜意识心理学”的公开巡回演讲。通过极具感染力的演讲，消除大众对怪梦的恐慌与认知偏差，并将那些已经被怪梦所困的的人，以一种温和、合规的方式吸纳进解梦会。</p>
+                    </div>
+                    <div class="duty-item">
+                        <strong>官方交涉与资源筹措：</strong>
+                        <p>利用人脉网络为解梦会拉取表面合法的科研赞助，填补社团的资金缺口。与各地的公共卫生组织、官方救援机构保持战略合作，确保解梦会的跨国援助行动拥有合法的通行证。当某个地区的怪梦事件即将失控时，动用政要关系，以等官方名义，强行封锁区域等待解梦会调查。</p>
+                    </div>
+                </div>
+
+                <!-- 档案备注区 -->
+                <div class="archival-note">
+                    <p>
+                        据说凌北北部长是全解梦会被表白次数最多的人，不仅是因为她那张古典的欧洲人样貌，更多的是她可爱，风趣，外向的性格，这可能也是她能成为外联部部长的原因之一，试问谁不想和一个走路蹦蹦跳跳，吹着走调的凯尔特民谣口哨的红发女孩成为朋友呢。
+                    </p>
+                    <p>
+                        清瑶会长有事无法出席心理辅导会的时候，一般都是凌北北部长代为主持，与清瑶会长聆听怪梦提出解决办法这种主持方式不同，凌北北部长总会借着成员的梦，述说自己的故事，一望无际的非洲大草原，深蓝的海，落日染红大地的奇观，与家人一起做饭的瞬间。每当这时，成员们就有一种错觉，她好像比世界上活得最久的人活得还要久，像一颗高耸的老树，像母亲的怀抱，有成员声称参加了凌北北部长的心理辅导会，自己久违地获得了无梦地睡眠。
+                    </p>
+                    <p>
+                        凌北北部长总是挂着一副如沐春风的笑容，可也有成员见过她悄悄地哭，夜晚一个人坐在解梦会地花园里，手里有一只叽叽喳喳，可爱的小松鼠。
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- 右侧：基本信息边栏 -->
+            <div class="sidebar-info">
+                <h4>基本信息</h4>
+                <ul>
+                    <li>姓名 <span>凌北北 (Lingue Nord)</span></li>
+                    <li>性别 <span>女</span></li>
+                    <li>年龄 <span>23</span></li>
+                    <li>国籍 <span>法国</span></li>
+                    <li>职位 <span>外联部部长</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

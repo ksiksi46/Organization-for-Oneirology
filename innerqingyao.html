@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+      <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清瑶 - 解梦会 OFO</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        :root { 
+            --primary: #0F171E; 
+            --secondary: #316B83; 
+            --bg-light: #F8FAFC; 
+            --bg-white: #FFFFFF; 
+            --text-dark: #1E293B; 
+            --text-muted: #64748B; 
+            --border: #E2E8F0; 
+            --font-heading: 'EB Garamond', 'Times New Roman', serif; 
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;  
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif; 
+        }
+
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            font-family: var(--font-ui);  
+            background-color: var(--bg-light); 
+            color: var(--text-dark); 
+            overflow-x: hidden; 
+        }
+
+        /* ================= 头部标识与面包屑 ================= */
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        /* 极简面包屑导航 */
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator {
+            color: var(--border);
+        }
+
+        /* ================= 核心内容区 ================= */
+        
+        .content-wrapper {
+            padding: 60px 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            margin-top: 40px;
+            border-radius: 4px;
+        }
+
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 48px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0 0 30px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .page-content {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        /* 左侧：主内容区 */
+        .main-text {
+            flex: 2;
+        }
+        .main-text p {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        /* 语录引用框 */
+        .member-quote {
+            border-left: 4px solid var(--secondary);
+            margin: 0 0 30px 0;
+            padding: 15px 25px;
+            background: var(--bg-light);
+            color: var(--text-muted);
+            font-style: italic;
+            border-radius: 2px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .member-quote cite {
+            display: block;
+            margin-top: 10px;
+            font-style: normal;
+            font-size: 14px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        /* 自定义标题 */
+        .section-subhead {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 40px 0 15px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* 责任领域列表 */
+        .duty-list {
+            margin: 15px 0 20px 0;
+        }
+        .duty-item {
+            margin-bottom: 15px;
+        }
+        .duty-item strong {
+            display: block;
+            color: var(--secondary);
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .duty-item p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* 档案备注特殊排版 */
+        .archival-note {
+            border: 1px dashed var(--border);
+            background: #F8F9FA;
+            padding: 20px 25px;
+            margin-top: 40px;
+            position: relative;
+            border-radius: 4px;
+        }
+        .archival-note::before {
+            content: '【档案备注】';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #fff;
+            padding: 0 10px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: bold;
+            font-family: var(--font-mono);
+        }
+        .archival-note p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+        .archival-note p:last-child {
+            margin-bottom: 0;
+        }
+        .archival-note .dialogue {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .archival-note .interrupt {
+            font-family: var(--font-mono);
+            color: var(--accent);
+            font-size: 13px;
+            display: block;
+            text-align: right;
+            margin-top: 15px;
+            border-top: 1px dashed var(--border);
+            padding-top: 10px;
+        }
+
+        /* 右侧：边栏信息卡 */
+        .sidebar-info {
+            flex: 1;
+            min-width: 250px;
+            border: 1px solid var(--border);
+            padding: 25px;
+            background: var(--bg-light);
+            position: sticky;
+            top: 40px;
+        }
+        .sidebar-info h4 {
+            font-family: var(--font-heading);
+            font-size: 16px;
+            margin: 0 0 15px 0;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+        .sidebar-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-info ul li {
+            font-size: 14px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+        .sidebar-info ul li:last-child {
+            border-bottom: none;
+        }
+        .sidebar-info ul li span {
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+.profile-photo {
+    width: 360px; /* 或者你想要的任意尺寸 */
+    height: auto;
+    object-fit: cover; /* 保证图片不变形 */
+
+}
+        /* ================= 响应式适配 ================= */
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 30px 20px; }
+            .page-content { flex-direction: column; }
+            .sidebar-info { width: 100%; box-sizing: border-box; position: static; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部 Logo与面包屑 -->
+    <header class="page-header">
+        <a href="inner.html" class="logo-wrapper">
+            <img src="image/logo.webp" alt="OFO Logo">
+            <div>
+                <span class="b-title">OFO</span>
+                <span class="b-sub">Organization for Oneirology</span>
+            </div>
+        </a>
+
+        <!-- 极简返回导航 -->
+        <div class="breadcrumb">
+            <a href="inner.html">Home</a>
+            <span class="separator">/</span>
+            <a href="inner.html#sec-2">成员简介</a>
+            <span class="separator">/</span>
+            <span>清瑶</span>
+        </div>
+    </header>
+
+    <!-- 主体内容 -->
+    <div class="content-wrapper">
+        <h1 class="page-title">清瑶 <span style="font-size: 18px; font-weight: 300; color: var(--text-muted);">Qing Yao</span></h1>
+
+        <div class="page-content">
+            <!-- 左侧：主文章 -->
+            <div class="main-text">
+                <img src="image/qingyao.webp" alt="清瑶的档案照片" class="profile-photo">
+                
+                <div class="member-quote">
+                    “我的书桌旁有一扇小窗，晚风吹过，我时常在想，如果这也是个梦该多好。”
+                    <cite>—— 摘自《解梦会创始人信件》</cite>
+                </div>
+
+                <h2 class="section-subhead">▍ 公开简介</h2>
+                <p>
+                    解梦会创始人之一，解梦会现任会长兼常务理事。
+                </p>
+                <p>
+                    作为解梦会的创始人，清瑶与其他常务理事相比，并没有非常突出的专业能力。但是在解梦会还未成立的过去，她就能通过敏锐的观察力看清怪奇事件的本质，提出初步的梦境理论，并将各领域的顶尖人物聚集在一起，实属是一项壮举。
+                </p>
+
+                <h2 class="section-subhead">▍ 负责领域</h2>
+                
+                <div class="duty-list">
+                    <div class="duty-item">
+                        <strong>解梦会日常事务管理：</strong>
+                        <p>迎新与社群日常维护，线上例会与活动统筹，财务与物资管理，确立未来研究方向，官方合作与人员协调等。</p>
+                    </div>
+                    <div class="duty-item">
+                        <strong>怪奇事件搜集与归档：</strong>
+                        <p>搜集各种渠道获得的近期怪奇事件相关资料，初步筛选后在解梦会官网怪奇事件未解决栏目发布。听取最新怪奇事件的调查汇报，根据调查结果在怪奇事件已解决栏目进行归档，并与当地官方跟进最新进展。</p>
+                    </div>
+                    <div class="duty-item">
+                        <strong>干事选拔与人员管理：</strong>
+                        <p>对怪梦亲历者进行隐藏心理评估，发掘个人特长安排至适合岗位，创立地区调查小队等。</p>
+                    </div>
+                </div>
+
+                <!-- 档案备注区 -->
+                <div class="archival-note">
+                    <p>
+                        清瑶会长的本职究竟是什么，她私下里又究竟是个什么样的人呢？这可以说是解梦会成员们茶余饭后杂谈排行榜第一名的话题了。大家只知道加入解梦会后有这么一个会长的存在，平时也时不时会和这位冰山美人擦肩而过，开会的时候她只是用着平淡的语调说着未来的安排，却不知道她到底是因何契机创立的解梦会，又是怎么找到这么多各领域的奇能异士为她马首是瞻的。解梦会最擅长的就是解谜，可是自己的会长却成为了所有成员们心中最大的谜团。
+                    </p>
+                    <p class="dialogue">
+                        “清瑶会长肯定是幼儿园老师！别看她平时冷冰冰的，我刚来的时候开心理辅导会，紧张得话都说不出来，是她紧紧握着我的手让我别紧张，这里就是我们这些人的避风港。你不知道她当时那个笑容，简直就是女神降临了！”
+                    </p>
+                    <p class="dialogue">
+                        “你放屁她当时明明是对着我笑的，还有会长要能握着你的手我一会儿就从窗口跳下去。”
+                    </p>
+                    <p class="dialogue">
+                        “你可别又做成一起怪奇事件了，不过清瑶会长确实，平时看上去冷冰冰的，其实心里比谁都挂念我们，我觉得她是能做我们妈妈的女人。”
+                    </p>
+                    <p class="dialogue">
+                        “老东西老大不小了还在说这些恶心的话，清瑶会长做你女儿都够了。”
+                    </p>
+                    <p class="dialogue">
+                        “你说什么死不要脸的再说一遍？”
+                    </p>
+                    <p class="dialogue">
+                        “说就说。”
+                    </p>
+                    <p class="dialogue">
+                        “你tm...”
+                    </p>
+                  
+                </div>
+
+            </div>
+
+            <!-- 右侧：基本信息边栏 -->
+            <div class="sidebar-info">
+                <h4>基本信息</h4>
+                <ul>
+                    <li>姓名 <span>清瑶 (Qing Yao)</span></li>
+                    <li>性别 <span>女</span></li>
+                    <li>年龄 <span>37</span></li>
+                    <li>国籍 <span>中国</span></li>
+                    <li>职位 <span>会长，常务理事</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+      <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>樱鹤 - 解梦会 OFO</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        :root { 
+            --primary: #0F171E; 
+            --secondary: #316B83; 
+            --bg-light: #F8FAFC; 
+            --bg-white: #FFFFFF; 
+            --text-dark: #1E293B; 
+            --text-muted: #64748B; 
+            --border: #E2E8F0; 
+            --font-heading: 'EB Garamond', 'Times New Roman', serif; 
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;  
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif; 
+        }
+
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            font-family: var(--font-ui);  
+            background-color: var(--bg-light); 
+            color: var(--text-dark); 
+            overflow-x: hidden; 
+        }
+
+        /* ================= 头部标识与面包屑 ================= */
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        /* 极简面包屑导航 */
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator {
+            color: var(--border);
+        }
+
+        /* ================= 核心内容区 ================= */
+        .content-wrapper {
+            padding: 60px 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            margin-top: 40px;
+            border-radius: 4px;
+        }
+
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 48px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0 0 30px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .page-content {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        /* ===== 左侧：主内容区 ===== */
+        .main-text {
+            flex: 2;
+        }
+        .main-text p {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        /* 照片展示区 (顶部照片) */
+        .profile-photo {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            display: block;
+            margin-bottom: 30px;
+            background: var(--bg-light);
+        }
+
+        /* 语录引用框 */
+        .member-quote {
+            border-left: 4px solid var(--secondary);
+            margin: 0 0 30px 0;
+            padding: 15px 25px;
+            background: var(--bg-light);
+            color: var(--text-muted);
+            font-style: italic;
+            border-radius: 2px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .member-quote cite {
+            display: block;
+            margin-top: 10px;
+            font-style: normal;
+            font-size: 14px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        /* 自定义标题 */
+        .section-subhead {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 40px 0 15px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* 责任领域列表 */
+        .duty-list {
+            margin: 15px 0 20px 0;
+        }
+        .duty-item {
+            margin-bottom: 15px;
+        }
+        .duty-item strong {
+            display: block;
+            color: var(--secondary);
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .duty-item p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* 档案备注特殊排版 */
+        .archival-note {
+            border: 1px dashed var(--border);
+            background: #F8F9FA;
+            padding: 20px 25px;
+            margin-top: 40px;
+            position: relative;
+            border-radius: 4px;
+        }
+        .archival-note::before {
+            content: '【档案备注】';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #fff;
+            padding: 0 10px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: bold;
+            font-family: var(--font-mono);
+        }
+        .archival-note p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+        .archival-note .dialogue {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* ===== 右侧：边栏信息卡 ===== */
+        .sidebar-info {
+            flex: 1;
+            min-width: 250px;
+            border: 1px solid var(--border);
+            padding: 25px;
+            background: var(--bg-light);
+            position: sticky;
+            top: 40px;
+        }
+        .sidebar-info h4 {
+            font-family: var(--font-heading);
+            font-size: 16px;
+            margin: 0 0 15px 0;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+        .sidebar-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-info ul li {
+            font-size: 14px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+        .sidebar-info ul li:last-child {
+            border-bottom: none;
+        }
+        .sidebar-info ul li span {
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+.profile-photo {
+    width: 360px; /* 或者你想要的任意尺寸 */
+    height: auto;
+    object-fit: cover; /* 保证图片不变形 */
+
+}
+        /* ================= 响应式适配 ================= */
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 30px 20px; }
+            .page-content { flex-direction: column; }
+            .sidebar-info { width: 100%; box-sizing: border-box; position: static; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部 Logo与面包屑 -->
+    <header class="page-header">
+        <a href="inner.html" class="logo-wrapper">
+            <img src="image/logo.webp" alt="OFO Logo">
+            <div>
+                <span class="b-title">OFO</span>
+                <span class="b-sub">Organization for Oneirology</span>
+            </div>
+        </a>
+
+        <!-- 极简返回导航 -->
+        <div class="breadcrumb">
+            <a href="inner.html">Home</a>
+            <span class="separator">/</span>
+            <a href="inner.html#sec-2">成员简介</a>
+            <span class="separator">/</span>
+            <span>樱鹤</span>
+        </div>
+    </header>
+
+    <!-- 主体内容 -->
+    <div class="content-wrapper">
+        <h1 class="page-title">樱鹤 <span style="font-size: 18px; font-weight: 300; color: var(--text-muted);">Sakuratsuru</span></h1>
+
+        <div class="page-content">
+            <!-- 左侧：主文章 -->
+            <div class="main-text">
+                
+                <!-- 顶部照片 -->
+                <img src="image/yinghe.webp" alt="樱鹤的档案照片" class="profile-photo">
+
+                <div class="member-quote">
+                    “只有绝对的理性，才能解决无法言说的问题。”
+                    <cite>—— 解梦会成员对怪奇事件部部长口头禅的复述</cite>
+                </div>
+
+                <h2 class="section-subhead">▍ 公开简介</h2>
+                <p>
+                    解梦会创始人之一，怪奇事件部部长。
+                </p>
+                <p>
+                    大学期间凭借独特的三方向量化分析技术受到诺亚公司邀请，成为公司首席研究员，中年时期深受怪梦所困从诺亚公司辞职，通过三方向量化分析技术与梦境结合为灵感，创作出许多文学作品。于年度作者论坛交流会结识清瑶，之后接受清瑶的邀请，一同建立了解梦会。
+                </p>
+                <p>
+                    作为怪奇事件部的负责人，樱鹤对如何通过特殊手段，将收集到的怪奇传闻进行量化分析并关联梦境，提供了方向性的指引。她的理论认为，只有将怪奇事件与梦境的联系进行量化分析归类，才能深入观测梦境内容，解决怪梦成因。
+                </p>
+
+                <h2 class="section-subhead">▍ 负责领域</h2>
+                
+                <div class="duty-list">
+                    <div class="duty-item">
+                        <strong>梦境观测技术支持：</strong>
+                        <p>樱鹤所发明的“横向、纵向、侧向”三方向量初步分析，是目前解梦会官方深入了解怪奇事件与梦境的手段之一，在怪奇事件部得到了广泛的认可并应用。</p>
+                    </div>
+                    <div class="duty-item">
+                        <strong>已归档数据对比分析：</strong>
+                        <p>作为对已归档数据与新接受事件的分析比对负责人，樱鹤负责在梦境触发次数、怪奇事件发作影响程度等领域统筹对比。通过将新收入“活跃期”怪奇事件与“沉寂期”怪奇事件的共通性提取，以理性的角度对待梦境，进而帮助高级成员再下一次行动中能更快辨清梦境与怪奇事件的联系。</p>
+                    </div>
+                </div>
+
+                <!-- 档案备注区 -->
+                <div class="archival-note">
+                    <p>
+                        樱鹤很清楚自己提供的技术在解梦会中的重要程度，但比起如何深化怪奇事件与梦境联系的观测技术，她更在意的还是怪梦的成因。与研发部部长玖和不同，樱鹤对怪梦成因的探究是更“文学性”。她认为怪梦可能与时代发展与宗教因素有关，至于她自己的怪梦，她却从来没向任何人提起过。
+                    </p>
+                    <p class="dialogue">
+                        “对于如何提升猫秋智商，除了让他强制戒酒，我实在没想到更合适的方法。他明明对如何深入分析梦境这一领域颇有心得，却总不按常理出牌。明明想培养他作为我的接班人的。
+                    </p>
+                    <p class="dialogue">
+                        也许是与他的长久接触吧，我感觉我新作中与人文、情感变化、内心成长的部分也相较于之前得到了提升。多亏了他加入解梦会。”
+                    </p>
+                    <p style="font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px;">
+                        ———— 摘自樱鹤的日记<br>
+                        经过调查，解梦会并不存在猫秋这一人物，以上。
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- 右侧：基本信息边栏 -->
+            <div class="sidebar-info">
+                <h4>基本信息</h4>
+                <ul>
+                    <li>姓名 <span>樱鹤 (Sakuratsuru)</span></li>
+                    <li>性别 <span>女</span></li>
+                    <li>年龄 <span>47</span></li>
+                    <li>国籍 <span>日本</span></li>
+                    <li>职位 <span>怪奇事件部部长</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

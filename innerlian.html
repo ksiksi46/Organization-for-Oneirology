@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="icon" href="image/logo.ico" type="image/logo.ico">
+    <title>黎安 - 解梦会 OFO</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        :root { 
+            --primary: #0F171E; 
+            --secondary: #316B83; 
+            --bg-light: #F8FAFC; 
+            --bg-white: #FFFFFF; 
+            --text-dark: #1E293B; 
+            --text-muted: #64748B; 
+            --border: #E2E8F0; 
+            --font-heading: 'EB Garamond', 'Times New Roman', serif; 
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;  
+            --font-ui: 'Inter', -apple-system, 'Segoe UI', sans-serif; 
+        }
+
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            font-family: var(--font-ui);  
+            background-color: var(--bg-light); 
+            color: var(--text-dark); 
+            overflow-x: hidden; 
+        }
+
+        /* ================= 头部标识与面包屑 ================= */
+        .page-header {
+            padding: 60px 60px 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+        }
+        .logo-wrapper img {
+            height: 128px;
+            width: auto;
+            display: block;
+        }
+        .b-title { font-size: 58px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; line-height: 1; }
+        .b-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;}
+
+        /* 极简面包屑导航 */
+        .breadcrumb {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .breadcrumb .separator {
+            color: var(--border);
+        }
+
+        /* ================= 核心内容区 ================= */
+        .content-wrapper {
+            padding: 60px 60px 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            margin-top: 40px;
+            border-radius: 4px;
+        }
+
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 48px;
+            font-weight: 400;
+            color: var(--primary);
+            margin: 0 0 30px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .page-content {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        /* ===== 左侧：主内容区 ===== */
+        .main-text {
+            flex: 2;
+        }
+        .main-text p {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        /* 照片展示区 */
+        .profile-photo {
+            width: 360px;
+            height: auto;
+            object-fit: cover;
+        }
+
+        /* 语录引用框 */
+        .member-quote {
+            border-left: 4px solid var(--secondary);
+            margin: 0 0 30px 0;
+            padding: 15px 25px;
+            background: var(--bg-light);
+            color: var(--text-muted);
+            font-style: italic;
+            border-radius: 2px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .member-quote cite {
+            display: block;
+            margin-top: 10px;
+            font-style: normal;
+            font-size: 14px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        /* 自定义标题 */
+        .section-subhead {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 40px 0 15px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* 责任领域列表 */
+        .duty-list {
+            margin: 15px 0 20px 0;
+        }
+        .duty-item {
+            margin-bottom: 15px;
+        }
+        .duty-item strong {
+            display: block;
+            color: var(--secondary);
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .duty-item p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* 档案备注特殊排版 */
+        .archival-note {
+            border: 1px dashed var(--border);
+            background: #F8F9FA;
+            padding: 20px 25px;
+            margin-top: 40px;
+            position: relative;
+            border-radius: 4px;
+        }
+        .archival-note::before {
+            content: '【档案备注】';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #fff;
+            padding: 0 10px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: bold;
+            font-family: var(--font-mono);
+        }
+        .archival-note p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+        .archival-note p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ===== 右侧：边栏信息卡 ===== */
+        .sidebar-info {
+            flex: 1;
+            min-width: 250px;
+            border: 1px solid var(--border);
+            padding: 25px;
+            background: var(--bg-light);
+            position: sticky;
+            top: 40px;
+        }
+        .sidebar-info h4 {
+            font-family: var(--font-heading);
+            font-size: 16px;
+            margin: 0 0 15px 0;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+        .sidebar-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-info ul li {
+            font-size: 14px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+        .sidebar-info ul li:last-child {
+            border-bottom: none;
+        }
+        .sidebar-info ul li span {
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        /* ================= 响应式适配 ================= */
+        @media (max-width: 900px) {
+            .page-header { padding: 40px 20px 0 20px; }
+            .content-wrapper { padding: 30px 20px; }
+            .page-content { flex-direction: column; }
+            .sidebar-info { width: 100%; box-sizing: border-box; position: static; }
+            .profile-photo { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部 Logo与面包屑 -->
+    <header class="page-header">
+        <a href="inner.html" class="logo-wrapper">
+            <img src="image/logo.webp" alt="OFO Logo">
+            <div>
+                <span class="b-title">OFO</span>
+                <span class="b-sub">Organization for Oneirology</span>
+            </div>
+        </a>
+
+        <!-- 极简返回导航 -->
+        <div class="breadcrumb">
+            <a href="inner.html">Home</a>
+            <span class="separator">/</span>
+            <a href="inner.html#sec-2">成员简介</a>
+            <span class="separator">/</span>
+            <span>黎安</span>
+        </div>
+    </header>
+
+    <!-- 主体内容 -->
+    <div class="content-wrapper">
+        <h1 class="page-title">黎安 <span style="font-size: 18px; font-weight: 300; color: var(--text-muted);">Li An</span></h1>
+
+        <div class="page-content">
+            <!-- 左侧：主文章 -->
+            <div class="main-text">
+                
+                <!-- 顶部照片 -->
+                <!-- 注意：请确保 image 文件夹里有 lian.webp 这张图片 -->
+                <img src="image/lian.webp" alt="黎安的档案照片" class="profile-photo">
+
+                <div class="member-quote">
+                    “我们的权利当然由我们自己来保障。”
+                    <cite>—— 某怪奇事件调查案被告法务部部长发言</cite>
+                </div>
+
+                <h2 class="section-subhead">▍ 公开简介</h2>
+                <p>
+                    解梦会创始人之一，解梦会法务部部长。
+                </p>
+                <p>
+                    滨海大学法学系大三学生，患有艾斯伯格综合症，不善交际，智商却远超常人，对数字和条例极其敏感，连跨四级参加高考并被滨海大学特殊录取。会长在滨海大学模拟法庭的旁听席上，意外发现她在特殊场合的语言天赋，可以快速从一堆杂乱无章的信息中筛选出最有用的几条，把一切事件当做一组待拆解待分析的数据。并且根据所持信息对当前情况做出最有利于己方的判断。
+                </p>
+                <p>
+                    后因怪梦事件正式加入解梦会的创立，年龄问题解梦会已对户口进行修改。
+                </p>
+
+                <h2 class="section-subhead">▍ 负责领域</h2>
+                
+                <div class="duty-list">
+                    <div class="duty-item">
+                        <strong>拟定人员合约与专业申请：</strong>
+                        <p>负责用极其晦涩的专业术语包装解梦会研发的高频发射器、脑电波干预设备、红药丸等核心成果，防止其本质内容在专利局公示时受到揭露。配合常务理事，为所有招募来的解梦会成员拟定长达几十页、保障其人生安全的保密协议。确保解梦会成员能在身处解梦会期间得到完整合规的法律援助与保护。</p>
+                    </div>
+                    <div class="duty-item">
+                        <strong>危机公关与事件处理：</strong>
+                        <p>当因怪奇事件带来的物理与社会影响无法向公众解释时，法务部长负责在文书上切断事件与现实社会的联系。伪造债务纠纷、跨国劳务合同或是失踪声明等，在各种民政和户籍系统中制造逻辑死角，让怪奇事件在法律意义上合理蒸发。与外联部合作与各方媒体交涉，保证怪奇事件只会出现在新闻的花边板块，避免引起恐慌。</p>
+                    </div>
+                </div>
+
+                <!-- 档案备注区 -->
+                <div class="archival-note">
+                    <p>
+                        “作为解梦会最年轻的血液，是不是也有点太年轻了？”
+                    </p>
+                    <p>
+                        这是黎安刚刚入驻解梦会时，除了凌北北外的所有人对她的第一印象。眼前的女孩瘦瘦小小，皮肤白的几乎透明，短发虽利落却透着一种营养不良的枯黄，穿着一件灰色的薄卫衣，外面套了一件蓝白色的校服外套，下身穿着一条被水洗到已经褪色的牛仔裤，脚踩一双白色帆布鞋，一双眼睛黑洞洞的，没人可以从这双眼睛里观察到她的任何情绪，手揣在校服外套的口袋里，立在那里，仿佛一块干瘪呆滞的人形立牌。
+                    </p>
+                    <p>
+                        “她是高中生吗？” “woc解梦会雇佣童工啊。” “那tm是法务部部长。”
+                    </p>
+                    <p>
+                        这是黎安在解梦会工作一段时间后众人对她的普遍印象。她的作息高度规律，几乎是完全固定的，想找到她只要掐准时间就知道她的位置了。上学期间六点起床吃早饭，八点上课；十一点半放学，吃午饭，十二点午休；下午一点到五点继续上课，放学后她就会回到解梦会整理一整天堆积的事件信息和档案，假期则是除了把上课改成工作其他没有任何变化，一整天都会待在解梦会。
+                    </p>
+                    <p>
+                        她处理信息的效率极高，在大家都还在为了委托事件斟酌切入点时，她已经将有效信息全部归纳整理好抄送到会长的邮箱里了。她沉默、瘦小、呆板也固执，她也聪明、专注、理智也缜密，这就是她。
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- 右侧：基本信息边栏 -->
+            <div class="sidebar-info">
+                <h4>基本信息</h4>
+                <ul>
+                    <li>姓名 <span>黎安 (Li An)</span></li>
+                    <li>性别 <span>女</span></li>
+                    <li>年龄 <span>17</span></li>
+                    <li>国籍 <span>中国</span></li>
+                    <li>职位 <span>法务部部长</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
