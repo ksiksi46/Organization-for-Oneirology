@@ -408,18 +408,7 @@
             localStorage.setItem(STORAGE_KEY, 'true');
         }
 
-        function showWatchedMessage() {
-            overlay.classList.add('show');
-            videoEl.style.display = 'none';
-            hintEl.style.display = 'none';
-            const old = document.getElementById('watchedMsg');
-            if (old) old.remove();
-            const msg = document.createElement('div');
-            msg.className = 'watched-message';
-            msg.id = 'watchedMsg';
-            msg.innerHTML = '<small style="font-size:48px; color:#F8F9FA;">您已观看过</small><br><small style="font-size:48px;color:#aaa;">梦不会重复</small>';
-            overlay.appendChild(msg);
-        }
+       
 
         function getRandomVideo() {
             const idx = Math.floor(Math.random() * VIDEO_FILES.length);
