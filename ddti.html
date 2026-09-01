@@ -534,10 +534,9 @@ document.getElementById('optionsList').innerHTML = "";
     return;
 }
 
-      if (q.special === 'forced_A') {
-    // 短暂停顿后显示全屏文字
+     
+     if (q.special === 'forced_A') {
     setTimeout(() => {
-        // 创建全屏遮罩
         const overlay = document.createElement('div');
         overlay.id = 'forcedOverlay';
         overlay.style.cssText = `
@@ -546,7 +545,6 @@ document.getElementById('optionsList').innerHTML = "";
             left: 0;
             width: 100vw;
             height: 100vh;
-            
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
@@ -555,25 +553,27 @@ document.getElementById('optionsList').innerHTML = "";
             z-index: 99999;
             padding: 20px;
             box-sizing: border-box;
+            
         `;
         
-        // 生成大量 "你忘了我吗？"
-        let text = '';
-        for (let i = 0; i < 80; i++) {
-            text += '你忘了我吗？ ';
+        const text = '你忘了我吗？';
+        // 每行6个，共10行
+        const cols = 6;
+        const rows = 10;
+        let html = '';
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                html += `<span style="color: #ff0000; font-size: 28px; font-weight: bold; display: inline-block; text-align: center; transform: scaleY(1.5); letter-spacing: 6px; margin: 4px 8px; white-space: nowrap;">${text}</span>`;
+            }
+            html += `<br>`;
         }
         
-        overlay.innerText = text;
-        overlay.style.color = '#ff0000';
-        overlay.style.fontSize = '28px';
-        overlay.style.fontWeight = 'bold';
+        overlay.innerHTML = html;
         overlay.style.textAlign = 'center';
-        overlay.style.wordBreak = 'break-word';
-        overlay.style.lineHeight = '1.8';
+        overlay.style.lineHeight = '1.6';
         
         document.body.appendChild(overlay);
         
-        // 2.5秒后移除并进入下一题
         setTimeout(() => {
             overlay.remove();
             nextQuestion(0);
@@ -700,11 +700,13 @@ if (q.special === 'disaster_countdown') {
     const alarmAudio = new Audio('警报.mp3');
     alarmAudio.loop = false;
     alarmAudio.play();
-     const allBtns = document.querySelectorAll('.option-btn');
+    
+    const allBtns = document.querySelectorAll('.option-btn');
     allBtns.forEach(btn => {
         btn.style.pointerEvents = 'none';
         btn.style.opacity = '0.6';
     });
+    
     const notice = document.getElementById('disasterNotice');
     const msgEl = document.getElementById('disasterMsg');
     
@@ -714,20 +716,101 @@ if (q.special === 'disaster_countdown') {
     
     const countdownInterval = setInterval(() => {
         count--;
-        if (count >= 1) {
+        if (count >= 3) {
             msgEl.innerText = `距离灾难来临还有 ${count}`;
-        } else {
+        } else if (count === 2) {
+            // 卡在 "距离灾难来临还有 2"
+            msgEl.innerText = `距离灾难来临还有 ${count}`;
             clearInterval(countdownInterval);
-            msgEl.innerText = `灾难降临！`;
-            notice.classList.add('glitch');
             
+            // 延迟0.5秒后出现故障效果
             setTimeout(() => {
-                alarmAudio.pause();
-                alarmAudio.currentTime = 0;
-                notice.classList.remove('glitch');
-                notice.classList.remove('show');
-                nextQuestion(value);
-            }, 5000);
+                // 故障闪屏效果
+                const container = document.getElementById('mainContainer');
+                const originalTransform = container.style.transform;
+                
+                // 闪屏：白屏闪烁
+             const flash = document.createElement('div');
+flash.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #ffffff;
+    z-index: 99999;
+    pointer-events: none;
+    opacity: 0;
+`;
+
+// 添加红色闪烁层（叠加效果）
+const flashRed = document.createElement('div');
+flashRed.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #ff0000;
+    z-index: 99998;
+    pointer-events: none;
+    opacity: 0;
+`;
+
+document.body.appendChild(flash);
+document.body.appendChild(flashRed);
+
+let flashCount = 0;
+const flashInterval = setInterval(() => {
+    flashCount++;
+    if (flashCount % 2 === 1) {
+        // 奇数：白色全亮 + 红色半亮
+        flash.style.opacity = '1';
+        flashRed.style.opacity = '0.3';
+    } else {
+        // 偶数：全暗
+        flash.style.opacity = '0';
+        flashRed.style.opacity = '0';
+    }
+    // 闪8次后结束
+    if (flashCount >= 8) {
+        clearInterval(flashInterval);
+        flash.remove();
+        flashRed.remove();
+        
+        alarmAudio.pause();
+        alarmAudio.currentTime = 0;
+        notice.classList.remove('glitch');
+        notice.classList.remove('show');
+        nextQuestion(value);
+    }
+}, 80);
+                // 屏幕错位抖动
+                container.style.transition = 'transform 0.05s';
+                const glitchInterval = setInterval(() => {
+                    const x = (Math.random() - 0.5) * 20;
+                    const y = (Math.random() - 0.5) * 20;
+                    const rotate = (Math.random() - 0.5) * 3;
+                    container.style.transform = `translate(${x}px, ${y}px) rotate(${rotate}deg)`;
+                }, 50);
+                
+                // 2.5秒后恢复并跳转
+                setTimeout(() => {
+                    clearInterval(glitchInterval);
+                    container.style.transition = 'transform 0.3s';
+                    container.style.transform = originalTransform || 'scale(1)';
+                    
+                    // 停止音效
+                    alarmAudio.pause();
+                    alarmAudio.currentTime = 0;
+                    
+                    notice.classList.remove('glitch');
+                    notice.classList.remove('show');
+                    
+                    nextQuestion(value);
+                }, 2500);
+                
+            }, 500);
         }
     }, 1000);
     
