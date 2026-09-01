@@ -32,7 +32,10 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
-
+@keyframes blink {
+    0% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
         /* ================= 黑底红字（资格审查状态） ================= */
         body.audit-mode {
             background-color: #000000 !important;
@@ -249,8 +252,9 @@
 </head>
 <body>
 
+
     <div id="disasterNotice" class="disaster-notice">
-        <i class="alert-icon">⚠</i>
+        <i class="alert-icon"></i>
         <span id="disasterMsg">距离灾难来临还有 5</span>
     </div>
 
@@ -269,7 +273,7 @@
         <div class="progress-container">
             <div class="progress-text">
                 <span id="currentQuestion">第 0 题</span>
-                <span id="questionCount">/ 30</span>
+                <span id="questionCount">共 30 题</span>
             </div>
             <div class="progress-bar">
                 <div class="progress-bar-fill" id="progressBar"></div>
@@ -284,6 +288,7 @@
     </div>
 
     <script>
+      
          function calculateZodiac(dateStr) {
             if (!dateStr) return "未知";
             
@@ -346,7 +351,7 @@
             { type: 'choice', title: '13. 您无法在梦中认识到自己', options: [{t:'A.非常认同',v:0},{t:'B.认同',v:0},{t:'C.不认同',v:0},{t:'D.非常不认同',v:0}], special: 'forced_A' },
             { type: 'choice', title: '14. 您愿意另一个与您完全相同的自己替您而活吗', options: [{t:'A.非常认同',v:0},{t:'B.认同',v:0},{t:'C.不认同',v:0},{t:'D.非常不认同',v:0}], special: 'audit_mode' },
             { type: 'choice', title: '15. 您的作息很规律', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
-            { type: 'choice', title: '16. [数据缺失]', options: [{t:'A',v:0},{t:'B',v:0},{t:'C',v:0},{t:'D',v:0}] },
+            { type: 'choice', title: '16. ', options: [{t:'A',v:0},{t:'B',v:0},{t:'C',v:0},{t:'D',v:0}] },
             { type: 'choice', title: '17. 您很难分辨梦境与现实', options: [{t:'A.非常认同',v:0},{t:'B.认同',v:0},{t:'C.不认同',v:0},{t:'D.非常不认同',v:0}], special: 'wake_up' },
             { type: 'choice', title: '18. 不反复确认门窗关闭等细节，您就无法入睡', options: [{t:'A.非常认同',v:-2},{t:'B.认同',v:-1},{t:'C.不认同',v:1},{t:'D.非常不认同',v:2}] },
             { type: 'choice', title: '19. 您认为噩梦对您的记忆力有影响', options: [{t:'A.非常认同',v:0},{t:'B.认同',v:0},{t:'C.不认同',v:0},{t:'D.非常不认同',v:0}], special: 'check_12' },
@@ -364,10 +369,10 @@
             { type: 'text', title: '31. 您最近经常做怪梦吗，内容是', placeholder: '请输入你最近梦到的内容...' },
         ];
 
-        // 背景音乐（占位符）
-        const bgmAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAACAgICA');
-        bgmAudio.loop = true;
-        let isBGMPlaying = false;
+        // 将原来的 bgmAudio 替换为：
+const whisperAudio = new Audio('耳语.mp3');
+whisperAudio.loop = false; // 只播放一遍
+let isWhisperPlaying = false;
 
         // 渲染题目
         function renderQuestion() {
@@ -375,7 +380,7 @@
                 finishTest();
                 return;
             }
-
+document.getElementById('optionsList').innerHTML = ""; 
             const q = questions[currentIndex];
             
             // 姓名和日期（0.1, 0.2）不参与进度条计算
@@ -386,64 +391,89 @@
             
             document.getElementById('progressBar').style.width = progress + '%';
             document.getElementById('currentQuestion').innerText = `第 ${Math.max(0, currentIndex - 1)} 题`;
-            document.getElementById('questionCount').innerText = `/ 30`;
+            document.getElementById('questionCount').innerText = `共31题`;
             
             let title = q.title;
             // 特殊处理 23 题，实时读取日期计算出的星座
-            if (currentIndex === 22) {
+            if (currentIndex === 24) {
                 title = '23. 您的星座是 ' + (window.__userZodiac || '未知');
             }
-            // 特殊替换标题
-            if (q.special === 'name_swap') {
-                title = title.replace('死去的亲朋好友', userName || '死去的亲朋好友');
+         if (q.special === 'name_swap') {
+    const name = userName || '未知';
+    const titleEl = document.getElementById('questionTitle');
+    
+    // 先显示 "亲朋好友"（黑色，开始闪烁）
+    titleEl.innerHTML = title.replace(
+        '亲朋好友',
+        `<span id="blinkName" style="color: #1e293b; animation: blink 0.3s ease-in-out 3; font-weight: 900;">亲朋好友</span>`
+    );
+    
+    // 1.2秒后（闪烁3次后）变为红色姓名
+    setTimeout(() => {
+        const blinkSpan = document.getElementById('blinkName');
+        if (blinkSpan) {
+            blinkSpan.style.animation = 'none';
+            blinkSpan.textContent = name;
+            blinkSpan.style.color = '#ff0000';
+            blinkSpan.style.fontWeight = '900';
+        }
+    }, 1200);
+} else {
+    document.getElementById('questionTitle').innerText = title;
+}
+
+
+       if (q.type === 'text') {
+    const inputGroup = document.createElement('div');
+    inputGroup.className = 'input-group';
+    inputGroup.innerHTML = `<input type="text" id="textInput" placeholder="${q.placeholder || ''}" style="font-family: inherit; font-size: 16px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; width: 100%; box-sizing: border-box; background: var(--bg-color);" maxlength="50">`;
+    optionsList.appendChild(inputGroup);
+    
+    const inputEl = document.getElementById('textInput');
+    
+    // 第31题：输入任何字符都按顺序显示指定文字，限制50字
+  
+    
+    // 第31题：输入任何字符都按顺序显示指定文字，限制50字
+    if (currentIndex === 32) {
+        const fixedText = '椅肯拿或然步近蓝度展且呼层片使式现管系即知性没问原相面群织准研别总细回此实主角根方入半王车满安象斯件位各论权采光多布队认林果';
+        let charIndex = 0;
+        
+        inputEl.addEventListener('input', function() {
+            const original = this.value;
+            let result = '';
+            const maxLength = 50;
+            for (let i = 0; i < original.length && i < maxLength; i++) {
+                result += fixedText[charIndex % fixedText.length];
+                charIndex++;
             }
+            this.value = result;
+        });
+    }
+    
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerText = '确认';
+    btn.onclick = () => {
+        const val = document.getElementById('textInput').value;
 
-            document.getElementById('questionTitle').innerText = title;
-            
-            const optionsList = document.getElementById('optionsList');
-            optionsList.innerHTML = '';
+        if (!val || val.trim() === "") {
+            alert("请填写内容后再确认！"); 
+            return; 
+        }
 
-            if (q.type === 'text') {
-                const inputGroup = document.createElement('div');
-                inputGroup.className = 'input-group';
-                inputGroup.innerHTML = `<input type="text" id="textInput" placeholder="${q.placeholder || ''}">`;
-                optionsList.appendChild(inputGroup);
-                
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = '确认';
-                btn.onclick = () => {
-                    const val = document.getElementById('textInput').value;
-
-                    if (!val || val.trim() === "") {
-                        alert("请填写内容后再确认！"); 
-                        return; 
-                    }
-
-                    if (currentIndex === 0) {
-                        userName = val;
-                        nextQuestion(0); 
-                    }
-                    else if (currentIndex === 30) {
-                        const container = document.getElementById('mainContainer');
-                        const titleEl = document.getElementById('questionTitle');
-                        
-                        titleEl.innerText = "系统检测到异常输入，正在尝试解析...";
-                        
-                        setTimeout(() => {
-                            titleEl.innerText = "错误：无法解析梦境内容！";
-                            container.style.transform = "scale(0.98)";
-                            setTimeout(() => {
-                                alert("输入法随机出结果：" + String.fromCharCode(Math.floor(Math.random() * 65535)));
-                                container.style.transform = "scale(1)";
-                                nextQuestion(0); 
-                            }, 500);
-                        }, 600);
-                    }
-                };
-                optionsList.appendChild(btn);
-            } 
-            
+        if (currentIndex === 0) {
+            userName = val;
+            nextQuestion(0); 
+        }
+        else if (currentIndex === 32) {
+            // 直接进入结果
+            nextQuestion(0);
+        }
+    };
+    optionsList.appendChild(btn);
+}
+        
             else if (q.type === 'date') {
                 const inputGroup = document.createElement('div');
                 inputGroup.className = 'input-group';
@@ -484,29 +514,73 @@
         function handleChoice(value) {
             const q = questions[currentIndex];
 
-            if (currentIndex === 11) answers['q12'] = value;
+          if (currentIndex === 13) {
+    // 存储选项字母而不是数值
+    const q12Opts = questions[13].options;
+    for (let i = 0; i < q12Opts.length; i++) {
+        if (q12Opts[i].v === value) {
+            answers['q12'] = q12Opts[i].t.charAt(0);
+            break;
+        }
+    }
+}
+        if (q.special === 'whisper') {
+    if (!isWhisperPlaying) {
+        whisperAudio.play();
+        isWhisperPlaying = true;
+    }
+    // 直接进入下一题，音频在后台继续播放
+    nextQuestion(value);
+    return;
+}
 
-            if (q.special === 'whisper') {
-                showOverlay('whisperOverlay');
-                if (!isBGMPlaying) { bgmAudio.play(); isBGMPlaying = true; }
-                setTimeout(() => hideOverlay('whisperOverlay'), 2000);
-                nextQuestion(value);
-                return;
-            }
-
-            if (q.special === 'forced_A') {
-                setTimeout(() => {
-                    showOverlay('wakeOverlay');
-                    document.getElementById('wakeOverlay').innerHTML = "你忘了我吗？<br>你忘了我吗？<br>你忘了我吗？";
-                    setTimeout(() => {
-                        hideOverlay('wakeOverlay');
-                        document.getElementById('wakeOverlay').innerHTML = "醒来！！！";
-                        nextQuestion(0); 
-                    }, 1800);
-                }, 500);
-                return;
-            }
-
+      if (q.special === 'forced_A') {
+    // 短暂停顿后显示全屏文字
+    setTimeout(() => {
+        // 创建全屏遮罩
+        const overlay = document.createElement('div');
+        overlay.id = 'forcedOverlay';
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            z-index: 99999;
+            padding: 20px;
+            box-sizing: border-box;
+        `;
+        
+        // 生成大量 "你忘了我吗？"
+        let text = '';
+        for (let i = 0; i < 80; i++) {
+            text += '你忘了我吗？ ';
+        }
+        
+        overlay.innerText = text;
+        overlay.style.color = '#ff0000';
+        overlay.style.fontSize = '28px';
+        overlay.style.fontWeight = 'bold';
+        overlay.style.textAlign = 'center';
+        overlay.style.wordBreak = 'break-word';
+        overlay.style.lineHeight = '1.8';
+        
+        document.body.appendChild(overlay);
+        
+        // 2.5秒后移除并进入下一题
+        setTimeout(() => {
+            overlay.remove();
+            nextQuestion(0);
+        }, 2500);
+    }, 500);
+    return;
+}
             if (q.special === 'audit_mode') {
                 document.body.classList.add('audit-mode');
                 document.getElementById('questionTitle').innerText = "资格审查问卷";
@@ -517,49 +591,148 @@
                 return;
             }
 
-            if (q.special === 'wake_up') {
-                showOverlay('wakeOverlay');
-                setTimeout(() => hideOverlay('wakeOverlay'), 1500);
-                setTimeout(() => nextQuestion(value), 1600);
-                return;
-            }
+           
+    // 获取所有选项按钮
+   if (q.special === 'wake_up') {
+    // 获取所有选项按钮，只改文字
+    const allBtns = document.querySelectorAll('.option-btn');
+    allBtns.forEach(btn => {
+        btn.innerText = '醒来！！！';
+          btn.style.color = '#ff0000';
+           
+        btn.style.pointerEvents = 'none'; // 禁止再次点击
+    });
+    
+    // 1.5秒后进入下一题
+    setTimeout(() => {
+        nextQuestion(value);
+    }, 1500);
+    return;
+}
 
-            if (q.special === 'check_12') {
-                if (value !== answers['q12']) {
-                    alert("您还记得12题选了什么吗？\n[记得]\n[不记得]");
-                }
+          if (q.special === 'check_12') {
+    const currentValue = value;
+    const q12Value = answers['q12'];
+    
+    // 获取当前点击的选项字母（A/B/C/D）
+    let currentLetter = '';
+    const currentOpts = questions[currentIndex].options;
+    for (let i = 0; i < currentOpts.length; i++) {
+        if (currentOpts[i].v === value) {
+            currentLetter = currentOpts[i].t.charAt(0);
+            break;
+        }
+    }
+    
+    // 获取第12题对应的选项字母（A/B/C/D）
+    let q12Letter = '';
+    const q12Opts = questions[13].options;
+    for (let i = 0; i < q12Opts.length; i++) {
+        if (q12Opts[i].v === q12Value) {
+            q12Letter = q12Opts[i].t.charAt(0);
+            break;
+        }
+    }
+    
+    // 比较字母是否一致
+    if (currentLetter !== q12Letter) {
+        // 创建自定义弹窗
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            backdrop-filter: blur(4px);
+        `;
+        
+        const modalBox = document.createElement('div');
+        modalBox.style.cssText = `
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 40px 48px 32px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        `;
+        
+        modalBox.innerHTML = `
+            <div style="font-size: 20px; font-weight: 600; color: #1e293b; margin-bottom: 12px;">提醒</div>
+            <div style="font-size: 16px; color: #475569; margin-bottom: 28px; line-height: 1.6;">
+                您还记得第12题选了什么吗？
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button id="rememberBtn" style="flex:1; padding: 12px 20px; background: #3b82f6; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit;">记得</button>
+                <button id="forgetBtn" style="flex:1; padding: 12px 20px; background: #e2e8f0; color: #1e293b; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit;">不记得</button>
+            </div>
+        `;
+        
+        modal.appendChild(modalBox);
+        document.body.appendChild(modal);
+        
+        document.getElementById('rememberBtn').onclick = function() {
+            modal.remove();
+            nextQuestion(currentValue);
+        };
+        
+        document.getElementById('forgetBtn').onclick = function() {
+            modal.remove();
+            nextQuestion(currentValue);
+        };
+        
+        return;
+    }
+    
+    // 一致，直接进入下一题
+    nextQuestion(value);
+    return;
+}
+if (q.special === 'disaster_countdown') {
+    // 播放警报音效
+    const alarmAudio = new Audio('警报.mp3');
+    alarmAudio.loop = false;
+    alarmAudio.play();
+     const allBtns = document.querySelectorAll('.option-btn');
+    allBtns.forEach(btn => {
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '0.6';
+    });
+    const notice = document.getElementById('disasterNotice');
+    const msgEl = document.getElementById('disasterMsg');
+    
+    notice.classList.add('show');
+    let count = 5;
+    msgEl.innerText = `距离灾难来临还有 ${count}`;
+    
+    const countdownInterval = setInterval(() => {
+        count--;
+        if (count >= 1) {
+            msgEl.innerText = `距离灾难来临还有 ${count}`;
+        } else {
+            clearInterval(countdownInterval);
+            msgEl.innerText = `灾难降临！`;
+            notice.classList.add('glitch');
+            
+            setTimeout(() => {
+                alarmAudio.pause();
+                alarmAudio.currentTime = 0;
+                notice.classList.remove('glitch');
+                notice.classList.remove('show');
                 nextQuestion(value);
-                return;
-            }
-
-            if (q.special === 'disaster_countdown') {
-                const notice = document.getElementById('disasterNotice');
-                const msgEl = document.getElementById('disasterMsg');
-                
-                notice.classList.add('show');
-                let count = 5;
-                msgEl.innerText = `距离灾难来临还有 ${count}`;
-                
-                const countdownInterval = setInterval(() => {
-                    count--;
-                    if (count >= 3) {
-                        msgEl.innerText = `距离灾难来临还有 ${count}`;
-                    } 
-                    else if (count === 2) {
-                        msgEl.innerText = `距离灾难来临还有 0`;
-                        notice.classList.add('glitch');
-                        clearInterval(countdownInterval);
-                        
-                        setTimeout(() => {
-                            notice.classList.remove('glitch');
-                            notice.classList.remove('show');
-                            nextQuestion(value);
-                        }, 2000);
-                    }
-                }, 800);
-                return;
-            }
-
+            }, 5000);
+        }
+    }, 1000);
+    
+    return;
+}
             if (q.special === 'input_glitch') {
                 alert("随机输入法崩溃：" + String.fromCharCode(Math.floor(Math.random() * 65535)));
                 nextQuestion(value);
